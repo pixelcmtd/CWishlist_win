@@ -4,11 +4,9 @@ namespace CWishlist_win
 {
     class LanguageProvider
     {
-        public static LANG selected { get; set; } = LANG.EN;
+        public static string selected { get; set; } = "en";
 
-        public static LANG get_lang(byte id) => id == 0x00 ? LANG.EN : LANG.DE;
-
-        public static byte get_id(LANG lang) => lang == LANG.EN ? (byte)0x00 : (byte)0x01;
+        static Dictionary<string, Dictionary<string, dynamic>> langs = new Dictionary<string, Dictionary<string, dynamic>>();
 
         static Dictionary<string, dynamic> en_vals = new Dictionary<string, dynamic>()
         {
@@ -126,11 +124,6 @@ namespace CWishlist_win
             {"caption.switch_lang", "Du willschd weagli Éngísch wähleñ?" }
         };
 
-        public static dynamic get_translated(string name) => selected == LANG.DE ? (de_vals.ContainsKey(name) ? de_vals[name] : name) : (en_vals.ContainsKey(name) ? en_vals[name] : name);
-    }
-
-    enum LANG
-    {
-        DE, EN
+        public static dynamic get_translated(string name) => selected == "de" ? (de_vals.ContainsKey(name) ? de_vals[name] : name) : (en_vals.ContainsKey(name) ? en_vals[name] : name);
     }
 }

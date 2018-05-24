@@ -21,7 +21,8 @@ namespace CWishlist_win
         public readonly string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
         public readonly string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
         public readonly string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
-		
+		public readonly string lang_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\langs";
+
         public Form1()
         {
             InitializeComponent();
@@ -42,6 +43,8 @@ namespace CWishlist_win
             if (!Directory.Exists(plugin_dir))
                 Directory.CreateDirectory(plugin_dir);
 
+            if (!Directory.Exists(lang_dir))
+                Directory.CreateDirectory(lang_dir);
 
 
             if (File.Exists(appdir + "\\recent.cwls"))
@@ -56,7 +59,13 @@ namespace CWishlist_win
                     wl = IO.load(appdir + "\\backup.cwl");
 
             if (File.Exists(appdir + "\\LANG"))
-                LanguageProvider.selected = LanguageProvider.get_lang(File.ReadAllBytes(appdir + "\\LANG")[0]);
+            {
+                byte[] lang_file_input = File.ReadAllBytes(appdir + "\\LANG");
+                if (lang_file_input.Length == 1)
+                    LanguageProvider.selected = lang_file_input[0] == 0x00 ? "en" : "de";
+                else
+                    LanguageProvider.selected = Encoding.ASCII.GetString(lang_file_input);
+            }
 
             if (File.Exists(appdir + "\\WIDTH"))
                 Width = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\WIDTH"), 0);

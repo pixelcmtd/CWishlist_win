@@ -34,7 +34,6 @@ namespace CWishlist_win
             while (l.Count > 0 || r.Count > 0)
             {
                 if (l.Count > 0 && r.Count > 0)
-                {
                     if (l.First() <= r.First())
                     {
                         res.Add(l.First());
@@ -45,7 +44,6 @@ namespace CWishlist_win
                         res.Add(r.First());
                         r.Remove(r.First());
                     }
-                }
                 else if (l.Count > 0)
                 {
                     res.Add(l.First());

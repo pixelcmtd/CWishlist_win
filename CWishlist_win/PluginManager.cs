@@ -66,9 +66,6 @@ namespace CWishlist_win
                     }
                 if(s_ver > c_ver)
                 {
-                    //0: url
-                    //1: file
-                    //2: back_file
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
                     new WebClient().DownloadFile(file_replace, tmp);
                     Process.Start(tmp, string.Format("{0} \"{1}\" \"{2}\"", dll_dl_url, plugin_file, Process.GetCurrentProcess().MainModule.FileName));
