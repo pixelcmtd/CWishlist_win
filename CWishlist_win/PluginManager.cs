@@ -54,7 +54,12 @@ namespace CWishlist_win
 					if(xml.Name == "update_info")
                     {
                         s_ver = uint.Parse(xml.GetAttribute("version"));
+                        dll_dl_url = xml.GetAttribute("url");
                     }
+                if(s_ver > c_ver)
+                {
+
+                }
 			}
 			catch { }
 		}
