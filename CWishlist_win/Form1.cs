@@ -50,11 +50,11 @@ namespace CWishlist_win
             if (!File.Exists(appdir + "\\RESTORE_BACKUP"))
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
             else if (File.ReadAllBytes(appdir + "\\RESTORE_BACKUP")[0] == 0x01)
-                if (MessageBox.Show(LanguageProvider.GetTranslated("prompt.restore_backup"), LanguageProvider.GetTranslated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(LanguageProvider.get_translated("prompt.restore_backup"), LanguageProvider.get_translated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
                     wl = IO.load(appdir + "\\backup.cwl");
 
             if (File.Exists(appdir + "\\LANG"))
-                LanguageProvider.Selected = LanguageProvider.get_lang(File.ReadAllBytes(appdir + "\\LANG")[0]);
+                LanguageProvider.selected = LanguageProvider.get_lang(File.ReadAllBytes(appdir + "\\LANG")[0]);
 
             if (File.Exists(appdir + "\\WIDTH"))
                 Width = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\WIDTH"), 0);
@@ -115,14 +115,14 @@ namespace CWishlist_win
             string tempRec = Path.GetTempFileName();
             StringBuilder sb = new StringBuilder("<rc>");
             foreach (string r in recents)
-                sb.Append("<r f=\""+Convert.ToBase64String(Encoding.UTF32.GetBytes(r))+"\" />");
+                sb.Append(string.Format("<r f=\"{0}\" />", Convert.ToBase64String(Encoding.UTF32.GetBytes(r))));
             sb.Append("</rc>");
             File.WriteAllText(tempRec, sb.ToString());
             File.WriteAllBytes(tempVer, new byte[] { 0x01 });
             if (File.Exists(recentFile))
                 File.Delete(recentFile);
             ZipArchive zip = ZipFile.Open(recentFile, ZipArchiveMode.Create, Encoding.ASCII);
-            zip.CreateEntryFromFile(tempVer, "V", CompressionLevel.NoCompression);
+            zip.CreateEntryFromFile(tempVer, "V", CompressionLevel.Fastest);
             zip.CreateEntryFromFile(tempRec, "R", CompressionLevel.Optimal);
             zip.Dispose();
         }
@@ -143,6 +143,7 @@ namespace CWishlist_win
             while (xml.Read())
                 if (xml.NodeType == XmlNodeType.Element && xml.Name == "r")
                     rcwls.Add(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("f"))));
+            xml.Close();
             xml.Dispose();
             recents = rcwls.ToArray();
         }
@@ -257,9 +258,8 @@ namespace CWishlist_win
 
         void Form1_SizeChanged(object sender, EventArgs e)
         {
-            int w = Width;
-            int h = Height;
-            //window  427;508
+            int w = Width, h = Height;
+            //default window: 427;508
             button1.Location = new Point(w - 271, h / 2 - 16 - 33);
             button2.Location = new Point(w - 271, h / 2 - 10);
             listBox1.Size = new Size(w - 289, h - 93);
@@ -281,13 +281,16 @@ namespace CWishlist_win
         void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (wl != 0 && (current_file == "" || wl != IO.load(current_file)))
-                e.Cancel = MessageBox.Show(LanguageProvider.GetTranslated("prompt.close"), LanguageProvider.GetTranslated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
-            write_recent();
-            File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-            File.WriteAllBytes(appdir + "\\LANG", new byte[] { LanguageProvider.get_id(LanguageProvider.Selected) });
-            File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
-            File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
-            File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
+                e.Cancel = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
+            if(!e.Cancel)
+            {
+                write_recent();
+                File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
+                File.WriteAllBytes(appdir + "\\LANG", new byte[] { LanguageProvider.get_id(LanguageProvider.selected) });
+                File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
+                File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
+                File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
+            }
         }
 
         void add_recent_item(string file)
@@ -314,12 +317,12 @@ namespace CWishlist_win
             {
                 update_ui();
             }
-            catch {}
+            catch { }
         }
 
         void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (wl != 0 && (current_file == "" || wl != IO.load(current_file)))
+            if (((current_file == "" && wl != 0) || wl != IO.load(current_file)))
                 if (MessageBox.Show(LanguageProvider.GetTranslated("prompt.open"), LanguageProvider.GetTranslated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             OpenFileDialog ofd = new OpenFileDialog()
