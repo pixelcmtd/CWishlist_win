@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 
@@ -19,6 +20,7 @@ namespace file_replace
             wc.DownloadFileAsync(new Uri(args[0]), args[1]);
             while (wc.IsBusy)
                 Thread.Sleep(1);
+            Process.Start(args[2]);
         }
     }
 }
