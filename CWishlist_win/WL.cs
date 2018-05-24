@@ -58,7 +58,16 @@ namespace CWishlist_win
 		
 		public bool Equals(WL wl) => wl == this;
 
-        public override int GetHashCode() => items.GetHashCode();
+        public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hc = 0;
+				foreach(Item i in items)
+					hc += i.GetHashCode();
+				return hc;
+			}
+		}
 
         public override string ToString() => items.ToString();
 
@@ -91,7 +100,13 @@ namespace CWishlist_win
 		
 		public bool Equals(Item itm) => itm.name == name && itm.url == url;
 
-        public override int GetHashCode() => (name + url).GetHashCode();
+        public override int GetHashCode()
+		{
+			unchecked
+			{
+				return name.GetHashCode() + url.GetHashCode();
+			}
+		}
 
         public static bool operator ==(Item first, Item second) => first.name == second.name && first.url == second.url;
 
