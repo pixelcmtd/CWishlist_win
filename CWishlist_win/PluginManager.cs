@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using System.Xml;
 
 namespace CWishlist_win
@@ -37,5 +38,19 @@ namespace CWishlist_win
         {
             return null;
         }
+		
+		public void update_check(IPlugin plugin)
+		{
+			try
+			{
+				byte[] dl = new WebClient().DownloadData(plugin.update_url);
+				uint c_ver = plugin.ver_int;
+				XmlReader xml = XmlReader.Create(Encoding.UTF8.GetString(dl));
+				while(xml.Read())
+					if(xml.Name == "")
+						;
+			}
+			catch { }
+		}
     }
 }
