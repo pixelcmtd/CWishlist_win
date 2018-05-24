@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using CWishlist_win.Properties;
+using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,11 @@ namespace CWishlist_win
                 Directory.CreateDirectory(plugin_dir);
 
             if (!Directory.Exists(lang_dir))
+            {
                 Directory.CreateDirectory(lang_dir);
+                File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
+                File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
+            }
 
 
             if (File.Exists(appdir + "\\recent.cwls"))
@@ -64,11 +69,12 @@ namespace CWishlist_win
                 if (lang_file_input.Length == 1)
                     LanguageProvider.selected = lang_file_input[0] == 0x00 ? "en" : "de";
                 else
-                    LanguageProvider.selected = Encoding.ASCII.GetString(lang_file_input);
+                    LanguageProvider.selected = LanguageProvider.langs.Keys Encoding.ASCII.GetString(lang_file_input);
             }
 
             if (File.Exists(appdir + "\\WIDTH"))
                 Width = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\WIDTH"), 0);
+
             if (File.Exists(appdir + "\\HEIGHT"))
                 Height = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\HEIGHT"), 0);
 
