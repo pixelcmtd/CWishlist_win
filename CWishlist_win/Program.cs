@@ -22,5 +22,7 @@ namespace CWishlist_win
         }
 
         public static string[] args = null;
+
+        public static Form1 form = null;
     }
 }

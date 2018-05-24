@@ -9,6 +9,10 @@ namespace file_replace
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Waiting for CWishlist to exit.");
+            Thread.Sleep(50);
+            while (Process.GetProcessesByName("CWishlist_win.exe").Length > 1)
+                Thread.Sleep(10);
             Console.WriteLine("Starting download.");
             Console.Write("0% done.");
             WebClient wc = new WebClient();

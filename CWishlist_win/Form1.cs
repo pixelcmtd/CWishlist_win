@@ -26,6 +26,8 @@ namespace CWishlist_win
         {
             InitializeComponent();
 
+            Program.form = this;
+
             if (Program.args.Length > 0)
             {
                 wl = IO.load(Program.args[0]);
