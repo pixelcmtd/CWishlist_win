@@ -5,7 +5,7 @@ namespace CWishlist_win
 {
     public struct WL : IEnumerable
     {
-        WL(params Item[] items) => this.items = items;
+        public WL(params Item[] items) => this.items = items;
 
         public Item[] items;
 
@@ -123,6 +123,8 @@ namespace CWishlist_win
         public static implicit operator string(Item item) => item.ToString();
 
         public static implicit operator long(Item item) => item.url.Length + item.name.Length;
+
+        public static implicit operator uint(Item item) => (uint)(item.url.Length + item.name.Length);
 
         public int Length
         {

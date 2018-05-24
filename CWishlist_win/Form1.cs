@@ -18,10 +18,9 @@ namespace CWishlist_win
         public WL wl;
         public string current_file = "";
         public string[] recents = new string[0];
-        public const string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
-        public const string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
-        public const string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
-		public const string str_ver = "4.0.1";
+        public readonly string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
+        public readonly string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
+        public readonly string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
 		
         public Form1()
         {
@@ -103,7 +102,7 @@ namespace CWishlist_win
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x01 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
-                MessageBox.Show(LanguageProvider.GetTranslated("prompt.stackoverflow"), LanguageProvider.GetTranslated("caption.stackoverflow"));
+                MessageBox.Show(LanguageProvider.get_translated("prompt.stackoverflow"), LanguageProvider.get_translated("caption.stackoverflow"));
             Invalidate();
             Update();
             GC.Collect();
@@ -300,7 +299,7 @@ namespace CWishlist_win
         void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (wl != 0 && (current_file == "" || wl != IO.load(current_file)))
-                if (MessageBox.Show(LanguageProvider.GetTranslated("prompt.new"), LanguageProvider.GetTranslated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show(LanguageProvider.get_translated("prompt.new"), LanguageProvider.get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             if (current_file != "")
                 add_recent_item(current_file);
@@ -316,7 +315,7 @@ namespace CWishlist_win
         void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (((current_file == "" && wl != 0) || wl != IO.load(current_file)))
-                if (MessageBox.Show(LanguageProvider.GetTranslated("prompt.open"), LanguageProvider.GetTranslated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show(LanguageProvider.get_translated("prompt.open"), LanguageProvider.get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             OpenFileDialog ofd = new OpenFileDialog()
             {
@@ -458,8 +457,8 @@ namespace CWishlist_win
 
         void languageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(LanguageProvider.GetTranslated("prompt.switch_lang"), LanguageProvider.GetTranslated("caption.switch_lang"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                LanguageProvider.Selected = LanguageProvider.Selected == Language.English ? Language.German : Language.English;
+            if (MessageBox.Show(LanguageProvider.get_translated("prompt.switch_lang"), LanguageProvider.get_translated("caption.switch_lang"), MessageBoxButtons.YesNo) == DialogResult.Yes)
+                LanguageProvider.selected = LanguageProvider.selected == LANG.EN ? LANG.DE : LANG.EN;
         }
 
         void debugToolStripMenuItem_Click(object sender, EventArgs e)

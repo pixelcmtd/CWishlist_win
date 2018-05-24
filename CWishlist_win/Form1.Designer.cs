@@ -4,6 +4,8 @@ namespace CWishlist_win
 {
     partial class Form1
     {
+        public const string str_ver = "4.0.1";
+
         private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing)

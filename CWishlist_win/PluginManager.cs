@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Net;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace CWishlist_win

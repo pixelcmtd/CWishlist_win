@@ -1,4 +1,6 @@
-﻿namespace CWishlist_win
+﻿using System.Windows.Forms;
+
+namespace CWishlist_win
 {
     public interface IPlugin
     {
