@@ -35,7 +35,7 @@ namespace CWishlist_win
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.version230ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.versionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changelogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -164,18 +164,15 @@ namespace CWishlist_win
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.version230ToolStripMenuItem,
+            this.versionToolStripMenuItem,
             this.changelogToolStripMenuItem});
             this.infoToolStripMenuItem.Name = "infoToolStripMenuItem";
             this.infoToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.infoToolStripMenuItem.Text = "Info";
-            // 
-            // version230ToolStripMenuItem
-            // 
-            this.version230ToolStripMenuItem.Name = "version230ToolStripMenuItem";
-            this.version230ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
-            this.version230ToolStripMenuItem.Text = "Version: 4.0.1";
-            this.version230ToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
+            this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.versionToolStripMenuItem.Text = string.Format("Version: {0}", str_ver);
+            this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
             // 
             // changelogToolStripMenuItem
             // 
@@ -347,7 +344,7 @@ namespace CWishlist_win
         private Button button8;
         private ToolStripMenuItem infoToolStripMenuItem;
         private ToolStripMenuItem changelogToolStripMenuItem;
-        private ToolStripMenuItem version230ToolStripMenuItem;
+        private ToolStripMenuItem versionToolStripMenuItem;
         private Button button9;
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem languageToolStripMenuItem;
