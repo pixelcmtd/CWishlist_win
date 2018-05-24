@@ -502,43 +502,28 @@ namespace CWishlist_win
             }
         }
 
-        void set_color(byte r, byte g, byte b)
-        {
-            BackColor = Color.FromArgb(r, g, b);
-            listBox1.BackColor = BackColor;
-            textBox1.BackColor = BackColor;
-            textBox2.BackColor = BackColor;
-            textBox3.BackColor = BackColor;
-            button1.BackColor = BackColor;
-            button2.BackColor = BackColor;
-            button3.BackColor = BackColor;
-            button4.BackColor = BackColor;
-            button5.BackColor = BackColor;
-            button6.BackColor = BackColor;
-            button7.BackColor = BackColor;
-            button8.BackColor = BackColor;
-            button9.BackColor = BackColor;
-            menuStrip1.BackColor = BackColor;
-        }
+        void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
 
-        void set_color(int argb)
-        {
-            BackColor = Color.FromArgb(argb);
-            listBox1.BackColor = BackColor;
-            textBox1.BackColor = BackColor;
-            textBox2.BackColor = BackColor;
-            textBox3.BackColor = BackColor;
-            button1.BackColor = BackColor;
-            button2.BackColor = BackColor;
-            button3.BackColor = BackColor;
-            button4.BackColor = BackColor;
-            button5.BackColor = BackColor;
-            button6.BackColor = BackColor;
-            button7.BackColor = BackColor;
-            button8.BackColor = BackColor;
-            button9.BackColor = BackColor;
-            menuStrip1.BackColor = BackColor;
-        }
+        void set_color(int argb) => set_color(Color.FromArgb(argb));
+		
+		void set_color(Color c)
+		{
+			BackColor = c;
+            listBox1.BackColor = c;
+            textBox1.BackColor = c;
+            textBox2.BackColor = c;
+            textBox3.BackColor = c;
+            button1.BackColor = c;
+            button2.BackColor = c;
+            button3.BackColor = c;
+            button4.BackColor = c;
+            button5.BackColor = c;
+            button6.BackColor = c;
+            button7.BackColor = c;
+            button8.BackColor = c;
+            button9.BackColor = c;
+            menuStrip1.BackColor = c;
+		}
 
         void styleBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
