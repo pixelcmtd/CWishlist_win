@@ -16,6 +16,10 @@ namespace CWishlist_win
             {
             "CWishlist by chrissx @ chrissx Media Inc. Changelog:",
             "",
+            "Version 4.1.0:",
+            "-Many under-the-hood improvements",
+            "-A GitHub-repo (https://github.com/chrissxYT/CWishlist_win)",
+            "",
             "Version 4.0.1:",
             "-Day one patch for a file extention bug in 4.0.0",
             "",
@@ -69,6 +73,10 @@ namespace CWishlist_win
             {"misc.changelog", new string[]
             {
             "CWishlist von chrissx bei chrissx Media Inc. Changelog:",
+            "",
+            "Version 4.1.0:",
+            "-Sehr viele Under-The-Hood-Verbesserungen",
+            "-Ein GitHub-repository (https://github.com/chrissxYT/CWishlist_win)",
             "",
             "Version 4.0.1:",
             "-Day one patch für einen Dateiendungsbug in 4.0.0",
