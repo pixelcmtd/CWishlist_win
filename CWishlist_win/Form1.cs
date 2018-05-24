@@ -150,28 +150,19 @@ namespace CWishlist_win
 
         void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex == -1)
-            {
-                textBox1.Visible = false;
-                textBox2.Visible = false;
-                label1.Visible = false;
-                label2.Visible = false;
-                button4.Visible = false;
-                button5.Visible = false;
-                button6.Visible = false;
-            }
-            else
-            {
-                textBox1.Visible = true;
-                textBox2.Visible = true;
-                label1.Visible = true;
-                label2.Visible = true;
-                button4.Visible = true;
-                button5.Visible = true;
-                button6.Visible = true;
-                textBox1.Text = wl.items[listBox1.SelectedIndex].name;
+			bool f = listBox1.SelectedIndex != -1;
+            textBox1.Visible = f;
+            textBox2.Visible = f;
+            label1.Visible = f;
+            label2.Visible = f;
+            button4.Visible = f;
+            button5.Visible = f;
+            button6.Visible = f;
+			if (f)
+			{
+				textBox1.Text = wl.items[listBox1.SelectedIndex].name;
                 textBox2.Text = wl.items[listBox1.SelectedIndex].url;
-            }
+			}
             Invalidate();
         }
 
