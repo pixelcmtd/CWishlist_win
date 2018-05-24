@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Net;
 using System.Xml;
 
@@ -45,7 +46,7 @@ namespace CWishlist_win
 			{
 				byte[] dl = new WebClient().DownloadData(plugin.update_url);
 				uint c_ver = plugin.ver_int;
-				XmlReader xml = XmlReader.Create(Encoding.UTF8.GetString(dl));
+				XmlReader xml = XmlReader.Create(new MemoryStream(dl));
 				while(xml.Read())
 					if(xml.Name == "")
 						;

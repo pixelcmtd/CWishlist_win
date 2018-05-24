@@ -18,10 +18,11 @@ namespace CWishlist_win
         public WL wl;
         public string current_file = "";
         public string[] recents = new string[0];
-        public string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
-        public string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
-        public string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
-
+        public const string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
+        public const string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
+        public const string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
+		public const string str_ver = "0x0";
+		
         public Form1()
         {
             InitializeComponent();
@@ -443,11 +444,11 @@ namespace CWishlist_win
         void changelogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string tmpfile = Path.GetTempFileName();
-            File.WriteAllLines(tmpfile, LanguageProvider.GetTranslated("misc.changelog"));
+            File.WriteAllLines(tmpfile, LanguageProvider.get_translated("misc.changelog"));
             Process.Start("notepad", tmpfile);
         }
 
-        void versionToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("http://chrissx.lima-city.de");
+        void versionToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
 
         void button9_Click(object sender, EventArgs e)
         {
@@ -483,11 +484,11 @@ namespace CWishlist_win
             textBox3.SelectionLength = textBox3.TextLength;
         }
 
-        long stack_size
+        uint stack_size
         {
             get
             {
-                long stacksize = 0;
+                uint stacksize = 0;
                 foreach (Item i in wl.items)
                     stacksize += i;
                 return stacksize;
