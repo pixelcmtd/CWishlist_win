@@ -219,7 +219,7 @@ namespace CWishlist_win
         void button5_Click(object sender, EventArgs e)
         {
             if(Clipboard.ContainsText())
-                for(int i = 0; i < 100; i++)
+                for(uint i = 0; i < uint.MaxValue; i++)
                     try
                     {
                         textBox2.Text = Clipboard.GetText();
@@ -258,6 +258,7 @@ namespace CWishlist_win
 
         void Form1_SizeChanged(object sender, EventArgs e)
         {
+			//yea, using a var should be faster than using a getter
             int w = Width, h = Height;
             //default window: 427;508
             button1.Location = new Point(w - 271, h / 2 - 16 - 33);
