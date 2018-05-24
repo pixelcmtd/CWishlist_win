@@ -11,10 +11,7 @@ namespace CWishlist_win
 
         public static WL New
         {
-            get => new WL()
-            {
-                items = new Item[0]
-            };
+            get => new WL(new Item[0]);
         }
 
         public static bool operator ==(WL first, WL second)
@@ -57,7 +54,9 @@ namespace CWishlist_win
 
         public static implicit operator int(WL wl) => wl.Length;
 
-        public override bool Equals(object obj) => (obj is WL) ? ((WL)obj).items == items : false;
+        public override bool Equals(object obj) => (obj is WL) ? ((WL)obj) == this : false;
+		
+		public bool Equals(WL wl) => wl == this;
 
         public override int GetHashCode() => items.GetHashCode();
 
@@ -89,6 +88,8 @@ namespace CWishlist_win
         public override string ToString() => name != "" ? name : @"[/unnamed item\]";
 
         public override bool Equals(object obj) => (obj is Item) ? ((Item) obj).name == name && ((Item) obj).url == url : false;
+		
+		public bool Equals(Item itm) => itm.name == name && itm.url == url;
 
         public override int GetHashCode() => (name + url).GetHashCode();
 
