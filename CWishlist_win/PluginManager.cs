@@ -47,10 +47,14 @@ namespace CWishlist_win
 			{
 				byte[] dl = new WebClient().DownloadData(plugin.update_url);
 				uint c_ver = plugin.ver_int;
+                uint s_ver = 0;
+                string dll_dl_url = "";
 				XmlReader xml = XmlReader.Create(new MemoryStream(dl));
 				while(xml.Read())
-					if(xml.Name == "")
-						;
+					if(xml.Name == "update_info")
+                    {
+                        s_ver = uint.Parse(xml.GetAttribute("version"));
+                    }
 			}
 			catch { }
 		}

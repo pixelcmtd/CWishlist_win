@@ -16,7 +16,7 @@ namespace CWishlist_win
 
         public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
 
-        public static void save(WL wl, string file)
+        public static void save_cwlu(WL wl, string file)
         {
             string xml = "<c>";
             foreach (Item i in wl)

@@ -98,7 +98,7 @@ namespace CWishlist_win
             button4.Visible = false;
             button5.Visible = false;
             button6.Visible = false;
-            IO.save(wl, appdir + "\\backup.cwl");
+            IO.save_cwlu(wl, appdir + "\\backup.cwl");
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x01 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
@@ -357,7 +357,7 @@ namespace CWishlist_win
                     (chrs = current_file.ToCharArray())[current_file.Length - 1] = 'u';
                     current_file = new string(chrs);
                 }
-            IO.save(wl, current_file);
+            IO.save_cwlu(wl, current_file);
         }
 
         void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -375,7 +375,7 @@ namespace CWishlist_win
             {
                 add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
-                IO.save(wl, current_file);
+                IO.save_cwlu(wl, current_file);
             }
         }
 
