@@ -67,10 +67,7 @@ namespace CWishlist_win
             xml.Close();
             xml.Dispose();
             zip.Dispose();
-            return new WL()
-            {
-                items = itms.ToArray()
-            };
+            return new WL(itms.ToArray());
         }
 
         static WL cwlb_load(string file)
@@ -86,10 +83,7 @@ namespace CWishlist_win
                     items.Add(new Item(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("n"))), Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("u")))));
             xml.Close();
             xml.Dispose();
-            return new WL()
-            {
-                items = items.ToArray()
-            };
+            return new WL(items.ToArray());
         }
 
         static WL cwl_load(string file)
@@ -105,10 +99,7 @@ namespace CWishlist_win
                     items.Add(new Item(xml.GetAttribute("name"), xml.GetAttribute("url")));
             xml.Close();
             xml.Dispose();
-            return new WL()
-            {
-                items = items.ToArray()
-            };
+            return new WL(items.ToArray());
         }
 
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
