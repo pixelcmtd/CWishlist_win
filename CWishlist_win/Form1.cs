@@ -67,9 +67,9 @@ namespace CWishlist_win
             {
                 byte[] lang_file_input = File.ReadAllBytes(appdir + "\\LANG");
                 if (lang_file_input.Length == 1)
-                    LanguageProvider.selected = lang_file_input[0] == 0x00 ? "en" : "de";
+                    LanguageProvider.selected = LanguageProvider.get_lang(lang_file_input[0] == 0x00 ? "en" : "de");
                 else
-                    LanguageProvider.selected = LanguageProvider.langs.Keys.Where((l) => l.code == Encoding.ASCII.GetString(lang_file_input));
+                    LanguageProvider.selected = LanguageProvider.get_lang(Encoding.ASCII.GetString(lang_file_input));
             }
 
             if (File.Exists(appdir + "\\WIDTH"))
@@ -295,7 +295,7 @@ namespace CWishlist_win
             {
                 write_recent();
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-                File.WriteAllBytes(appdir + "\\LANG", new byte[] { LanguageProvider.get_id(LanguageProvider.selected) });
+                File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.name));
                 File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
                 File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
                 File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
@@ -475,7 +475,7 @@ namespace CWishlist_win
         void languageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(LanguageProvider.get_translated("prompt.switch_lang"), LanguageProvider.get_translated("caption.switch_lang"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                LanguageProvider.selected = LanguageProvider.selected == LANG.EN ? LANG.DE : LANG.EN;
+                LanguageProvider.selected = default(lang);
         }
 
         void debugToolStripMenuItem_Click(object sender, EventArgs e)

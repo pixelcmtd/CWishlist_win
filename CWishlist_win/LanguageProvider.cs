@@ -11,6 +11,8 @@ namespace CWishlist_win
 
         public static dynamic get_translated(string name) => langs[selected][name];
 
+        public static lang get_lang(string code) => langs.Keys.Where((l) => l.code == code);
+
         public static void load_lang_xml(string file)
         {
             lang lng;
