@@ -21,7 +21,7 @@ namespace CWishlist_win
         public const string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
         public const string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
         public const string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
-		public const string str_ver = "0x0";
+		public const string str_ver = "4.0.1";
 		
         public Form1()
         {

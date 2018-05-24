@@ -7,57 +7,57 @@ namespace CWishlist_win
     {
         public static Item[] MergeSort(Item[] unsorted) => MergeSort(new List<Item>(unsorted)).ToArray().Reverse().ToArray();
 
-        static List<Item> MergeSort(List<Item> unsorted)
+        static List<Item> MergeSort(List<Item> u)
         {
-            if (unsorted.Count < 2)
-                return unsorted;
+            if (u.Count < 2)
+                return u;
 
-            List<Item> left = new List<Item>();
-            List<Item> right = new List<Item>();
-            int middle = unsorted.Count / 2;
+            List<Item> l = new List<Item>();
+            List<Item> r = new List<Item>();
+            int m = u.Count / 2;
 
-            for (int i = 0; i < middle; i++)
-                left.Add(unsorted[i]);
+            for (int i = 0; i < m; i++)
+                l.Add(u[i]);
 
-            for (int i = middle; i < unsorted.Count; i++)
-                right.Add(unsorted[i]);
+            for (int i = m; i < u.Count; i++)
+                r.Add(u[i]);
 
-            left = MergeSort(left);
-            right = MergeSort(right);
-            return Merge(left, right);
+            l = MergeSort(l);
+            r = MergeSort(r);
+            return Merge(l, r);
         }
 
-        static List<Item> Merge(List<Item> left, List<Item> right)
+        static List<Item> Merge(List<Item> l, List<Item> r)
         {
-            List<Item> result = new List<Item>();
+            List<Item> res = new List<Item>();
 
-            while (left.Count > 0 || right.Count > 0)
+            while (l.Count > 0 || r.Count > 0)
             {
-                if (left.Count > 0 && right.Count > 0)
+                if (l.Count > 0 && r.Count > 0)
                 {
-                    if (left.First() <= right.First())
+                    if (l.First() <= r.First())
                     {
-                        result.Add(left.First());
-                        left.Remove(left.First());
+                        res.Add(l.First());
+                        l.Remove(l.First());
                     }
                     else
                     {
-                        result.Add(right.First());
-                        right.Remove(right.First());
+                        res.Add(r.First());
+                        r.Remove(r.First());
                     }
                 }
-                else if (left.Count > 0)
+                else if (l.Count > 0)
                 {
-                    result.Add(left.First());
-                    left.Remove(left.First());
+                    res.Add(l.First());
+                    l.Remove(l.First());
                 }
-                else if (right.Count > 0)
+                else if (r.Count > 0)
                 {
-                    result.Add(right.First());
-                    right.Remove(right.First());
+                    res.Add(r.First());
+                    r.Remove(r.First());
                 }
             }
-            return result;
+            return res;
         }
     }
 }

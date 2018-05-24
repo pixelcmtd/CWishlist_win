@@ -5,9 +5,6 @@ namespace CWishlist_win
 {
     static class Program
     {
-        /// <summary>
-        /// Der Haupteinstiegspunkt für die Anwendung.
-        /// </summary>
         [STAThread]
         static void Main(string[] ca)
         {
