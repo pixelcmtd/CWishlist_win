@@ -69,7 +69,7 @@ namespace CWishlist_win
                 if (lang_file_input.Length == 1)
                     LanguageProvider.selected = lang_file_input[0] == 0x00 ? "en" : "de";
                 else
-                    LanguageProvider.selected = LanguageProvider.langs.Keys Encoding.ASCII.GetString(lang_file_input);
+                    LanguageProvider.selected = LanguageProvider.langs.Keys.Where((l) => l.code == Encoding.ASCII.GetString(lang_file_input));
             }
 
             if (File.Exists(appdir + "\\WIDTH"))
