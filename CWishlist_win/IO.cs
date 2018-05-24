@@ -14,7 +14,7 @@ namespace CWishlist_win
 
         public static bool valid_url(string url) => Uri.TryCreate(url, UriKind.Absolute, out Uri u);
 
-        public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlc_load(f));
+        public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
 
         public static void save(WL wl, string file)
         {
@@ -43,7 +43,7 @@ namespace CWishlist_win
             zip.Dispose();
         }
 
-        static WL cwlc_load(string file)
+        static WL cwlu_load(string file)
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
 
@@ -67,10 +67,7 @@ namespace CWishlist_win
             xml.Close();
             xml.Dispose();
             zip.Dispose();
-            return new WL()
-            {
-                items = itms.ToArray()
-            };
+            return new WL(itms.ToArray());
         }
 
         static WL cwlb_load(string file)
@@ -86,10 +83,7 @@ namespace CWishlist_win
                     items.Add(new Item(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("n"))), Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("u")))));
             xml.Close();
             xml.Dispose();
-            return new WL()
-            {
-                items = items.ToArray()
-            };
+            return new WL(items.ToArray());
         }
 
         static WL cwl_load(string file)
@@ -105,10 +99,7 @@ namespace CWishlist_win
                     items.Add(new Item(xml.GetAttribute("name"), xml.GetAttribute("url")));
             xml.Close();
             xml.Dispose();
-            return new WL()
-            {
-                items = items.ToArray()
-            };
+            return new WL(items.ToArray());
         }
 
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;

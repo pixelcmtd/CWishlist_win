@@ -4,13 +4,13 @@ namespace CWishlist_win
 {
     class LanguageProvider
     {
-        public static Language Selected { get; set; } = Language.English;
+        public static LANG selected { get; set; } = LANG.EN;
 
-        public static Language get_lang(byte id) => id == 0x00 ? Language.English : Language.German;
+        public static LANG get_lang(byte id) => id == 0x00 ? LANG.EN : LANG.DE;
 
-        public static byte get_id(Language lang) => lang == Language.English ? (byte)0x00 : (byte)0x01;
+        public static byte get_id(LANG lang) => lang == LANG.EN ? (byte)0x00 : (byte)0x01;
 
-        static Dictionary<string, dynamic> enValues = new Dictionary<string, dynamic>()
+        static Dictionary<string, dynamic> en_vals = new Dictionary<string, dynamic>()
         {
             {"misc.changelog", new string[]
             {
@@ -64,7 +64,7 @@ namespace CWishlist_win
             {"caption.switch_lang", "Ya really want 2 switch 2 Germé?" }
         };
 
-        static Dictionary<string, dynamic> deValues = new Dictionary<string, dynamic>()
+        static Dictionary<string, dynamic> de_vals = new Dictionary<string, dynamic>()
         {
             {"misc.changelog", new string[]
             {
@@ -118,11 +118,11 @@ namespace CWishlist_win
             {"caption.switch_lang", "Du willschd weagli Éngísch wähleñ?" }
         };
 
-        public static dynamic GetTranslated(string name) => Selected == Language.German ? (deValues.ContainsKey(name) ? deValues[name] : name) : (enValues.ContainsKey(name) ? enValues[name] : name);
+        public static dynamic get_translated(string name) => selected == LANG.DE ? (de_vals.ContainsKey(name) ? de_vals[name] : name) : (en_vals.ContainsKey(name) ? en_vals[name] : name);
     }
 
-    enum Language
+    enum LANG
     {
-        German, English
+        DE, EN
     }
 }
