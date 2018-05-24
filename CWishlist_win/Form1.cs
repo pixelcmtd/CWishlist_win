@@ -540,9 +540,6 @@ namespace CWishlist_win
         
         void openPluginDirToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
+        void Form1_Paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
     }
 }

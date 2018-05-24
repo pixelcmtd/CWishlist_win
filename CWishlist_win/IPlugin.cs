@@ -16,6 +16,6 @@
 
     public interface IPaintListener
     {
-        void paint();
+        void paint(PaintEventArgs e);
     }
 }

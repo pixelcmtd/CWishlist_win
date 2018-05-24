@@ -23,10 +23,10 @@ namespace CWishlist_win
                 l.form_contruct();
         }
 
-        public void call_paint_listeners()
+        public void call_paint_listeners(PaintEventArgs e)
         {
             foreach (IPaintListener l in paint_listeners)
-                l.paint();
+                l.paint(e);
         }
 
         public void load_plugin(string file)
