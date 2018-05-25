@@ -229,8 +229,8 @@ namespace CWishlist_win
             // versionToolStripMenuItem
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
-            this.versionToolStripMenuItem.Text = "Version: 4.1.0";
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.versionToolStripMenuItem.Text = "Version: 5.0.0";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
             // 
             // changelogToolStripMenuItem
@@ -252,14 +252,14 @@ namespace CWishlist_win
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(241, 30);
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.languageToolStripMenuItem_Click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
-            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(241, 30);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
             this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.styleBackgroundColorToolStripMenuItem_Click);
             // 
@@ -274,8 +274,8 @@ namespace CWishlist_win
             // openPluginDirToolStripMenuItem
             // 
             this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
-            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(350, 30);
-            this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DONT USE YET)";
+            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(390, 30);
+            this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
             this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.openPluginDirToolStripMenuItem_Click);
             // 
             // button1

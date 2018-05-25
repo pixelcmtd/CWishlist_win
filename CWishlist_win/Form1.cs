@@ -466,7 +466,12 @@ namespace CWishlist_win
                 Process.Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
         }
 
-        void changelogToolStripMenuItem_Click(object sender, EventArgs e) => IO.ShowMessage(LanguageProvider.get_translated("misc.changelog"));
+        void changelogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string tmp = Path.GetTempFileName();
+            File.WriteAllLines(tmp, LanguageProvider.get_translated("misc.changelog"));
+            Process.Start("notepad", tmp);
+        }
 
         void versionToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
 

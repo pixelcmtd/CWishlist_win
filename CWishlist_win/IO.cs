@@ -107,24 +107,6 @@ namespace CWishlist_win
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
 
         static string xml_esc(this string s) => s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
-
-        [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
-        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-
-        [DllImport("User32.dll", EntryPoint = "SendMessage")]
-        static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
-
-        public static void ShowMessage(string message)
-        {
-            Process notepad = Process.Start("notepad.exe");
-            notepad.WaitForInputIdle();
-
-            if (message != "")
-            {
-                IntPtr c = FindWindowEx(notepad.MainWindowHandle, new IntPtr(0), "Edit", null);
-                SendMessage(c, 12, 0, message);
-            }
-        }
     }
 
     class NotSupportedFileVersionException : Exception

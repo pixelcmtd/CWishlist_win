@@ -1,42 +1,42 @@
 <cwl_lang>
 <lang code="en" name="english" />
-<translation name="misc.changelog" type="str_arr" value="CWishlist by chrissx @ chrissx Media Inc. Changelog:
-
-Version 4.1.0:
--Many under-the-hood improvements
--A GitHub-repo (https://github.com/chrissxYT/CWishlist_win)
-
-Version 4.0.1:
--Day one patch for a file extention bug in 4.0.0
-
-Version 4.0.0:
--Introduction of the new CWishlistUncde v1 standard (a technical explanation will come up at some point)
-
-Version 3.3.0:
--Added background color setting (with saving)
-
-Version 3.2.1:
--Added saving of window size
-
-Version 3.2.0:
--Added StackOverflow-warning
--Added arrow-key use for switching through the wishlist
-
-Version 3.1.0:
--Added searching for Wishlist-items
-
-Version 3.0.0:
--Added merge-sorting for Wishlist-items
--Added most of the language support for German
--Using tinyurl-API for URL-shortening
-
-Version 2.3.2:
--Fixed error with listbox-pointer being out-of-bounds
--Kinda passively fixed backup-prompt showing up all the time
--Fixed &quot;Open all&quot;-button not being aligned correctly when resizing
-
-Version 2.3.1:
--Added this wonderful changelog
+<translation name="misc.changelog" type="str_arr" value="CWishlist by chrissx @ chrissx Media Inc. Changelog:\
+\
+Version 4.1.0:\
+-Many under-the-hood improvements\
+-A GitHub-repo (https://github.com/chrissxYT/CWishlist_win)\
+\
+Version 4.0.1:\
+-Day one patch for a file extention bug in 4.0.0\
+\
+Version 4.0.0:\
+-Introduction of the new CWishlistUncde v1 standard (a technical explanation will /maybe/ come up at some point)\
+\
+Version 3.3.0:\
+-Added background color setting (with saving)\
+\
+Version 3.2.1:\
+-Added saving of window size\
+\
+Version 3.2.0:\
+-Added StackOverflow-warning\
+-Added arrow-key use for switching through the wishlist\
+\
+Version 3.1.0:\
+-Added searching for Wishlist-items\
+\
+Version 3.0.0:\
+-Added merge-sorting for Wishlist-items\
+-Added most of the language support for German\
+-Using tinyurl-API for URL-shortening\
+\
+Version 2.3.2:\
+-Fixed error with listbox-pointer being out-of-bounds\
+-Kinda passively fixed backup-prompt showing up all the time\
+-Fixed &quot;Open all&quot;-button not being aligned correctly when resizing\
+\
+Version 2.3.1:\
+-Added this wonderful changelog\
 -Fixed deadly bug in the recents-file" />
 <translation name="prompt.restore_backup" type="str" value="The program was exited unexpectedly the last time, do you want to restore the backup?" />
 <translation name="caption.restore_backup" type="str" value="Ya really want 2 losé?" />

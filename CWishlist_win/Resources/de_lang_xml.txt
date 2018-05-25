@@ -1,42 +1,42 @@
 <cwl_lang>
 <lang code="de" name="deutsch" />
-<translation name="misc.changelog" type="str_arr" value="CWishlist von chrissx bei chrissx Media Inc. Changelog:
-
-Version 4.1.0:
--Sehr viele Under-The-Hood-Verbesserungen
--Ein GitHub-repository (https://github.com/chrissxYT/CWishlist_win)
-
-Version 4.0.1:
--Day one patch für einen Dateiendungsbug in 4.0.0
-
-Version 4.0.0:
--Der neue CWishlistUncde v1 Standart wurde eingeführt (eine technische Erklärung wird irgendwann folgen)
-
-Version 3.3.0:
--Hintergrundfarbeneinstellung hinzugefügt (wird gespeichert)
-
-Version 3.2.1:
--Die Fenstergröße wird nun gespeichert
-
-Version 3.2.0:
--StackOverflow-Warnung hinzugefügt
--Die Pfeiltasten können jetzt benutzt werden, um durch die Liste zu gehen
-
-Version 3.1.0:
--Suchfunktion für Wunschlisten-Items hinzugefügt
-
-Version 3.0.0:
--Merge-sorting für Wunschlisten-Items hinzugefügt
--Der größte Teil der Unterstützung der deutschen Sprache wurde erledigt
--Tinyurl wird jetzt für URL-Verkürzung verwendet
-
-Version 2.3.2:
--Fehler mit einem out-of-bounds listbox-index
--Die Backup-Prompt wurde bei jedem Start angezeigt, sollte jetzt nicht mehr passieren
--Der &quot;Open all&quot;-Button wurde beim Verändern der Größe nicht richtig platziert
-
-Version 2.3.1:
--Dieser wundervolle Changelog wurde hinzugefügt!!
+<translation name="misc.changelog" type="str_arr" value="CWishlist von chrissx bei chrissx Media Inc. Changelog:\
+\
+Version 4.1.0:\
+-Sehr viele Under-The-Hood-Verbesserungen\
+-Ein GitHub-repository (https://github.com/chrissxYT/CWishlist_win)\
+\
+Version 4.0.1:\
+-Day one patch für einen Dateiendungsbug in 4.0.0\
+\
+Version 4.0.0:\
+-Der neue CWishlistUncde v1 Standart wurde eingeführt (eine technische Erklärung wird /vielleicht/ irgendwann folgen)\
+\
+Version 3.3.0:\
+-Hintergrundfarbeneinstellung hinzugefügt (wird gespeichert)\
+\
+Version 3.2.1:\
+-Die Fenstergröße wird nun gespeichert\
+\
+Version 3.2.0:\
+-StackOverflow-Warnung hinzugefügt\
+-Die Pfeiltasten können jetzt benutzt werden, um durch die Liste zu gehen\
+\
+Version 3.1.0:\
+-Suchfunktion für Wunschlisten-Items hinzugefügt\
+\
+Version 3.0.0:\
+-Merge-sorting für Wunschlisten-Items hinzugefügt\
+-Der größte Teil der Unterstützung der deutschen Sprache wurde erledigt\
+-Tinyurl wird jetzt für URL-Verkürzung verwendet\
+\
+Version 2.3.2:\
+-Fehler mit einem out-of-bounds listbox-index\
+-Die Backup-Prompt wurde bei jedem Start angezeigt, sollte jetzt nicht mehr passieren\
+-Der &quot;Open all&quot;-Button wurde beim Verändern der Größe nicht richtig platziert\
+\
+Version 2.3.1:\
+-Dieser wundervolle Changelog wurde hinzugefügt!!\
 -Ein tödlicher Bug mit der recents-Datei wurde behoben." />
 <translation name="prompt.restore_backup" type="str" value="Das Programm wurde letztes mal unerwartet beendet, wollen Sie das Backup wiederherstellen?" />
 <translation name="caption.restore_backup" type="str" value="Du willschd weagli verliereñ?" />
