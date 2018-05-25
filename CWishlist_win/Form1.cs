@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -45,12 +46,20 @@ namespace CWishlist_win
                 Directory.CreateDirectory(plugin_dir);
 
             if (!Directory.Exists(lang_dir))
-            {
                 Directory.CreateDirectory(lang_dir);
-                File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
-                File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
-            }
 
+            MD5 md5 = new MD5CryptoServiceProvider();
+
+            if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
+                File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
+
+            if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
+                File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
+
+            md5.Dispose();
+
+            foreach (string f in Directory.GetFiles(lang_dir))
+                LanguageProvider.load_lang_xml(f);
 
             if (File.Exists(appdir + "\\recent.cwls"))
                 load_recent();
@@ -295,7 +304,7 @@ namespace CWishlist_win
             {
                 write_recent();
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-                File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.name));
+                File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.code));
                 File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
                 File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
                 File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
@@ -457,12 +466,7 @@ namespace CWishlist_win
                 Process.Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
         }
 
-        void changelogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string tmpfile = Path.GetTempFileName();
-            File.WriteAllLines(tmpfile, LanguageProvider.get_translated("misc.changelog"));
-            Process.Start("notepad", tmpfile);
-        }
+        void changelogToolStripMenuItem_Click(object sender, EventArgs e) => IO.ShowMessage(LanguageProvider.get_translated("misc.changelog"));
 
         void versionToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
 
@@ -472,16 +476,7 @@ namespace CWishlist_win
             update_ui();
         }
 
-        void languageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show(LanguageProvider.get_translated("prompt.switch_lang"), LanguageProvider.get_translated("caption.switch_lang"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                LanguageProvider.selected = default(lang);
-        }
-
-        void debugToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("N/A, ONLY 4 DEBUG!");
-        }
+        void languageToolStripMenuItem_Click(object sender, EventArgs e) => new LanguageSelectionDialog(LanguageProvider.get_translated("title.switch_lang")).ShowDialog();
 
         void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -495,9 +490,9 @@ namespace CWishlist_win
 
         void textBox3_Click(object sender, EventArgs e)
         {
-            textBox3.Focus();
-            textBox3.SelectionStart = 0;
-            textBox3.SelectionLength = textBox3.TextLength;
+            //textBox3.Focus();
+            //textBox3.SelectionStart = 0;
+            //textBox3.SelectionLength = textBox3.TextLength;
         }
 
         uint stack_size

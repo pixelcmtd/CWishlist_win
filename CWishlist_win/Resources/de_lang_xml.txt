@@ -33,7 +33,7 @@ Version 3.0.0:
 Version 2.3.2:
 -Fehler mit einem out-of-bounds listbox-index
 -Die Backup-Prompt wurde bei jedem Start angezeigt, sollte jetzt nicht mehr passieren
--Der \"Open all\"-Button wurde beim Verändern der Größe nicht richtig platziert
+-Der &quot;Open all&quot;-Button wurde beim Verändern der Größe nicht richtig platziert
 
 Version 2.3.1:
 -Dieser wundervolle Changelog wurde hinzugefügt!!
@@ -48,6 +48,5 @@ Version 2.3.1:
 <translation name="caption.open" type="str" value="Du willschd weagli ne andre Dadei öffneñ?" />
 <translation name="prompt.stackoverflow" type="str" value="Ihre Stack-Größe ist nahe am Limit, bitte versichern Sie sich, Ihre Liste immer zu speichern." />
 <translation name="caption.stackoverflow" type="str" value="Du willschd weagli nen Schdägg-Ofafloo verursacheñ?" />
-<translation name="prompt.switch_lang" type="str" value="Wollen Sie Englisch als Sprache auswählen?" />
-<translation name="caption.switch_lang" type="str" value="Du willschd weagli Éngísch wähleñ?" />
+<translation name="title.switch_lang" type="str" value="Bitte wählen Sie die Sprache aus." />
 </cwl_lang>

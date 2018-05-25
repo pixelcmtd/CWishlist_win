@@ -33,7 +33,7 @@ Version 3.0.0:
 Version 2.3.2:
 -Fixed error with listbox-pointer being out-of-bounds
 -Kinda passively fixed backup-prompt showing up all the time
--Fixed \"Open all\"-button not being aligned correctly when resizing
+-Fixed &quot;Open all&quot;-button not being aligned correctly when resizing
 
 Version 2.3.1:
 -Added this wonderful changelog
@@ -48,6 +48,5 @@ Version 2.3.1:
 <translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
 <translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
 <translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
-<translation name="prompt.switch_lang" type="str" value="Do you want to switch to German as your language?" />
-<translation name="caption.switch_lang" type="str" value="Ya really want 2 switch 2 Germé?" />
+<translation name="title.switch_lang" type="str" value="Please select your language." />
 </cwl_lang>

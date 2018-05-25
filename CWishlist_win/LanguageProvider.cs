@@ -15,7 +15,7 @@ namespace CWishlist_win
 
         public static void load_lang_xml(string file)
         {
-            lang lng;
+            lang lng = default(lang);
             Dictionary<string, dynamic> translations = new Dictionary<string, dynamic>();
             XmlReader xml = XmlReader.Create(file);
             while (xml.Read())
@@ -57,6 +57,7 @@ namespace CWishlist_win
                     }
                     translations.Add(name, value);
                 }
+            langs.Add(lng, translations);
         }
     }
 
@@ -70,5 +71,15 @@ namespace CWishlist_win
 
         public string code;
         public string name;
+
+        public override bool Equals(object obj) => obj is lang ? code == ((lang)obj).code && name == ((lang)obj).name : false;
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return 0x505534FA * -0x5AAAAAD7 + EqualityComparer<string>.Default.GetHashCode(code);
+            }
+        }
     }
 }

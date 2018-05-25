@@ -12,5 +12,17 @@ namespace CWishlist_win
                     return key;
             return default(TKey);
         }
+
+        public static bool ArrayEquals(this Array left, Array right)
+        {
+            if (left.Length != right.Length)
+                return false;
+            if (left.GetType() != right.GetType())
+                return false;
+            for (int i = 0; i < left.Length; i++)
+                if (left.GetValue(i) != right.GetValue(i))
+                    return false;
+            return true;
+        }
     }
 }

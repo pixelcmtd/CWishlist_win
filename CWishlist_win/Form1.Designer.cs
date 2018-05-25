@@ -41,7 +41,6 @@ namespace CWishlist_win
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.styleBackgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -179,28 +178,28 @@ namespace CWishlist_win
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(158, 30);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(158, 30);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(158, 30);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(158, 30);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -209,7 +208,7 @@ namespace CWishlist_win
             this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nAToolStripMenuItem});
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(158, 30);
             this.recentToolStripMenuItem.Text = "Recent";
             // 
             // nAToolStripMenuItem
@@ -230,14 +229,14 @@ namespace CWishlist_win
             // versionToolStripMenuItem
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
             this.versionToolStripMenuItem.Text = "Version: 4.1.0";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
-            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
             this.changelogToolStripMenuItem.Text = "Changelog";
             this.changelogToolStripMenuItem.Click += new System.EventHandler(this.changelogToolStripMenuItem_Click);
             // 
@@ -267,18 +266,10 @@ namespace CWishlist_win
             // extraToolStripMenuItem
             // 
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.debugToolStripMenuItem,
             this.openPluginDirToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(62, 29);
             this.extraToolStripMenuItem.Text = "Extra";
-            // 
-            // debugToolStripMenuItem
-            // 
-            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(350, 30);
-            this.debugToolStripMenuItem.Text = "Debug";
-            this.debugToolStripMenuItem.Click += new System.EventHandler(this.debugToolStripMenuItem_Click);
             // 
             // openPluginDirToolStripMenuItem
             // 
@@ -416,7 +407,6 @@ namespace CWishlist_win
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem languageToolStripMenuItem;
         private ToolStripMenuItem extraToolStripMenuItem;
-        private ToolStripMenuItem debugToolStripMenuItem;
         private TextBox textBox3;
         private ToolStripMenuItem styleBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem openPluginDirToolStripMenuItem;

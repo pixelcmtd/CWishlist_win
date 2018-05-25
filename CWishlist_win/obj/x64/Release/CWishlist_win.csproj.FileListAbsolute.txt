@@ -38,3 +38,4 @@ C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CW
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csproj.CopyComplete
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.exe
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.pdb
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.LanguageSelectionDialog.resources

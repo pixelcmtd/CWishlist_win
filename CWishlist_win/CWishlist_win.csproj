@@ -93,6 +93,12 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="LanguageProvider.cs" />
+    <Compile Include="LanguageSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LanguageSelectionDialog.Designer.cs">
+      <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Parsing.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
@@ -101,6 +107,9 @@
     <Compile Include="WL.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LanguageSelectionDialog.resx">
+      <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
