@@ -2,15 +2,12 @@
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace CWishlist_win
 {
@@ -62,9 +59,9 @@ namespace CWishlist_win
                 LanguageProvider.load_lang_xml(f);
 
             if (File.Exists(appdir + "\\recent.cwls"))
-                load_recent();
+                IO.load_recent(appdir + "\\recent.cwls");
             else
-                write_recent();
+                IO.write_recent(appdir + "\\recent.cwls", recents);
 
             if (!File.Exists(appdir + "\\RESTORE_BACKUP"))
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
@@ -134,46 +131,6 @@ namespace CWishlist_win
             GC.Collect();
         }
 
-        void write_recent()
-        {
-            string recentFile = appdir + "\\recent.cwls";
-            string tempVer = Path.GetTempFileName();
-            string tempRec = Path.GetTempFileName();
-            StringBuilder sb = new StringBuilder("<rc>");
-            foreach (string r in recents)
-                sb.Append(string.Format("<r f=\"{0}\" />", Convert.ToBase64String(Encoding.UTF32.GetBytes(r))));
-            sb.Append("</rc>");
-            File.WriteAllText(tempRec, sb.ToString());
-            File.WriteAllBytes(tempVer, new byte[] { 0x01 });
-            if (File.Exists(recentFile))
-                File.Delete(recentFile);
-            ZipArchive zip = ZipFile.Open(recentFile, ZipArchiveMode.Create, Encoding.ASCII);
-            zip.CreateEntryFromFile(tempVer, "V", CompressionLevel.Fastest);
-            zip.CreateEntryFromFile(tempRec, "R", CompressionLevel.Optimal);
-            zip.Dispose();
-        }
-
-        void load_recent()
-        {
-            string recentFile = appdir + "\\recent.cwls";
-            string tempVer = Path.GetTempFileName();
-            string tempRec = Path.GetTempFileName();
-            ZipArchive zip = ZipFile.Open(recentFile, ZipArchiveMode.Read, Encoding.ASCII);
-            zip.GetEntry("V").ExtractToFile(tempVer, true);
-            if (File.ReadAllBytes(tempVer)[0] > 0x01)
-                throw new TooNewRecentsFileException();
-            zip.GetEntry("R").ExtractToFile(tempRec, true);
-            zip.Dispose();
-            XmlReader xml = XmlReader.Create(tempRec);
-            List<string> rcwls = new List<string>();
-            while (xml.Read())
-                if (xml.NodeType == XmlNodeType.Element && xml.Name == "r")
-                    rcwls.Add(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("f"))));
-            xml.Close();
-            xml.Dispose();
-            recents = rcwls.ToArray();
-        }
-
         void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 			bool f = listBox1.SelectedIndex != -1;
@@ -189,7 +146,6 @@ namespace CWishlist_win
 				textBox1.Text = wl.items[listBox1.SelectedIndex].name;
                 textBox2.Text = wl.items[listBox1.SelectedIndex].url;
 			}
-            Invalidate();
         }
 
         void button3_Click(object sender, EventArgs e)
@@ -204,8 +160,6 @@ namespace CWishlist_win
 
         void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex == -1)
-                return;
             wl.items[listBox1.SelectedIndex].name = textBox1.Text;
             listBox1.Items[listBox1.SelectedIndex] = wl.items[listBox1.SelectedIndex].ToString();
             textBox1.Focus();
@@ -213,13 +167,7 @@ namespace CWishlist_win
             textBox1.SelectionLength = 0;
         }
 
-        void textBox2_TextChanged(object sender, EventArgs e)
-        {
-            if (listBox1.SelectedIndex == -1)
-                return;
-            wl.items[listBox1.SelectedIndex].url = textBox2.Text;
-            Invalidate();
-        }
+        void textBox2_TextChanged(object sender, EventArgs e) => wl.items[listBox1.SelectedIndex].url = textBox2.Text;
 
         void button4_Click(object sender, EventArgs e)
         {
@@ -275,9 +223,7 @@ namespace CWishlist_win
 
         void Form1_SizeChanged(object sender, EventArgs e)
         {
-			//yea, using a var should be faster than using a getter
             int w = Width, h = Height;
-            //default window: 427;508
             button1.Location = new Point(w - 271, h / 2 - 16 - 33);
             button2.Location = new Point(w - 271, h / 2 - 10);
             listBox1.Size = new Size(w - 289, h - 93);
@@ -302,7 +248,7 @@ namespace CWishlist_win
                 e.Cancel = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
             if(!e.Cancel)
             {
-                write_recent();
+                IO.write_recent(appdir + "\\recent.cwls", recents);
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
                 File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.code));
                 File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
@@ -485,19 +431,16 @@ namespace CWishlist_win
 
         void textBox3_TextChanged(object sender, EventArgs e)
         {
-            int i = wl.GetFirstIndex((it) => it.name.ToLower().Contains(textBox3.Text));
+            int i = wl.GetFirstIndex((it) => it.name.ToLower().Contains(textBox3.Text.ToLower()));
             if (i != -1)
                 listBox1.SelectedIndex = i;
-            textBox3.Focus();
-            textBox3.SelectionStart = textBox3.TextLength;
-            textBox3.SelectionLength = 0;
         }
 
         void textBox3_Click(object sender, EventArgs e)
         {
-            //textBox3.Focus();
-            //textBox3.SelectionStart = 0;
-            //textBox3.SelectionLength = textBox3.TextLength;
+            textBox3.Focus();
+            textBox3.SelectionStart = 0;
+            textBox3.SelectionLength = textBox3.TextLength;
         }
 
         uint stack_size

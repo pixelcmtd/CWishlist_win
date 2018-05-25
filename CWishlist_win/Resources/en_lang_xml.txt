@@ -2,6 +2,11 @@
 <lang code="en" name="english" />
 <translation name="misc.changelog" type="str_arr" value="CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
+Version 5.0.0:\
+-Language-files can now be created and put into this program.\
+-A little bug in the search function was fixed.\
+-The version 2 of the recent.cwls-standard is in da house! That means: The recently opened files are now saved more efficiently.\
+\
 Version 4.1.0:\
 -Many under-the-hood improvements\
 -A GitHub-repo (https://github.com/chrissxYT/CWishlist_win)\

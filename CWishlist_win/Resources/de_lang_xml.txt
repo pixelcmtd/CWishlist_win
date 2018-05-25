@@ -2,6 +2,11 @@
 <lang code="de" name="deutsch" />
 <translation name="misc.changelog" type="str_arr" value="CWishlist von chrissx bei chrissx Media Inc. Changelog:\
 \
+Version 5.0.0:\
+-Sprachdateien können jetzt erstellt und hinzugefügt werden.\
+-Ein kleiner Bug in der Suchfunktion wurde behoben(Großbuchstaben).\
+-Die Version 2 des recent.cwls-Standarts ist da! Heißt: Die zuletzt geöffneten Dateien werden jetzt besser gespeichert.\
+\
 Version 4.1.0:\
 -Sehr viele Under-The-Hood-Verbesserungen\
 -Ein GitHub-repository (https://github.com/chrissxYT/CWishlist_win)\

@@ -104,6 +104,60 @@ namespace CWishlist_win
             return new WL(items.ToArray());
         }
 
+        public static void write_recent(string file, string[] recents)
+        {
+            string xml = "<r>";
+            foreach (string r in recents)
+                xml += string.Format("<f f=\"{0}\">", r.xml_esc());
+            xml += "</r>";
+            if (File.Exists(file))
+                File.Delete(file);
+            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Create, Encoding.ASCII);
+            Stream s = zip.CreateEntry("V", CompressionLevel.Fastest).Open();
+            s.WriteByte(2);
+            s.Close();
+            s = zip.CreateEntry("R", CompressionLevel.Optimal).Open();
+            s.Write(Encoding.UTF8.GetBytes(xml), 0, xml.Length);
+            s.Close();
+            zip.Dispose();
+        }
+
+        public static string[] load_recent(string file)
+        {
+            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
+            Stream s = zip.GetEntry("V").Open();
+            int v = s.ReadByte();
+            s.Close();
+            if (v > 2)
+                throw new TooNewRecentsFileException();
+            else if(v == 1)
+            {
+                s = zip.GetEntry("R").Open();
+                XmlReader xml = XmlReader.Create(s);
+                List<string> rcwls = new List<string>();
+                while (xml.Read())
+                    if (xml.NodeType == XmlNodeType.Element && xml.Name == "r")
+                        rcwls.Add(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("f"))));
+                xml.Close();
+                xml.Dispose();
+                zip.Dispose();
+                return rcwls.ToArray();
+            }
+            else
+            {
+                s = zip.GetEntry("R").Open();
+                XmlReader xml = XmlReader.Create(s);
+                List<string> r = new List<string>();
+                while (xml.Read())
+                    if (xml.NodeType == XmlNodeType.Element && xml.Name == "f")
+                        r.Add(xml.GetAttribute(0));
+                xml.Close();
+                xml.Dispose();
+                zip.Dispose();
+                return r.ToArray();
+            }
+        }
+
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
 
         static string xml_esc(this string s) => s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
