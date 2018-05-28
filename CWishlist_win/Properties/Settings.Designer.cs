@@ -21,10 +21,7 @@ namespace CWishlist_win.Properties
 
         public static Settings Default
         {
-            get
-            {
-                return defaultInstance;
-            }
+            get => defaultInstance;
         }
     }
 }
