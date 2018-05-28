@@ -16,7 +16,6 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csproj
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csproj.CopyComplete
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.exe
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.pdb
-D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csprojResolveAssemblyReference.cache
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Release\Microsoft.VisualBasic.dll
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\bin\x64\Release\CWishlist_win.exe.config
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\bin\x64\Release\CWishlist_win.exe
@@ -39,3 +38,5 @@ C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CW
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.exe
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.pdb
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.LanguageSelectionDialog.resources
+D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.LanguageSelectionDialog.resources

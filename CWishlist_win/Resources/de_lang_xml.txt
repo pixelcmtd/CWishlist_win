@@ -2,6 +2,9 @@
 <lang code="de" name="deutsch" />
 <translation name="misc.changelog" type="str_arr" value="CWishlist von chrissx bei chrissx Media Inc. Changelog:\
 \
+Version 5.0.1:\
+-Hotfix für einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
+\
 Version 5.0.0:\
 -Sprachdateien können jetzt erstellt und hinzugefügt werden.\
 -Ein kleiner Bug in der Suchfunktion wurde behoben(Großbuchstaben).\

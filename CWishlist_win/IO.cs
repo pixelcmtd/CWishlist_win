@@ -108,7 +108,7 @@ namespace CWishlist_win
         {
             string xml = "<r>";
             foreach (string r in recents)
-                xml += string.Format("<f f=\"{0}\">", r.xml_esc());
+                xml += string.Format("<f f=\"{0}\" />", r.xml_esc());
             xml += "</r>";
             if (File.Exists(file))
                 File.Delete(file);

@@ -5,3 +5,10 @@ C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\fil
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.csproj.CoreCompileInputs.cache
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.exe
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.pdb
+D:\workspace_VS\CWishlist_win\file_replace\bin\x64\Release\file_replace.exe.config
+D:\workspace_VS\CWishlist_win\file_replace\bin\x64\Release\file_replace.exe
+D:\workspace_VS\CWishlist_win\file_replace\bin\x64\Release\file_replace.pdb
+D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.exe
+D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.pdb

@@ -59,7 +59,14 @@ namespace CWishlist_win
                 LanguageProvider.load_lang_xml(f);
 
             if (File.Exists(appdir + "\\recent.cwls"))
-                IO.load_recent(appdir + "\\recent.cwls");
+                try
+                {
+                    recents = IO.load_recent(appdir + "\\recent.cwls");
+                }
+                catch
+                {
+                    IO.write_recent(appdir + "\\recent.cwls", recents);
+                }
             else
                 IO.write_recent(appdir + "\\recent.cwls", recents);
 

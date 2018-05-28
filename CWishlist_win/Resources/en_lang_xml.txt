@@ -2,6 +2,9 @@
 <lang code="en" name="english" />
 <translation name="misc.changelog" type="str_arr" value="CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
+Version 5.0.1:\
+-Hotfix for broken and not loaded at all recents-files\
+\
 Version 5.0.0:\
 -Language-files can now be created and put into this program.\
 -A little bug in the search function was fixed.\
