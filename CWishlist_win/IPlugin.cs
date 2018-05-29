@@ -28,11 +28,18 @@ namespace CWishlist_win
 
     public interface IFormConstructListener
     {
-        void form_contruct();
+        /// <summary>
+        /// Called at the end of the constructor of the Form1
+        /// </summary>
+        void form_contruct(Form1 form);
     }
 
     public interface IPaintListener
     {
+        /// <summary>
+        /// Called in Form1's Paint-event
+        /// </summary>
+        /// <param name="e">The event-args</param>
         void paint(PaintEventArgs e);
     }
 }

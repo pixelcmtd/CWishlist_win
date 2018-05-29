@@ -10,7 +10,7 @@ namespace CWishlist_win
 {
     public class PluginManager : IConfigurationSectionHandler
     {
-        static string file_replace = "https://github.com/chrissxYT/CWishlist_win/raw/master/file_replace/bin/x64/Release/file_replace.exe";
+        static string file_replace = "https://github.com/chrissxYT/CWishlist_win/raw/master/file_replace/build/file_replace.exe";
         List<IPlugin> plugins = new List<IPlugin>();
         List<IFormConstructListener> form_construct_listeners = new List<IFormConstructListener>();
         List<IPaintListener> paint_listeners = new List<IPaintListener>();
@@ -26,10 +26,10 @@ namespace CWishlist_win
 
         public void register_paint_listener(IPaintListener listener) => paint_listeners.Add(listener);
 
-        public void call_form_construct_listeners()
+        public void call_form_construct_listeners(Form1 form)
         {
             foreach (IFormConstructListener l in form_construct_listeners)
-                l.form_contruct();
+                l.form_contruct(form);
         }
 
         public void call_paint_listeners(PaintEventArgs e)
