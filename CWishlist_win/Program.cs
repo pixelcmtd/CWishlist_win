@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Windows.Forms;
 
 namespace CWishlist_win
@@ -21,8 +22,10 @@ namespace CWishlist_win
             }
         }
 
-        public static string[] args = null;
+        public static string[] args { get; private set; } = null;
 
         public static Form1 form = null;
+
+        public static string appdata { get; } = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
     }
 }

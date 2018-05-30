@@ -1,6 +1,5 @@
 ﻿using CWishlist_win.Properties;
 using Microsoft.VisualBasic;
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,14 +12,14 @@ namespace CWishlist_win
 {
     public partial class Form1 : Form
     {
-        public PluginManager plugin_manager = new PluginManager();
+        public PluginManager plugin_manager { get; } = new PluginManager();
         public WL wl;
         public string current_file = "";
         public string[] recents = new string[0];
-        public readonly string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
-        public readonly string appdir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist";
-        public readonly string plugin_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\plugins";
-		public readonly string lang_dir = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString() + "\\CWishlist\\langs";
+        public string appdata { get; } = Program.appdata;
+        public string appdir { get; } = Program.appdata + "\\CWishlist";
+        public string plugin_dir { get; } = Program.appdata + "\\CWishlist\\plugins";
+		public string lang_dir { get; } = Program.appdata + "\\CWishlist\\langs";
 
         public Form1()
         {
@@ -94,6 +93,16 @@ namespace CWishlist_win
             if (File.Exists(appdir + "\\COLOR"))
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
+            foreach(string file in Directory.GetFiles(plugin_dir, "*.cs_cwl_plugin"))
+                try
+                {
+                    plugin_manager.load_plugins(file);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString(), $"Cannot load plugins from \"{file}\".");
+                }
+
             update_ui();
         }
 
@@ -115,7 +124,7 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("N/A"));
             for (int i = 0; i < wl; i++)
-                if (!wl[i].url.StartsWith("http://tinyurl.com") && IO.valid_url(wl[i].url))
+                if (!wl[i].url.StartsWith("http://tinyurl.com") && IO.valid_url(wl[i].url) && wl[i].url.Length > 25)
                     wl.items[i].url = IO.tinyurl_create(wl[i].url);
             int index = listBox1.SelectedIndex;
             listBox1.Items.Clear();

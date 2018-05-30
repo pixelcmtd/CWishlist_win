@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace CWishlist_win
 {
-    public class PluginManager : IConfigurationSectionHandler
+    public class PluginManager
     {
         static string file_replace = "https://github.com/chrissxYT/CWishlist_win/raw/master/file_replace/build/file_replace.exe";
         List<IPlugin> plugins = new List<IPlugin>();
@@ -38,17 +39,15 @@ namespace CWishlist_win
                 l.paint(e);
         }
 
-        public void load_plugin(string file)
+        public void load_plugins(string file)
         {
-
-        }
-
-        public object Create(object parent, object configContext, XmlNode section)
-        {
-            return null;
+            Assembly asm = Assembly.LoadFile(file);
+            foreach (Type t in asm.ExportedTypes)
+                if (typeof(IPlugin).IsAssignableFrom(t))
+                    plugins.Add((IPlugin)Activator.CreateInstance(t));
         }
 		
-		public void update_check(IPlugin plugin, string plugin_file)
+		public void update_check(IPlugin plugin)
 		{
 			try
 			{
@@ -67,7 +66,7 @@ namespace CWishlist_win
                 {
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
                     new WebClient().DownloadFile(file_replace, tmp);
-                    Process.Start(tmp, string.Format("{0} \"{1}\" \"{2}\"", dll_dl_url, plugin_file, Process.GetCurrentProcess().MainModule.FileName));
+                    Process.Start(tmp, $"{dll_dl_url} \"{plugin_files[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
                     Program.form.Close();
                 }
 			}
