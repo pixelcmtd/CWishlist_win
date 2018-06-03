@@ -169,28 +169,28 @@ namespace CWishlist_win
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.new_click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.open_click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.save_click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.save_as_click);
             // 
             // recentToolStripMenuItem
             // 
@@ -351,8 +351,8 @@ namespace CWishlist_win
             this.Controls.Add(this.menuStrip1);
             this.Name = "Form1";
             this.Text = "CWishlist";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.closing);
+            this.SizeChanged += new System.EventHandler(this.size_change);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

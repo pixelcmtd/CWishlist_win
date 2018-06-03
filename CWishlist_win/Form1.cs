@@ -93,15 +93,15 @@ namespace CWishlist_win
             if (File.Exists(appdir + "\\COLOR"))
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
-            foreach(string file in Directory.GetFiles(plugin_dir, "*.cs_cwl_plugin"))
-                try
-                {
-                    plugin_manager.load_plugins(file);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString(), $"Cannot load plugins from \"{file}\".");
-                }
+            //foreach(string file in Directory.GetFiles(plugin_dir, "*.cs_cwl_plugin"))
+            //    try
+            //    {
+            //        plugin_manager.load_plugins(file);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        MessageBox.Show(e.ToString(), $"Cannot load plugins from \"{file}\".");
+            //    }
 
             update_ui();
         }
@@ -237,7 +237,7 @@ namespace CWishlist_win
             }
         }
 
-        void Form1_SizeChanged(object sender, EventArgs e)
+        void size_change(object sender, EventArgs e)
         {
             int w = Width, h = Height;
             button1.Location = new Point(w - 271, h / 2 - 16 - 33);
@@ -258,19 +258,21 @@ namespace CWishlist_win
             label2.Location = new Point(w - 271, 44);
         }
 
-        void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        void closing(object sender, FormClosingEventArgs e)
         {
-            if (wl != 0 && (current_file == "" || wl != IO.load(current_file)))
-                e.Cancel = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
-            if(!e.Cancel)
+            if ((wl != 0 && current_file == "") || wl != IO.load(current_file))
             {
-                IO.write_recent(appdir + "\\recent.cwls", recents);
-                File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-                File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.code));
-                File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
-                File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
-                File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
+                bool flag = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
+                e.Cancel = flag;
+                if (flag)
+                    return;
             }
+            IO.write_recent(appdir + "\\recent.cwls", recents);
+            File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
+            File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.code));
+            File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
+            File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
+            File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
         }
 
         void add_recent_item(string file)
@@ -284,9 +286,9 @@ namespace CWishlist_win
                 recents[i + 1] = old[i];
         }
 
-        void newToolStripMenuItem_Click(object sender, EventArgs e)
+        void new_click(object sender, EventArgs e)
         {
-            if (wl != 0 && (current_file == "" || wl != IO.load(current_file)))
+            if ((wl != 0 && current_file == "") || wl != IO.load(current_file))
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.new"), LanguageProvider.get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             if (current_file != "")
@@ -300,7 +302,7 @@ namespace CWishlist_win
             catch { }
         }
 
-        void openToolStripMenuItem_Click(object sender, EventArgs e)
+        void open_click(object sender, EventArgs e)
         {
             if (((current_file == "" && wl != 0) || wl != IO.load(current_file)))
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.open"), LanguageProvider.get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
@@ -329,26 +331,26 @@ namespace CWishlist_win
             }
         }
 
-        void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        void save_click(object sender, EventArgs e)
         {
-            if(current_file == "")
+            if (current_file == "")
+                save_as_click(sender, e);
+            else
             {
-                saveAsToolStripMenuItem_Click(sender, e);
-                return;
+                if (current_file[current_file.Length - 1] != 'u')
+                    if (current_file[current_file.Length - 1] == 'l')
+                        current_file += 'u';
+                    else
+                    {
+                        char[] c = current_file.ToCharArray();
+                        c[current_file.Length - 1] = 'u';
+                        current_file = new string(c);
+                    }
+                IO.save_cwlu(wl, current_file);
             }
-            if (current_file[current_file.Length - 1] != 'u')
-                if (current_file[current_file.Length - 1] == 'l')
-                    current_file += 'u';
-                else
-                {
-                    char[] chrs;
-                    (chrs = current_file.ToCharArray())[current_file.Length - 1] = 'u';
-                    current_file = new string(chrs);
-                }
-            IO.save_cwlu(wl, current_file);
         }
 
-        void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        void save_as_click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog()
             {
@@ -370,13 +372,13 @@ namespace CWishlist_win
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.S))
-                saveToolStripMenuItem_Click(keyData, null);
+                save_click(keyData, null);
             else if (keyData == (Keys.Control | Keys.Shift | Keys.S))
-                saveAsToolStripMenuItem_Click(keyData, null);
+                save_as_click(keyData, null);
             else if (keyData == (Keys.Control | Keys.O))
-                openToolStripMenuItem_Click(keyData, null);
+                open_click(keyData, null);
             else if (keyData == (Keys.Control | Keys.N))
-                newToolStripMenuItem_Click(keyData, null);
+                new_click(keyData, null);
             else if (keyData == Keys.Up && listBox1.SelectedIndex > -1)
                 listBox1.SelectedIndex--;
             else if (keyData == Keys.Down && listBox1.SelectedIndex + 1 < listBox1.Items.Count)
