@@ -44,15 +44,14 @@ namespace CWishlist_win
             if (!Directory.Exists(lang_dir))
                 Directory.CreateDirectory(lang_dir);
 
-            MD5 md5 = new MD5CryptoServiceProvider();
+            using (MD5 md5 = new MD5CryptoServiceProvider())
+            {
+                if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
+                    File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
 
-            if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
-                File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
-
-            if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
-                File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
-
-            md5.Dispose();
+                if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
+                    File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
+            }
 
             foreach (string f in Directory.GetFiles(lang_dir))
                 LanguageProvider.load_lang_xml(f);
@@ -147,7 +146,7 @@ namespace CWishlist_win
             GC.Collect();
         }
 
-        void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        void lstbx_index_change(object sender, EventArgs e)
         {
 			bool f = listBox1.SelectedIndex != -1;
             textBox1.Visible = f;
@@ -164,7 +163,7 @@ namespace CWishlist_win
 			}
         }
 
-        void button3_Click(object sender, EventArgs e)
+        void btn3_click(object sender, EventArgs e)
         {
             Item[] old = wl.items;
             wl.items = new Item[old.Length+1];
@@ -174,7 +173,7 @@ namespace CWishlist_win
             update_ui();
         }
 
-        void textBox1_TextChanged(object sender, EventArgs e)
+        void txtbx1_change(object sender, EventArgs e)
         {
             wl.items[listBox1.SelectedIndex].name = textBox1.Text;
             listBox1.Items[listBox1.SelectedIndex] = wl.items[listBox1.SelectedIndex].ToString();
@@ -183,9 +182,9 @@ namespace CWishlist_win
             textBox1.SelectionLength = 0;
         }
 
-        void textBox2_TextChanged(object sender, EventArgs e) => wl.items[listBox1.SelectedIndex].url = textBox2.Text;
+        void txtbx2_change(object sender, EventArgs e) => wl.items[listBox1.SelectedIndex].url = textBox2.Text;
 
-        void button4_Click(object sender, EventArgs e)
+        void btn4_click(object sender, EventArgs e)
         {
             if (Clipboard.ContainsText())
                 for (uint i = 0; i < uint.MaxValue; i++)
@@ -197,7 +196,7 @@ namespace CWishlist_win
                     catch { }
         }
 
-        void button5_Click(object sender, EventArgs e)
+        void btn5_click(object sender, EventArgs e)
         {
             if(Clipboard.ContainsText())
                 for(uint i = 0; i < uint.MaxValue; i++)
@@ -209,7 +208,7 @@ namespace CWishlist_win
                     catch { }
         }
 
-        void button6_Click(object sender, EventArgs e)
+        void btn6_click(object sender, EventArgs e)
         {
             if (listBox1.SelectedIndex == -1)
                 return;
@@ -217,7 +216,7 @@ namespace CWishlist_win
             Process.Start(url.StartsWith("http") ? url : "http://" + url);
         }
 
-        void button7_Click(object sender, EventArgs e)
+        void btn7_click(object sender, EventArgs e)
         {
             if (listBox1.SelectedIndex == -1)
                 return;
@@ -275,7 +274,7 @@ namespace CWishlist_win
             File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
         }
 
-        void add_recent_item(string file)
+        public void add_recent_item(string file)
         {
             if (recents.Length != 0 && recents[0] == file)
                 return;
@@ -388,7 +387,7 @@ namespace CWishlist_win
             return true;
         }
 
-        void button1_Click(object sender, EventArgs e)
+        void btn1_click(object sender, EventArgs e)
         {
             if (listBox1.SelectedIndex == -1 || listBox1.SelectedIndex == 0)
                 return;
@@ -406,7 +405,7 @@ namespace CWishlist_win
             listBox1.SelectedIndex = index - 1;
         }
 
-        void button2_Click(object sender, EventArgs e)
+        void btn2_click(object sender, EventArgs e)
         {
             if (listBox1.SelectedIndex == -1 || listBox1.SelectedIndex == listBox1.Items.Count - 1)
                 return;
@@ -424,44 +423,44 @@ namespace CWishlist_win
             listBox1.SelectedIndex = index + 1;
         }
 
-        void button8_Click(object sender, EventArgs e)
+        void btn8_click(object sender, EventArgs e)
         {
             foreach(Item i in wl)
                 Process.Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
         }
 
-        void changelogToolStripMenuItem_Click(object sender, EventArgs e)
+        void chnglg_click(object sender, EventArgs e)
         {
             string tmp = Path.GetTempFileName();
             File.WriteAllLines(tmp, LanguageProvider.get_translated("misc.changelog"));
             Process.Start("notepad", tmp);
         }
 
-        void versionToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
+        void version_click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
 
-        void button9_Click(object sender, EventArgs e)
+        void btn9_click(object sender, EventArgs e)
         {
             wl.items = MergeSorting.MergeSort(wl.items);
             update_ui();
         }
 
-        void languageToolStripMenuItem_Click(object sender, EventArgs e) => new LanguageSelectionDialog(LanguageProvider.get_translated("title.switch_lang")).ShowDialog();
+        void lang_click(object sender, EventArgs e) => new LanguageSelectionDialog(LanguageProvider.get_translated("title.switch_lang")).ShowDialog();
 
-        void textBox3_TextChanged(object sender, EventArgs e)
+        void txtbx3_change(object sender, EventArgs e)
         {
             int i = wl.GetFirstIndex((it) => it.name.ToLower().Contains(textBox3.Text.ToLower()));
             if (i != -1)
                 listBox1.SelectedIndex = i;
         }
 
-        void textBox3_Click(object sender, EventArgs e)
+        void txtbx3_click(object sender, EventArgs e)
         {
             textBox3.Focus();
             textBox3.SelectionStart = 0;
             textBox3.SelectionLength = textBox3.TextLength;
         }
 
-        uint stack_size
+        public uint stack_size
         {
             get
             {
@@ -472,11 +471,13 @@ namespace CWishlist_win
             }
         }
 
-        void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
+        public void set_color(string hex) => set_color(Convert.ToByte(hex.Substring(0, 2), 16), Convert.ToByte(hex.Substring(2, 2), 16), Convert.ToByte(hex.Substring(4, 2), 16));
 
-        void set_color(int argb) => set_color(Color.FromArgb(argb));
+        public void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
+
+        public void set_color(int argb) => set_color(Color.FromArgb(argb));
 		
-		void set_color(Color c)
+		public void set_color(Color c)
 		{
 			BackColor = c;
             listBox1.BackColor = c;
@@ -495,12 +496,11 @@ namespace CWishlist_win
             menuStrip1.BackColor = c;
 		}
 
-        void styleBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        void style_click(object sender, EventArgs e)
         {
             try
             {
-                string hex = Interaction.InputBox("Please enter a hex value:", "background color hex", "FFFFFF");
-                set_color(Convert.ToByte(hex.Substring(0, 2), 16), Convert.ToByte(hex.Substring(2, 2), 16), Convert.ToByte(hex.Substring(4, 2), 16));
+                set_color(Interaction.InputBox("Please enter a hex value:", "background color hex", "FFFFFF"));
             }
             catch (Exception e1)
             {
@@ -508,8 +508,8 @@ namespace CWishlist_win
             }
         }
         
-        void openPluginDirToolStripMenuItem_Click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
+        void plugindir_click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
 
-        void Form1_Paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
+        void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
     }
 }

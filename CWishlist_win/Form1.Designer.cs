@@ -58,7 +58,7 @@ namespace CWishlist_win
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(138, 407);
             this.listBox1.TabIndex = 0;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.lstbx_index_change);
             // 
             // label1
             // 
@@ -86,7 +86,7 @@ namespace CWishlist_win
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(141, 20);
             this.textBox2.TabIndex = 4;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.textBox2.TextChanged += new System.EventHandler(this.txtbx2_change);
             // 
             // button3
             // 
@@ -96,7 +96,7 @@ namespace CWishlist_win
             this.button3.TabIndex = 7;
             this.button3.Text = "Add item";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.btn3_click);
             // 
             // button4
             // 
@@ -106,7 +106,7 @@ namespace CWishlist_win
             this.button4.TabIndex = 8;
             this.button4.Text = "Paste";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.btn4_click);
             // 
             // button5
             // 
@@ -116,7 +116,7 @@ namespace CWishlist_win
             this.button5.TabIndex = 9;
             this.button5.Text = "Paste";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button5.Click += new System.EventHandler(this.btn5_click);
             // 
             // button6
             // 
@@ -126,7 +126,7 @@ namespace CWishlist_win
             this.button6.TabIndex = 10;
             this.button6.Text = "Open";
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button6.Click += new System.EventHandler(this.btn6_click);
             // 
             // button7
             // 
@@ -136,7 +136,7 @@ namespace CWishlist_win
             this.button7.TabIndex = 11;
             this.button7.Text = "Remove item";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button7.Click += new System.EventHandler(this.btn7_click);
             // 
             // menuStrip1
             // 
@@ -219,15 +219,15 @@ namespace CWishlist_win
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.versionToolStripMenuItem.Text = "Version: 5.0.1";
-            this.versionToolStripMenuItem.Click += new System.EventHandler(this.versionToolStripMenuItem_Click);
+            this.versionToolStripMenuItem.Text = "Version: 5.1.0";
+            this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
             this.changelogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.changelogToolStripMenuItem.Text = "Changelog";
-            this.changelogToolStripMenuItem.Click += new System.EventHandler(this.changelogToolStripMenuItem_Click);
+            this.changelogToolStripMenuItem.Click += new System.EventHandler(this.chnglg_click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -243,14 +243,14 @@ namespace CWishlist_win
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
             this.languageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.languageToolStripMenuItem.Text = "Language";
-            this.languageToolStripMenuItem.Click += new System.EventHandler(this.languageToolStripMenuItem_Click);
+            this.languageToolStripMenuItem.Click += new System.EventHandler(this.lang_click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
             this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
-            this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.styleBackgroundColorToolStripMenuItem_Click);
+            this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.style_click);
             // 
             // extraToolStripMenuItem
             // 
@@ -265,7 +265,7 @@ namespace CWishlist_win
             this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
             this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
-            this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.openPluginDirToolStripMenuItem_Click);
+            this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.plugindir_click);
             // 
             // button1
             // 
@@ -276,7 +276,7 @@ namespace CWishlist_win
             this.button1.TabIndex = 13;
             this.button1.Text = "↑";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.btn1_click);
             // 
             // button2
             // 
@@ -287,7 +287,7 @@ namespace CWishlist_win
             this.button2.TabIndex = 14;
             this.button2.Text = "↓";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.btn2_click);
             // 
             // textBox1
             // 
@@ -295,7 +295,7 @@ namespace CWishlist_win
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(141, 20);
             this.textBox1.TabIndex = 0;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox1.TextChanged += new System.EventHandler(this.txtbx1_change);
             // 
             // button8
             // 
@@ -305,7 +305,7 @@ namespace CWishlist_win
             this.button8.TabIndex = 15;
             this.button8.Text = "Open all";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button8.Click += new System.EventHandler(this.btn8_click);
             // 
             // button9
             // 
@@ -315,7 +315,7 @@ namespace CWishlist_win
             this.button9.TabIndex = 16;
             this.button9.Text = "Sort";
             this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.button9.Click += new System.EventHandler(this.btn9_click);
             // 
             // textBox3
             // 
@@ -325,8 +325,8 @@ namespace CWishlist_win
             this.textBox3.Size = new System.Drawing.Size(138, 20);
             this.textBox3.TabIndex = 17;
             this.textBox3.Text = "search...";
-            this.textBox3.Click += new System.EventHandler(this.textBox3_Click);
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.textBox3.Click += new System.EventHandler(this.txtbx3_click);
+            this.textBox3.TextChanged += new System.EventHandler(this.txtbx3_change);
             // 
             // Form1
             // 
@@ -353,7 +353,7 @@ namespace CWishlist_win
             this.Text = "CWishlist";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.closing);
             this.SizeChanged += new System.EventHandler(this.size_change);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
