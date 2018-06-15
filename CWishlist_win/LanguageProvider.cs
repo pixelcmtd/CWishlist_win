@@ -29,29 +29,29 @@ namespace CWishlist_win
                     dynamic value = -1;
                     switch (type)
                     {
-                        case "str_arr": value = val.Split(new char[] { '\\' }); break;
+                        case "str_arr": value = val.Split('\\'); break;
                         case "str": value = val; break;
-                        case "int_arr": value = val.Split(new char[] { '\\' }).parse_int(); break;
+                        case "int_arr": value = val.Split('\\').parse_ints(); break;
                         case "int": value = int.Parse(val); break;
-                        case "uint_arr": value = val.Split(new char[] { '\\' }).parse_uint(); break;
+                        case "uint_arr": value = val.Split('\\').parse_uints(); break;
                         case "uint": value = uint.Parse(val); break;
-                        case "short_arr": value = val.Split(new char[] { '\\' }).parse_short(); break;
+                        case "short_arr": value = val.Split('\\').parse_shorts(); break;
                         case "short": value = short.Parse(val); break;
-                        case "ushort_arr": value = val.Split(new char[] { '\\' }).parse_ushort(); break;
+                        case "ushort_arr": value = val.Split('\\').parse_ushorts(); break;
                         case "ushort": value = ushort.Parse(val); break;
-                        case "long_arr": value = val.Split(new char[] { '\\' }).parse_long(); break;
+                        case "long_arr": value = val.Split('\\').parse_longs(); break;
                         case "long": value = long.Parse(val); break;
-                        case "ulong_arr": value = val.Split(new char[] { '\\' }).parse_ulong(); break;
+                        case "ulong_arr": value = val.Split('\\').parse_ulongs(); break;
                         case "ulong": value = ulong.Parse(val); break;
-                        case "byte_arr": value = val.Split(new char[] { '\\' }).parse_byte(); break;
+                        case "byte_arr": value = val.Split('\\').parse_bytes(); break;
                         case "byte": value = byte.Parse(val); break;
-                        case "sbyte_arr": value = val.Split(new char[] { '\\' }).parse_sbyte(); break;
+                        case "sbyte_arr": value = val.Split('\\').parse_sbytes(); break;
                         case "sbyte": value = sbyte.Parse(val); break;
-                        case "decimal_arr": value = val.Split(new char[] { '\\' }).parse_decimal(); break;
+                        case "decimal_arr": value = val.Split('\\').parse_decimals(); break;
                         case "decimal": value = decimal.Parse(val); break;
-                        case "bool_arr": value = val.Split(new char[] { '\\' }).parse_bool(); break;
+                        case "bool_arr": value = val.Split('\\').parse_bools(); break;
                         case "bool": value = bool.Parse(val); break;
-                        case "char_arr": value = val.Split(new char[] { '\\' }).parse_char(); break;
+                        case "char_arr": value = val.Split('\\').parse_chars(); break;
                         case "char": value = char.Parse(val); break;
                         default: value = -1; break;
                     }
@@ -78,7 +78,7 @@ namespace CWishlist_win
         {
             unchecked
             {
-                return 0x505534FA * -0x5AAAAAD7 + EqualityComparer<string>.Default.GetHashCode(code);
+                return 0x505534FA * -0x5AAAAAD7 + code.GetHashCode();
             }
         }
     }
