@@ -75,12 +75,6 @@ namespace CWishlist_win
 
         public override bool Equals(object obj) => obj is lang ? code == ((lang)obj).code && name == ((lang)obj).name : false;
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return 0x505534FA * -0x5AAAAAD7 + code.GetHashCode();
-            }
-        }
+        public override int GetHashCode() => code.GetHashCode();
     }
 }
