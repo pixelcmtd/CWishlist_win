@@ -512,5 +512,7 @@ namespace CWishlist_win
         void plugindir_click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
 
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
+
+        void experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click(object sender, EventArgs e) => IO.experimental_save(wl, "test.cwlc");
     }
 }

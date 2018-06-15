@@ -10,7 +10,7 @@ namespace CWishlist_win
 {
     static class IO
     {
-        public delegate void wl_save(WL wl, string file);
+        delegate void wl_save(WL wl, string file);
 
         public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
 
@@ -18,9 +18,27 @@ namespace CWishlist_win
 
         public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
 
-        public static void new_save(WL wl, string file)
+        public static void experimental_save(WL wl, string file)
         {
-
+            byte[] h = new byte[8] { 67, 87, 76, 67, 13, 10, 26, 10 }; //C W L C CR LF EOF LF
+            List<byte> u = new List<byte>(new byte[2] { 4, 1 }); //<F> <V>
+            foreach (Item i in wl)
+            {
+                u.AddRange(Encoding.Unicode.GetBytes(i.name));
+                u.Add(10);
+                u.Add(13);
+                u.AddRange(Encoding.Unicode.GetBytes(i.url));
+                u.Add(10);
+                u.Add(13);
+            }
+            u[u.Count - 1] = 26;
+            u[u.Count - 2] = 26;
+            byte[] c = Deflate.compress(u.ToArray());
+            Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
+            s.Write(h, 0, 8);
+            s.Write(c, 0, c.Length);
+            s.Close();
+            s.Dispose();
         }
 
         public static void cwlu_save(WL wl, string file)

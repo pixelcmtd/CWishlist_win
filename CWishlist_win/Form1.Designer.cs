@@ -48,6 +48,7 @@ namespace CWishlist_win
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -218,14 +219,14 @@ namespace CWishlist_win
             // versionToolStripMenuItem
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.versionToolStripMenuItem.Text = "Version: 5.1.0";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
-            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.changelogToolStripMenuItem.Text = "Changelog";
             this.changelogToolStripMenuItem.Click += new System.EventHandler(this.chnglg_click);
             // 
@@ -255,7 +256,8 @@ namespace CWishlist_win
             // extraToolStripMenuItem
             // 
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openPluginDirToolStripMenuItem});
+            this.openPluginDirToolStripMenuItem,
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.extraToolStripMenuItem.Text = "Extra";
@@ -263,7 +265,7 @@ namespace CWishlist_win
             // openPluginDirToolStripMenuItem
             // 
             this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
-            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
             this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
             this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.plugindir_click);
             // 
@@ -327,6 +329,13 @@ namespace CWishlist_win
             this.textBox3.Text = "search...";
             this.textBox3.Click += new System.EventHandler(this.txtbx3_click);
             this.textBox3.TextChanged += new System.EventHandler(this.txtbx3_change);
+            // 
+            // experimentalBetaTestingStuffDONTPRESSToolStripMenuItem
+            // 
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Name = "experimentalBetaTestingStuffDONTPRESSToolStripMenuItem";
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Text = "Experimental Beta Testing Stuff (DONT PRESS)";
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Click += new System.EventHandler(this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -392,6 +401,7 @@ namespace CWishlist_win
         private TextBox textBox3;
         private ToolStripMenuItem styleBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem openPluginDirToolStripMenuItem;
+        private ToolStripMenuItem experimentalBetaTestingStuffDONTPRESSToolStripMenuItem;
     }
 }
 
