@@ -1,6 +1,6 @@
 <cwl_lang>
-<lang code="en" name="english" />
-<translation name="misc.changelog" type="str_arr" value="CWishlist by chrissx @ chrissx Media Inc. Changelog:\
+	<lang code="en" name="english" />
+	<translation name="misc.changelog" type="str_arr" value=" CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
 Version 5.0.1:\
 -Hotfix for broken and not loaded at all recents-files\
@@ -46,15 +46,15 @@ Version 2.3.2:\
 Version 2.3.1:\
 -Added this wonderful changelog\
 -Fixed deadly bug in the recents-file" />
-<translation name="prompt.restore_backup" type="str" value="The program was exited unexpectedly the last time, do you want to restore the backup?" />
-<translation name="caption.restore_backup" type="str" value="Ya really want 2 losé?" />
-<translation name="prompt.close" type="str" value="All your unsaved changes will be deleted, do you really want to close?" />
-<translation name="caption.close" type="str" value="Ya really want 2 closé?" />
-<translation name="prompt.new" type="str" value="All your unsaved changes will be deleted, do you really want to create a new file without saving?" />
-<translation name="caption.new" type="str" value="Ya really want 2 deleté?" />
-<translation name="prompt.open" type="str" value="All your unsaved changes will be deleted, do you really want to load another file without saving?" />
-<translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
-<translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
-<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
-<translation name="title.switch_lang" type="str" value="Please select your language." />
+	<translation name="prompt.restore_backup" type="str" value="The program was exited unexpectedly the last time, do you want to restore the backup?" />
+	<translation name="caption.restore_backup" type="str" value="Ya really want 2 losé?" />
+	<translation name="prompt.close" type="str" value="All your unsaved changes will be deleted, do you really want to close?" />
+	<translation name="caption.close" type="str" value="Ya really want 2 closé?" />
+	<translation name="prompt.new" type="str" value="All your unsaved changes will be deleted, do you really want to create a new file without saving?" />
+	<translation name="caption.new" type="str" value="Ya really want 2 deleté?" />
+	<translation name="prompt.open" type="str" value="All your unsaved changes will be deleted, do you really want to load another file without saving?" />
+	<translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
+	<translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
+	<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
+	<translation name="title.switch_lang" type="str" value="Please select your language." />
 </cwl_lang>
