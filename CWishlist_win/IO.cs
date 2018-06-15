@@ -5,20 +5,25 @@ using System.Xml;
 using System.IO.Compression;
 using System;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace CWishlist_win
 {
     static class IO
     {
+        public delegate void wl_save(WL wl, string file);
+
         public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
 
         public static bool valid_url(string url) => Uri.TryCreate(url, UriKind.Absolute, out Uri u);
 
         public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
 
-        public static void save_cwlu(WL wl, string file)
+        public static void new_save(WL wl, string file)
+        {
+
+        }
+
+        public static void cwlu_save(WL wl, string file)
         {
             string xml = "<c>";
             foreach (Item i in wl)

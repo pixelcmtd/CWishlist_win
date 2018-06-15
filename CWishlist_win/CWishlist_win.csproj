@@ -145,5 +145,8 @@
   <ItemGroup>
     <None Include="Resources\de_lang_xml.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\file_replace.exe" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

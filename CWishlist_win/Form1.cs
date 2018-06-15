@@ -92,6 +92,7 @@ namespace CWishlist_win
             if (File.Exists(appdir + "\\COLOR"))
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
+            //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
             //foreach(string file in Directory.GetFiles(plugin_dir, "*.cs_cwl_plugin"))
             //    try
             //    {
@@ -136,7 +137,7 @@ namespace CWishlist_win
             button4.Visible = false;
             button5.Visible = false;
             button6.Visible = false;
-            IO.save_cwlu(wl, appdir + "\\backup.cwl");
+            IO.cwlu_save(wl, appdir + "\\backup.cwl");
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x01 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
@@ -345,7 +346,7 @@ namespace CWishlist_win
                         c[current_file.Length - 1] = 'u';
                         current_file = new string(c);
                     }
-                IO.save_cwlu(wl, current_file);
+                IO.cwlu_save(wl, current_file);
             }
         }
 
@@ -364,7 +365,7 @@ namespace CWishlist_win
             {
                 add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
-                IO.save_cwlu(wl, current_file);
+                IO.cwlu_save(wl, current_file);
             }
         }
 
