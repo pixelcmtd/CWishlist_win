@@ -10,6 +10,8 @@ namespace CWishlist_win
 {
     static class IO
     {
+        static byte[] cwlc_header { get; } = new byte[8] { 67, 87, 76, 67, 13, 10, 26, 10 }; //C W L C CR LF EOF LF
+
         delegate void wl_save(WL wl, string file);
 
         public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
@@ -20,8 +22,8 @@ namespace CWishlist_win
 
         public static void experimental_save(WL wl, string file)
         {
-            byte[] h = new byte[8] { 67, 87, 76, 67, 13, 10, 26, 10 }; //C W L C CR LF EOF LF
             List<byte> u = new List<byte>(new byte[2] { 4, 1 }); //<F> <V>
+
             foreach (Item i in wl)
             {
                 u.AddRange(Encoding.Unicode.GetBytes(i.name));
@@ -31,21 +33,48 @@ namespace CWishlist_win
                 u.Add(10);
                 u.Add(13);
             }
+
             u[u.Count - 1] = 26;
             u[u.Count - 2] = 26;
+
             byte[] c = Deflate.compress(u.ToArray());
             Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
-            s.Write(h, 0, 8);
+
+            s.Write(cwlc_header, 0, 8);
             s.Write(c, 0, c.Length);
+
             s.Close();
             s.Dispose();
+        }
+
+        public static WL experimental_load(string file)
+        {
+            byte[] h = new byte[8];
+            List<byte> cl = new List<byte>();
+            Stream s = File.Open(file, FileMode.Open, FileAccess.Read);
+            s.Read(h, 0, 8);
+            int i = -1;
+            while ((i = s.ReadByte()) != -1)
+                cl.Add((byte)i);
+            s.Close();
+            byte[] ct = cl.ToArray();
+            byte[] c = new byte[ct.Length - 2];
+            Array.Copy(ct, 2, c, 0, c.Length);
+            if (!h.arr_equal(cwlc_header))
+                throw new InvalidHeaderException("CWLC", cwlc_header, h);
+            if (ct[0] != 4 || ct[1] != 1)
+                throw new NotSupportedFileVersionException();
+            byte[] u = Deflate.decompress(c);
+
         }
 
         public static void cwlu_save(WL wl, string file)
         {
             string xml = "<c>";
+
             foreach (Item i in wl)
                 xml += string.Format("<i n=\"{0}\" u=\"{1}\" />", i.name.xml_esc(), i.url.xml_esc());
+
             xml += "</c>";
 
             if (File.Exists(file))
@@ -92,6 +121,7 @@ namespace CWishlist_win
             xml.Close();
             xml.Dispose();
             zip.Dispose();
+
             return new WL(itms.ToArray());
         }
 
@@ -184,6 +214,11 @@ namespace CWishlist_win
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
 
         static string xml_esc(this string s) => s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
+    }
+
+    class InvalidHeaderException : Exception
+    {
+        public InvalidHeaderException(string format, byte[] expected_header, byte[] invalid_header) : base($"This {format}-File's header is not correct, it's expected to be {expected_header.ToString(NumberFormat.HEX)} by the standard, but it's {invalid_header.ToString(NumberFormat.HEX)}.") { }
     }
 
     class NotSupportedFileVersionException : Exception

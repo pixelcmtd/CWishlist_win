@@ -46,10 +46,10 @@ namespace CWishlist_win
 
             using (MD5 md5 = new MD5CryptoServiceProvider())
             {
-                if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
+                if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).arr_equal(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
                     File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
 
-                if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).ArrayEquals(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
+                if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).arr_equal(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
                     File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
             }
 

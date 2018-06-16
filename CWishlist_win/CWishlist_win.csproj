@@ -102,6 +102,7 @@
     <Compile Include="LanguageSelectionDialog.Designer.cs">
       <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="NumberFormat.cs" />
     <Compile Include="Parsing.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
