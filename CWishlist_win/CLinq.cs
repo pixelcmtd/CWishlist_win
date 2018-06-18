@@ -17,10 +17,8 @@ namespace CWishlist_win
         {
             if (left.Length != right.Length)
                 return false;
-            if (left.GetType() != right.GetType())
-                return false;
             for (int i = 0; i < left.Length; i++)
-                if (left.GetValue(i) != right.GetValue(i))
+                if (!left.GetValue(i).Equals(right.GetValue(i)))
                     return false;
             return true;
         }
@@ -28,7 +26,7 @@ namespace CWishlist_win
         public static string ToString(this byte[] bytes, NumberFormat format)
         {
             string s = "";
-            string f = format == NumberFormat.DEC ? "D" : format == NumberFormat.HEX ? "X" : throw new NotSupportedNumberFormatException(format);
+            string f = format == NumberFormat.DEC ? "D" : format == NumberFormat.HEX ? "X2" : throw new NotSupportedNumberFormatException(format);
             foreach (byte b in bytes)
                 s += b.ToString(f);
             return s;

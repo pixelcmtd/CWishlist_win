@@ -514,5 +514,7 @@ namespace CWishlist_win
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
 
         void experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click(object sender, EventArgs e) => IO.experimental_save(wl, "test.cwlc");
+
+        void experimentalBetarTestingStuffDONTPRESSToolStripMenuItem_Click(object sender, EventArgs e) => wl = IO.experimental_load("test.cwlc");
     }
 }

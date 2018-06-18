@@ -83,6 +83,8 @@ namespace CWishlist_win
                 }
                 else
                     str += Encoding.Unicode.GetChars(new byte[] { u[i], u[i + 1] })[0];
+
+            return new WL(items.ToArray());
         }
 
         public static void cwlu_save(WL wl, string file)

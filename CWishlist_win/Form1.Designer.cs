@@ -42,13 +42,14 @@ namespace CWishlist_win
             this.styleBackgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -242,14 +243,14 @@ namespace CWishlist_win
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.lang_click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
-            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
             this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.style_click);
             // 
@@ -257,7 +258,8 @@ namespace CWishlist_win
             // 
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPluginDirToolStripMenuItem,
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem});
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem,
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.extraToolStripMenuItem.Text = "Extra";
@@ -265,9 +267,16 @@ namespace CWishlist_win
             // openPluginDirToolStripMenuItem
             // 
             this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
-            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
+            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
             this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.plugindir_click);
+            // 
+            // experimentalBetaTestingStuffDONTPRESSToolStripMenuItem
+            // 
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Name = "experimentalBetaTestingStuffDONTPRESSToolStripMenuItem";
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Text = "Experimental Beta \"w\" Testing Stuff (DONT PRESS)";
+            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Click += new System.EventHandler(this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click);
             // 
             // button1
             // 
@@ -330,12 +339,12 @@ namespace CWishlist_win
             this.textBox3.Click += new System.EventHandler(this.txtbx3_click);
             this.textBox3.TextChanged += new System.EventHandler(this.txtbx3_change);
             // 
-            // experimentalBetaTestingStuffDONTPRESSToolStripMenuItem
+            // experimentalBetarTestingStuffDONTPRESSToolStripMenuItem
             // 
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Name = "experimentalBetaTestingStuffDONTPRESSToolStripMenuItem";
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Size = new System.Drawing.Size(316, 22);
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Text = "Experimental Beta Testing Stuff (DONT PRESS)";
-            this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem.Click += new System.EventHandler(this.experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click);
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem.Name = "experimentalBetarTestingStuffDONTPRESSToolStripMenuItem";
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem.Text = "Experimental Beta \"r\" Testing Stuff (DONT PRESS)";
+            this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem.Click += new System.EventHandler(this.experimentalBetarTestingStuffDONTPRESSToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -402,6 +411,7 @@ namespace CWishlist_win
         private ToolStripMenuItem styleBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem openPluginDirToolStripMenuItem;
         private ToolStripMenuItem experimentalBetaTestingStuffDONTPRESSToolStripMenuItem;
+        private ToolStripMenuItem experimentalBetarTestingStuffDONTPRESSToolStripMenuItem;
     }
 }
 
