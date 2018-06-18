@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CWishlist_win.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +12,6 @@ namespace CWishlist_win
 {
     public class PluginManager
     {
-        static string file_replace = "https://github.com/chrissxYT/CWishlist_win/raw/master/file_replace/build/file_replace.exe";
         List<IPlugin> plugins = new List<IPlugin>();
         List<IFormConstructListener> form_construct_listeners = new List<IFormConstructListener>();
         List<IPaintListener> paint_listeners = new List<IPaintListener>();
@@ -44,7 +44,7 @@ namespace CWishlist_win
             Assembly asm = Assembly.LoadFile(file);
             foreach (Type t in asm.ExportedTypes)
                 if (typeof(IPlugin).IsAssignableFrom(t))
-                    plugins.Add((IPlugin)Activator.CreateInstance(t));
+                    register_plugin((IPlugin)Activator.CreateInstance(t), file);
         }
 		
 		public void update_check(IPlugin plugin)
@@ -65,9 +65,10 @@ namespace CWishlist_win
                 if(s_ver > c_ver)
                 {
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
-                    new WebClient().DownloadFile(file_replace, tmp);
+                    File.WriteAllBytes(tmp, Resources.file_replace);
                     Process.Start(tmp, $"{dll_dl_url} \"{plugin_files[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
                     Program.form.Close();
+                    Environment.Exit(0);
                 }
 			}
 			catch { }
