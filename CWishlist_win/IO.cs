@@ -22,7 +22,7 @@ namespace CWishlist_win
 
         public static void experimental_save(WL wl, string file)
         {
-            List<byte> u = new List<byte>(new byte[2] { 4, 1 }); //<F> <V>
+            List<byte> u = new List<byte>(); //<F> <V>
 
             foreach (Item i in wl)
             {
@@ -34,13 +34,11 @@ namespace CWishlist_win
                 u.Add(13);
             }
 
-            u[u.Count - 1] = 26;
-            u[u.Count - 2] = 26;
-
             byte[] c = Deflate.compress(u.ToArray());
             Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
 
             s.Write(cwlc_header, 0, 8);
+            s.Write(new byte[2] { 4, 1 }, 0, 2);
             s.Write(c, 0, c.Length);
 
             s.Close();
@@ -49,23 +47,42 @@ namespace CWishlist_win
 
         public static WL experimental_load(string file)
         {
+            byte[] raw = File.ReadAllBytes(file);
+
             byte[] h = new byte[8];
-            List<byte> cl = new List<byte>();
-            Stream s = File.Open(file, FileMode.Open, FileAccess.Read);
-            s.Read(h, 0, 8);
-            int i = -1;
-            while ((i = s.ReadByte()) != -1)
-                cl.Add((byte)i);
-            s.Close();
-            byte[] ct = cl.ToArray();
-            byte[] c = new byte[ct.Length - 2];
-            Array.Copy(ct, 2, c, 0, c.Length);
+            Array.Copy(raw, h, 8);
+
+            byte[] c = new byte[raw.Length - 10];
+            Array.Copy(raw, 10, c, 0, c.Length);
+
             if (!h.arr_equal(cwlc_header))
                 throw new InvalidHeaderException("CWLC", cwlc_header, h);
-            if (ct[0] != 4 || ct[1] != 1)
+
+            if (raw[8] != 4 || raw[9] != 1)
                 throw new NotSupportedFileVersionException();
+
             byte[] u = Deflate.decompress(c);
 
+            List<Item> items = new List<Item>();
+            string str = "";
+            bool nus = false;
+            Item itm = new Item();
+
+            for (int i = 0; i < u.Length; i++)
+                if (u[i] == 10 && u[i + 1] == 13)
+                {
+                    if (nus)
+                    {
+                        itm.url = str;
+                        items.Add(itm);
+                        itm = new Item();
+                    }
+                    else
+                        itm.name = str;
+                    nus = !nus;
+                }
+                else
+                    str += Encoding.Unicode.GetChars(new byte[] { u[i], u[i + 1] })[0];
         }
 
         public static void cwlu_save(WL wl, string file)
