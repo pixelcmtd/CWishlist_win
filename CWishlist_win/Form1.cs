@@ -44,6 +44,7 @@ namespace CWishlist_win
             if (!Directory.Exists(lang_dir))
                 Directory.CreateDirectory(lang_dir);
 
+            //using MD5 because we care about the files being equal or not equal, THIS IS NOT SECURITY so it's not designed to be secure, it just checks
             using (MD5 md5 = new MD5CryptoServiceProvider())
             {
                 if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).arr_equal(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
@@ -93,7 +94,7 @@ namespace CWishlist_win
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
             //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
-            //foreach(string file in Directory.GetFiles(plugin_dir, "*.cs_cwl_plugin"))
+            //foreach(string file in Directory.GetFiles(plugin_dir, "*.win_cs_cwl_plugin"))
             //    try
             //    {
             //        plugin_manager.load_plugins(file);
@@ -513,8 +514,10 @@ namespace CWishlist_win
 
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
 
-        void experimentalBetaTestingStuffDONTPRESSToolStripMenuItem_Click(object sender, EventArgs e) => IO.experimental_save(wl, "test.cwlc");
+        void beta_write_click(object sender, EventArgs e) => IO.experimental_save(wl, "test.cwlc");
 
-        void experimentalBetarTestingStuffDONTPRESSToolStripMenuItem_Click(object sender, EventArgs e) => wl = IO.experimental_load("test.cwlc");
+        void beta_read_click(object sender, EventArgs e) => wl = IO.experimental_load("test.cwlc");
+
+        void beta_update_click(object sender, EventArgs e) => update_ui();
     }
 }
