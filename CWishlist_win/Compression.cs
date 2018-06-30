@@ -10,7 +10,7 @@ namespace CWishlist_win
             MemoryStream s = new MemoryStream(b, false);
             MemoryStream d = new MemoryStream();
             DeflateStream ds = new DeflateStream(d, CompressionMode.Compress);
-            s.CopyTo(ds, short.MaxValue);
+            s.CopyTo(ds, 32767); //short.MaxValue
             ds.Close();
             s.Close();
             ds.Dispose();
@@ -23,8 +23,8 @@ namespace CWishlist_win
         {
             MemoryStream s = new MemoryStream(b, false);
             MemoryStream d = new MemoryStream();
-            DeflateStream ds = new DeflateStream(d, CompressionMode.Decompress);
-            s.CopyTo(ds, short.MaxValue);
+            DeflateStream ds = new DeflateStream(s, CompressionMode.Decompress);
+            ds.CopyTo(d, 32767); //short.MaxValue
             ds.Close();
             s.Close();
             ds.Dispose();
