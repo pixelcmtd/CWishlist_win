@@ -5,3 +5,6 @@ D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.csprojAs
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.exe
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Release\file_replace.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\file_replace.exe.config
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\file_replace.exe
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\file_replace.pdb

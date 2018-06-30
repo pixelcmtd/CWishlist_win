@@ -19,3 +19,15 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csproj
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.csproj.CopyComplete
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.exe
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\CWishlist_win.exe.config
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\CWishlist_win.exe
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\CWishlist_win.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\Microsoft.CSharp.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\Microsoft.VisualBasic.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.Data.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.Drawing.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.IO.Compression.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.IO.Compression.FileSystem.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.Windows.Forms.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\System.Xml.dll
