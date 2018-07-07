@@ -15,6 +15,7 @@ namespace CWishlist_win
         public PluginManager plugin_manager { get; } = new PluginManager();
         public WL wl;
         public string current_file = "";
+        public WL loaded_wl = default;
         public string[] recents = new string[0];
         public string appdata { get; } = Program.appdata;
         public string appdir { get; } = Program.appdata + "\\CWishlist";
@@ -28,12 +29,9 @@ namespace CWishlist_win
             Program.form = this;
 
             if (Program.args.Length > 0)
-            {
-                wl = IO.load(Program.args[0]);
-                current_file = Program.args[0];
-            }
+                load_wl(Program.args[0]);
             else
-                wl = WL.New;
+                wl = WL.NEW;
 
             if (!Directory.Exists(appdir))
                 Directory.CreateDirectory(appdir);
@@ -116,8 +114,7 @@ namespace CWishlist_win
                     ToolStripMenuItem itm = new ToolStripMenuItem(r);
                     itm.Click += new EventHandler((sender, e) =>
                     {
-                        wl = IO.load(r);
-                        current_file = r;
+                        load_wl(r);
                         update_ui();
                     });
                     recentToolStripMenuItem.DropDownItems.Add(itm);
@@ -261,7 +258,7 @@ namespace CWishlist_win
 
         void closing(object sender, FormClosingEventArgs e)
         {
-            if ((wl != 0 && current_file == "") || wl != IO.load(current_file))
+            if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
             {
                 bool flag = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
                 e.Cancel = flag;
@@ -289,13 +286,16 @@ namespace CWishlist_win
 
         void new_click(object sender, EventArgs e)
         {
-            if ((wl != 0 && current_file == "") || wl != IO.load(current_file))
+            if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.new"), LanguageProvider.get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             if (current_file != "")
+            {
                 add_recent_item(current_file);
-            wl = WL.New;
-            current_file = "";
+                current_file = "";
+            }
+            wl = WL.NEW;
+            loaded_wl = WL.NEW;
             try
             {
                 update_ui();
@@ -305,7 +305,7 @@ namespace CWishlist_win
 
         void open_click(object sender, EventArgs e)
         {
-            if (((current_file == "" && wl != 0) || wl != IO.load(current_file)))
+            if ((current_file == "" && wl != 0) || (current_file != "" && wl != loaded_wl))
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.open"), LanguageProvider.get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             OpenFileDialog ofd = new OpenFileDialog()
@@ -466,10 +466,10 @@ namespace CWishlist_win
         {
             get
             {
-                uint stacksize = 0;
-                foreach (Item i in wl.items)
-                    stacksize += i;
-                return stacksize;
+                uint s = 0;
+                foreach (Item i in wl)
+                    s += i;
+                return s;
             }
         }
 
@@ -514,10 +514,17 @@ namespace CWishlist_win
 
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
 
-        void beta_write_click(object sender, EventArgs e) => IO.experimental_save(wl, "test.cwlc");
+        void beta_write_click(object sender, EventArgs e) => IO.cwld_save(wl, "test.cwlc");
 
-        void beta_read_click(object sender, EventArgs e) => wl = IO.experimental_load("test.cwlc");
+        void beta_read_click(object sender, EventArgs e) => wl = IO.cwld_load("test.cwlc");
 
         void beta_update_click(object sender, EventArgs e) => update_ui();
+
+        public void load_wl(string file)
+        {
+            wl = IO.load(file);
+            current_file = file;
+            loaded_wl = wl;
+        }
     }
 }

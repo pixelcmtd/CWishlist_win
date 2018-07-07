@@ -10,7 +10,7 @@ namespace CWishlist_win
 {
     static class IO
     {
-        static byte[] cwlc_header { get; } = new byte[8] { 67, 87, 76, 67, 13, 10, 26, 10 }; //C W L C CR LF EOF LF
+        static byte[] cwld_header { get; } = new byte[8] { 67, 87, 76, 68, 13, 10, 26, 10 }; //C W L D CR LF EOF LF
 
         delegate void wl_save(WL wl, string file);
 
@@ -20,9 +20,9 @@ namespace CWishlist_win
 
         public static bool valid_url(string url) => Uri.TryCreate(url, UriKind.Absolute, out Uri u);
 
-        public static WL load(string f) => f == "" ? WL.New : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
+        public static WL load(string f) => f == "" ? WL.NEW : ((f.cose(4, '.') && f.cose(3, 'c') && f.cose(2, 'w') && f.cose(1, 'l')) ? cwl_load(f) : f.cose(1, 'b') ? cwlb_load(f) : cwlu_load(f));
 
-        public static void experimental_save(WL wl, string file)
+        public static void cwld_save(WL wl, string file)
         {
             List<byte> u = new List<byte>();
 
@@ -39,7 +39,7 @@ namespace CWishlist_win
             byte[] c = Deflate.compress(u.ToArray());
             Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
 
-            s.write(cwlc_header);
+            s.write(cwld_header);
             s.write(4, 1);
             s.write(c);
 
@@ -47,7 +47,7 @@ namespace CWishlist_win
             s.Dispose();
         }
 
-        public static WL experimental_load(string file)
+        public static WL cwld_load(string file)
         {
             byte[] raw = File.ReadAllBytes(file);
 
@@ -57,8 +57,8 @@ namespace CWishlist_win
             byte[] c = new byte[raw.Length - 10];
             Array.Copy(raw, 10, c, 0, c.Length);
 
-            if (!h.arr_equal(cwlc_header))
-                throw new InvalidHeaderException("CWLC", cwlc_header, h);
+            if (!h.arr_equal(cwld_header))
+                throw new InvalidHeaderException("CWLD", cwld_header, h);
 
             if (raw[8] != 4 || raw[9] != 1)
                 throw new NotSupportedFileVersionException();
@@ -82,15 +82,18 @@ namespace CWishlist_win
                     else
                         itm.name = str;
                     nus = !nus;
+                    str = "";
                 }
                 else
-                    str += Encoding.Unicode.GetChars(new byte[] { u[i], u[i + 1] })[0];
+                    str += to_unicode(u[i], u[i + 1]);
 
             return new WL(items.ToArray());
         }
 
-        //Save func for the CWLU-format
-        //For information on the format check the load/read func
+        /// <summary>
+        /// Save func for the CWLU-format<para />
+        /// For information on the format check the load/read func
+        /// </summary>
         public static void cwlu_save(WL wl, string file)
         {
             string xml = "<c>";
@@ -112,10 +115,12 @@ namespace CWishlist_win
             zip.Dispose();
         }
 
-        //Read func for the CWLU-format
-        //Name: CWishlistUncde (UTF16/Unicode and no longer useless UTF32 in Base64)
-        //File version: 3 (saved, checked)
-        //Format versions: 1 (saved, checked)
+        /// <summary>
+        /// Read func for the CWLU-format<para />
+        /// Name: CWishlistUncde (UTF16/Unicode and no longer useless UTF32 in Base64)<para />
+        /// File version: 3 (saved, checked)<para />
+        /// Format versions: 1 (saved, checked)
+        /// </summary>
         static WL cwlu_load(string file)
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
@@ -144,10 +149,12 @@ namespace CWishlist_win
             return new WL(itms.ToArray());
         }
 
-        //Read func for the CWLB-format
-        //Name: CWishlistBase[64] (64 is not included in the name, but Base64 is the reason for the name)
-        //File version 2 (should be saved, not checked)
-        //Format versions: 1 (should be saved, not checked)
+        /// <summary>
+        /// Read func for the CWLB-format<para />
+        /// Name: CWishlistBase[64] (64 is not included in the name, but Base64 is the reason for the name)<para />
+        /// File version 2 (should be saved, not checked)<para />
+        /// Format versions: 1 (should be saved, not checked)
+        /// </summary>
         static WL cwlb_load(string file)
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
@@ -165,10 +172,12 @@ namespace CWishlist_win
             return new WL(items.ToArray());
         }
 
-        //Read func for the original CWL-format
-        //Name: CWishlist
-        //File version 1 (not saved)
-        //Format versions: 1 (not saved)
+        /// <summary>
+        /// Read func for the original CWL-format<para />
+        /// Name: CWishlist<para />
+        /// File version 1 (not saved)<para />
+        /// Format versions: 1 (not saved)
+        /// </summary>
         static WL cwl_load(string file)
         {
             string tmp = Path.GetTempFileName();
@@ -187,6 +196,10 @@ namespace CWishlist_win
             return new WL(items.ToArray());
         }
 
+        /// <summary>
+        /// Write func for the CWLS-format<para />
+        /// For information on the format check the load/read func
+        /// </summary>
         public static void write_recent(string file, string[] recents)
         {
             string xml = "<r>";
@@ -205,6 +218,12 @@ namespace CWishlist_win
             zip.Dispose();
         }
 
+        /// <summary>
+        /// Read func for the CWLS-format<para />
+        /// Name: CWishlists<para />
+        /// File version not set yet (not saved)<para />
+        /// Format versions: 1, 2
+        /// </summary>
         public static string[] load_recent(string file)
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
@@ -216,26 +235,26 @@ namespace CWishlist_win
             else if(v == 1)
             {
                 s = zip.GetEntry("R").Open();
-                XmlReader xml = XmlReader.Create(s);
-                List<string> rcwls = new List<string>();
-                while (xml.Read())
-                    if (xml.NodeType == XmlNodeType.Element && xml.Name == "r")
-                        rcwls.Add(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("f"))));
-                xml.Close();
-                xml.Dispose();
+                XmlReader x = XmlReader.Create(s);
+                List<string> r = new List<string>();
+                while (x.Read())
+                    if (x.Name == "r")
+                        r.Add(Encoding.UTF32.GetString(Convert.FromBase64String(x.GetAttribute("f"))));
+                x.Close();
+                x.Dispose();
                 zip.Dispose();
-                return rcwls.ToArray();
+                return r.ToArray();
             }
             else
             {
                 s = zip.GetEntry("R").Open();
-                XmlReader xml = XmlReader.Create(s);
+                XmlReader x = XmlReader.Create(s);
                 List<string> r = new List<string>();
-                while (xml.Read())
-                    if (xml.NodeType == XmlNodeType.Element && xml.Name == "f")
-                        r.Add(xml.GetAttribute(0));
-                xml.Close();
-                xml.Dispose();
+                while (x.Read())
+                    if (x.Name == "f")
+                        r.Add(x.GetAttribute(0));
+                x.Close();
+                x.Dispose();
                 zip.Dispose();
                 return r.ToArray();
             }
@@ -245,23 +264,25 @@ namespace CWishlist_win
 
         static string xml_esc(this string s) => s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-        static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl)
+        static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
         {
             Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();
-            s.Write(contents, 0, contents.Length);
+            s.write(contents);
             s.Close();
             s.Dispose();
         }
 
-        static void add_entry(this ZipArchive zip, string entry_name, byte content, CompressionLevel comp_lvl)
+        static void add_entry(this ZipArchive zip, string entry_name, byte content, CompressionLevel comp_lvl = CompressionLevel.Fastest)
         {
             Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();
-            s.Write(new byte[] { content }, 0, 1);
+            s.write(content);
             s.Close();
             s.Dispose();
         }
 
         static void write(this Stream s, params byte[] b) => s.Write(b, 0, b.Length);
+
+        static char to_unicode(byte one, byte two) => Encoding.Unicode.GetChars(new byte[] { one, two })[0];
     }
 
     class InvalidHeaderException : Exception

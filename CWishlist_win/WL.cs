@@ -9,10 +9,7 @@ namespace CWishlist_win
 
         public Item[] items;
 
-        public static WL New
-        {
-            get => new WL(new Item[0]);
-        }
+        public static WL NEW { get; } = new WL(new Item[0]);
 
         public static bool operator ==(WL first, WL second)
         {
