@@ -15,7 +15,7 @@ namespace CWishlist_win
         public PluginManager plugin_manager { get; } = new PluginManager();
         public WL wl;
         public string current_file = "";
-        public WL loaded_wl = default;
+        public WL loaded_wl = WL.NEW;
         public string[] recents = new string[0];
         public string appdata { get; } = Program.appdata;
         public string appdir { get; } = Program.appdata + "\\CWishlist";
@@ -99,7 +99,7 @@ namespace CWishlist_win
             //    }
             //    catch (Exception e)
             //    {
-            //        MessageBox.Show(e.ToString(), $"Cannot load plugins from \"{file}\".");
+            //        MessageBox.Show(e.ToString(), $"Cannot load plugins from {file}.");
             //    }
 
             update_ui();
