@@ -8,3 +8,6 @@ D:\workspace_VS\CWishlist_win\file_replace\obj\Release\file_replace.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\AnyCpu\file_replace.exe.config
 D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\AnyCpu\file_replace.exe
 D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\AnyCpu\file_replace.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\file_replace.exe.config
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\file_replace.exe
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\file_replace.pdb

@@ -1,5 +1,15 @@
 @echo off
 echo.
+echo ^<-----------------------^>
+echo Getting the version name.
+echo ^<-----------------------^>
+echo.
+set /p version="Version: "
+echo.
+echo ^<-------------------^>
+echo Got the version name.
+echo ^<-------------------^>
+echo.
 echo ^<----------^>
 echo Cleaning up.
 echo ^<----------^>
@@ -48,5 +58,20 @@ echo.
 echo ^<----------------^>
 echo Done building x64.
 echo ^<----------------^>
+echo.
+echo ^<--------------------^>
+echo Copying to output dir.
+echo ^<--------------------^>
+echo.
+echo copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win%version%AnyCpu.exe
+copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win%version%AnyCpu.exe
+echo copy x86\\CWishlist_win.exe binaries\\CWishlist_win%version%x86.exe
+copy x86\\CWishlist_win.exe binaries\\CWishlist_win%version%x86.exe
+echo copy x64\\CWishlist_win.exe binaries\\CWishlist_win%version%x64.exe
+copy x64\\CWishlist_win.exe binaries\\CWishlist_win%version%x64.exe
+echo.
+echo ^<-------------------^>
+echo Copied to output dir.
+echo ^<-------------------^>
 echo.
 pause
