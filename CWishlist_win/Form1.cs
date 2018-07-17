@@ -92,7 +92,7 @@ namespace CWishlist_win
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
             //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
-            if (true)
+            if (false)
             {
                 foreach (string file in Directory.GetFiles(plugin_dir, "*.win_cs_cwl_plgn"))
                     try
@@ -103,9 +103,9 @@ namespace CWishlist_win
                     {
                         MessageBox.Show(e.ToString(), $"Cannot load plugins from {file}.");
                     }
-            }
 
-            plugin_manager.call_form_construct_listeners(this);
+                plugin_manager.call_form_construct_listeners(this);
+            }
 
             update_ui();
         }
