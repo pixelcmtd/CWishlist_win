@@ -21,6 +21,7 @@ namespace CWishlist_win
         {
             plugins.Add(plugin);
             plugin_files.Add(plugin, file);
+            plugin.construct(this);
         }
 
         public void register_form_construct_listener(IFormConstructListener listener) => form_construct_listeners.Add(listener);
@@ -33,10 +34,10 @@ namespace CWishlist_win
                 l.form_contruct(form);
         }
 
-        public void call_paint_listeners(PaintEventArgs e)
+        public void call_paint_listeners(PaintEventArgs e, Form1 form)
         {
             foreach (IPaintListener l in paint_listeners)
-                l.paint(e);
+                l.paint(e, form);
         }
 
         public void load_plugins(string file)
@@ -44,7 +45,9 @@ namespace CWishlist_win
             Assembly asm = Assembly.LoadFile(file);
             foreach (Type t in asm.ExportedTypes)
                 if (typeof(IPlugin).IsAssignableFrom(t))
+                {
                     register_plugin((IPlugin)Activator.CreateInstance(t), file);
+                }
         }
 		
 		public void update_check(IPlugin plugin)

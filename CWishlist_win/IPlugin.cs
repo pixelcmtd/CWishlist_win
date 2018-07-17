@@ -24,6 +24,11 @@ namespace CWishlist_win
         /// The url location of the update-xml
         /// </summary>
         string update_url { get; }
+
+        /// <summary>
+        /// Called directly after constructing the object.
+        /// </summary>
+        void construct(PluginManager plugin_manager);
     }
 
     public interface IFormConstructListener
@@ -39,7 +44,6 @@ namespace CWishlist_win
         /// <summary>
         /// Called in Form1's Paint-event
         /// </summary>
-        /// <param name="e">The event-args</param>
-        void paint(PaintEventArgs e);
+        void paint(PaintEventArgs e, Form1 form);
     }
 }

@@ -1,0 +1,10 @@
+D:\workspace_VS\CWishlist_win\test_plugin\bin\x64\Release\test_plugin.dll
+D:\workspace_VS\CWishlist_win\test_plugin\bin\x64\Release\test_plugin.pdb
+D:\workspace_VS\CWishlist_win\test_plugin\bin\x64\Release\CWishlist_win.exe
+D:\workspace_VS\CWishlist_win\test_plugin\bin\x64\Release\CWishlist_win.pdb
+D:\workspace_VS\CWishlist_win\test_plugin\bin\x64\Release\CWishlist_win.exe.config
+D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csproj.CopyComplete
+D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.dll
+D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.pdb

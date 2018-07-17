@@ -92,15 +92,20 @@ namespace CWishlist_win
                 set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
             //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
-            //foreach(string file in Directory.GetFiles(plugin_dir, "*.win_cs_cwl_plugin"))
-            //    try
-            //    {
-            //        plugin_manager.load_plugins(file);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        MessageBox.Show(e.ToString(), $"Cannot load plugins from {file}.");
-            //    }
+            if (true)
+            {
+                foreach (string file in Directory.GetFiles(plugin_dir, "*.win_cs_cwl_plgn"))
+                    try
+                    {
+                        plugin_manager.load_plugins(file);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.ToString(), $"Cannot load plugins from {file}.");
+                    }
+            }
+
+            plugin_manager.call_form_construct_listeners(this);
 
             update_ui();
         }
@@ -512,7 +517,7 @@ namespace CWishlist_win
         
         void plugindir_click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
 
-        void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
+        void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e, this);
 
         void beta_write_click(object sender, EventArgs e) => IO.cwld_save(wl, "test.cwlc");
 
