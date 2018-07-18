@@ -6,25 +6,15 @@ namespace test_plugin
 {
     public class TestPlugin : IPlugin, IFormConstructListener, IPaintListener
     {
-        public string name = "Test plugin";
+        string IPlugin.name => "Test plugin";
 
-        public string ver_str = "1.0.0";
+        string IPlugin.ver_str => "1.0.0";
 
-        public byte[] version = new byte[] { 1, 0, 0 };
+        byte[] IPlugin.version => new byte[] { 1, 0, 0 };
 
-        public uint ver_int = 1;
+        uint IPlugin.ver_int => 1;
 
-        public string update_url = "NA";
-
-        string IPlugin.name => name;
-
-        string IPlugin.ver_str => ver_str;
-
-        byte[] IPlugin.version => version;
-
-        uint IPlugin.ver_int => ver_int;
-
-        string IPlugin.update_url => update_url;
+        string IPlugin.update_url => string.Empty;
 
         public void construct(PluginManager plugin_manager)
         {
@@ -32,9 +22,14 @@ namespace test_plugin
             plugin_manager.register_paint_listener(this);
         }
 
-        public void form_contruct(Form1 form)
+        public void form_construct(Form1 form)
         {
             MessageBox.Show($"TestPlugin, stack size: {form.stack_size}");
+        }
+
+        public bool is_compatible(string vs, byte[] vb, uint vi)
+        {
+            return true;
         }
 
         public void paint(PaintEventArgs e, Form1 form)

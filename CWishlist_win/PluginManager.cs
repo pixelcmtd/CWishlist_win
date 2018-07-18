@@ -31,7 +31,7 @@ namespace CWishlist_win
         public void call_form_construct_listeners(Form1 form)
         {
             foreach (IFormConstructListener l in form_construct_listeners)
-                l.form_contruct(form);
+                l.form_construct(form);
         }
 
         public void call_paint_listeners(PaintEventArgs e, Form1 form)
@@ -68,7 +68,7 @@ namespace CWishlist_win
                 if(s_ver > c_ver)
                 {
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
-                    File.WriteAllBytes(tmp, Resources.file_replace);
+                    File.WriteAllBytes(tmp, Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine) == "AMD64" ? Resources.file_replace_64 : Resources.file_replace_32);
                     Process.Start(tmp, $"{dll_dl_url} \"{plugin_files[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
                     Program.form.Close();
                     Environment.Exit(0);

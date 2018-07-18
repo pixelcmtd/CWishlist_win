@@ -21,6 +21,9 @@ namespace CWishlist_win
         public string appdir { get; } = Program.appdata + "\\CWishlist";
         public string plugin_dir { get; } = Program.appdata + "\\CWishlist\\plugins";
 		public string lang_dir { get; } = Program.appdata + "\\CWishlist\\langs";
+        public string ver_str = "5.1.0";
+        public uint ver_int = 510;
+        public byte[] version = new byte[] { 5, 1, 0 };
 
         public Form1()
         {
@@ -94,7 +97,7 @@ namespace CWishlist_win
             //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
             if (false)
             {
-                foreach (string file in Directory.GetFiles(plugin_dir, "*.win_cs_cwl_plgn"))
+                foreach (string file in Directory.GetFiles(plugin_dir, "*.cwlwnplg"))
                     try
                     {
                         plugin_manager.load_plugins(file);

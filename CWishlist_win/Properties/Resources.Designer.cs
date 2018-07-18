@@ -103,9 +103,19 @@ namespace CWishlist_win.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Byte[].
         /// </summary>
-        internal static byte[] file_replace {
+        internal static byte[] file_replace_32 {
             get {
-                object obj = ResourceManager.GetObject("file_replace", resourceCulture);
+                object obj = ResourceManager.GetObject("file_replace_32", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Byte[].
+        /// </summary>
+        internal static byte[] file_replace_64 {
+            get {
+                object obj = ResourceManager.GetObject("file_replace_64", resourceCulture);
                 return ((byte[])(obj));
             }
         }

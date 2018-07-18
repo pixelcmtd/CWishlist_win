@@ -29,6 +29,12 @@ namespace CWishlist_win
         /// Called directly after constructing the object.
         /// </summary>
         void construct(PluginManager plugin_manager);
+
+        /// <summary>
+        /// Checks if this plugin-version is compatible with this version of CWishlist_win
+        /// </summary>
+        /// <returns>true wheater this plugin-version is compatible with this version of CWishlist_win or not</returns>
+        bool is_compatible(string vs, byte[] vb, uint vi);
     }
 
     public interface IFormConstructListener
@@ -36,7 +42,7 @@ namespace CWishlist_win
         /// <summary>
         /// Called at the end of the constructor of the Form1
         /// </summary>
-        void form_contruct(Form1 form);
+        void form_construct(Form1 form);
     }
 
     public interface IPaintListener

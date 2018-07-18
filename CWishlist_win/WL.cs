@@ -51,6 +51,11 @@ namespace CWishlist_win
 
         public static implicit operator int(WL wl) => wl.Length;
 
+        public static implicit operator long(WL wl)
+        {
+            return wl.items.LongLength;
+        }
+
         public override bool Equals(object obj) => (obj is WL) ? ((WL)obj) == this : false;
 		
 		public bool Equals(WL wl) => wl == this;
@@ -73,6 +78,11 @@ namespace CWishlist_win
         public int Length
         {
             get => items.Length;
+        }
+
+        public long LongLength
+        {
+            get => items.LongLength;
         }
 
         public Item[] SearchItems(Predicate<Item> predicate) => Array.FindAll(items, predicate);
