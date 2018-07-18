@@ -175,7 +175,7 @@
     <None Include="Resources\file_replace_64.exe" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\file_replace_32.exe" />
+    <None Include="Resources\file_replace_32.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
