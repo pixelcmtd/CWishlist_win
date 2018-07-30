@@ -2,6 +2,10 @@
 	<lang code="de" name="deutsch" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist von chrissx bei chrissx Media Inc. Changelog:\
 \
+Version 6.0.0:\
+-Der CWishlistDeflate v1 Standart wurde hinzugefügt\
+-Das Speichern und Laden der Listen wurde bzgl. Performance und RAM-Verbrauch verbessert\
+\
 Version 5.0.1:\
 -Hotfix für einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
 \
@@ -18,7 +22,7 @@ Version 4.0.1:\
 -Day one patch für einen Dateiendungsbug in 4.0.0\
 \
 Version 4.0.0:\
--Der neue CWishlistUncde v1 Standart wurde eingeführt (eine technische Erklärung wird /vielleicht/ irgendwann folgen)\
+-Der neue CWishlistUncde v1 Standart wurde eingeführt\
 \
 Version 3.3.0:\
 -Hintergrundfarbeneinstellung hinzugefügt (wird gespeichert)\

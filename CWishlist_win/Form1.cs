@@ -21,8 +21,8 @@ namespace CWishlist_win
         public string appdir { get; } = Program.appdata + "\\CWishlist";
         public string plugin_dir { get; } = Program.appdata + "\\CWishlist\\plugins";
 		public string lang_dir { get; } = Program.appdata + "\\CWishlist\\langs";
-        public string ver_str = "5.1.0";
-        public uint ver_int = 510;
+        public string ver_str = "6.0.0";
+        public uint ver_int = 600;
         public byte[] version = new byte[] { 5, 1, 0 };
 
         public Form1()
@@ -74,7 +74,7 @@ namespace CWishlist_win
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
             else if (File.ReadAllBytes(appdir + "\\RESTORE_BACKUP")[0] == 0x01)
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.restore_backup"), LanguageProvider.get_translated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    wl = IO.load(appdir + "\\backup.cwl");
+                    wl = IO.backup_load(appdir + "\\backup.cwl");
 
             if (File.Exists(appdir + "\\LANG"))
             {
@@ -143,7 +143,7 @@ namespace CWishlist_win
             button4.Visible = false;
             button5.Visible = false;
             button6.Visible = false;
-            IO.cwlu_save(wl, appdir + "\\backup.cwl");
+            IO.backup_save(wl, appdir + "\\backup.cwl");
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x01 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
@@ -346,16 +346,16 @@ namespace CWishlist_win
                 save_as_click(sender, e);
             else
             {
-                if (current_file[current_file.Length - 1] != 'u')
+                if (current_file[current_file.Length - 1] != 'd')
                     if (current_file[current_file.Length - 1] == 'l')
-                        current_file += 'u';
+                        current_file += 'd';
                     else
                     {
                         char[] c = current_file.ToCharArray();
-                        c[current_file.Length - 1] = 'u';
+                        c[current_file.Length - 1] = 'd';
                         current_file = new string(c);
                     }
-                IO.cwlu_save(wl, current_file);
+                IO.cwld_save(wl, current_file);
             }
         }
 
@@ -366,7 +366,7 @@ namespace CWishlist_win
                 AddExtension = true,
                 ValidateNames = true,
                 CheckPathExists = true,
-                Filter = "CWishlistUncde v1|*.cwlu",
+                Filter = "CWishlistDeflate|*.cwld",
                 Title = "Save CWishlist"
             };
             var res = sfd.ShowDialog();
@@ -374,7 +374,7 @@ namespace CWishlist_win
             {
                 add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
-                IO.cwlu_save(wl, current_file);
+                IO.cwld_save(wl, current_file);
             }
         }
 
@@ -521,12 +521,6 @@ namespace CWishlist_win
         void plugindir_click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
 
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e, this);
-
-        void beta_write_click(object sender, EventArgs e) => IO.cwld_save(wl, "test.cwlc");
-
-        void beta_read_click(object sender, EventArgs e) => wl = IO.cwld_load("test.cwlc");
-
-        void beta_update_click(object sender, EventArgs e) => update_ui();
 
         public void load_wl(string file)
         {
