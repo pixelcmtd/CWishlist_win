@@ -63,12 +63,12 @@ echo ^<--------------------^>
 echo Copying to output dir.
 echo ^<--------------------^>
 echo.
-echo copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win%version%AnyCpu.exe
-copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win%version%AnyCpu.exe
-echo copy x86\\CWishlist_win.exe binaries\\CWishlist_win%version%x86.exe
-copy x86\\CWishlist_win.exe binaries\\CWishlist_win%version%x86.exe
-echo copy x64\\CWishlist_win.exe binaries\\CWishlist_win%version%x64.exe
-copy x64\\CWishlist_win.exe binaries\\CWishlist_win%version%x64.exe
+echo copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win_%version%_AnyCpu.exe
+copy AnyCpu\\CWishlist_win.exe binaries\\CWishlist_win_%version%_AnyCpu.exe
+echo copy x86\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x86.exe
+copy x86\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x86.exe
+echo copy x64\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x64.exe
+copy x64\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x64.exe
 echo.
 echo ^<-------------------^>
 echo Copied to output dir.
