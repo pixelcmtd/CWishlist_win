@@ -28,7 +28,7 @@ namespace CWishlist_win
         public Form1()
         {
             InitializeComponent();
-
+            
             Program.form = this;
 
             if (Program.args.Length > 0)

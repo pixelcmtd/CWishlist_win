@@ -202,7 +202,7 @@ namespace CWishlist_win
             int v = zip.read_entry_byte("V");
             if (v > 2)
                 throw new TooNewRecentsFileException();
-            else if(v == 1)
+            else if (v == 1)
             {
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
@@ -228,37 +228,7 @@ namespace CWishlist_win
 
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
 
-        static string xml_esc(this string s) => s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
-
-        static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
-        {
-            Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();
-            s.write(contents);
-            s.Close();
-            s.Dispose();
-        }
-
-        static void add_entry(this ZipArchive zip, string entry_name, byte content, CompressionLevel comp_lvl = CompressionLevel.Fastest)
-        {
-            Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();
-            s.write(content);
-            s.Close();
-            s.Dispose();
-        }
-
-        static int read_entry_byte(this ZipArchive zip, string entry_name)
-        {
-            Stream s = zip.GetEntry(entry_name).Open();
-            int b = s.ReadByte();
-            s.Close();
-            return b;
-        }
-
-        static void write(this Stream s, params byte[] b) => s.Write(b, 0, b.Length);
-
         static char to_unicode(byte one, byte two) => Encoding.Unicode.GetChars(new byte[] { one, two })[0];
-
-        static void write_utf8(this Stream s, string t) => s.write(Encoding.UTF8.GetBytes(t));
     }
 
     class InvalidHeaderException : Exception
