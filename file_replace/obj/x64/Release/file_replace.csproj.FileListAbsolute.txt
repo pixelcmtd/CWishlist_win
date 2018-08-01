@@ -11,3 +11,10 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\BUILD\x64\file_replace.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.exe.config
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.exe
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.pdb
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.exe.config
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.exe
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\_BUILD\x64\file_replace.pdb
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.csprojAssemblyReference.cache
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.csproj.CoreCompileInputs.cache
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.exe
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\file_replace\obj\x64\Release\file_replace.pdb

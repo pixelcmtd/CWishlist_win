@@ -4,3 +4,9 @@ D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csprojAsse
 D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.dll
 D:\workspace_VS\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.pdb
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\bin\x64\Release\test_plugin.dll
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\bin\x64\Release\test_plugin.pdb
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csprojAssemblyReference.cache
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.csproj.CoreCompileInputs.cache
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.dll
+C:\Users\chrissx\Documents\GitHub\CWishlist_win\test_plugin\obj\x64\Release\test_plugin.pdb

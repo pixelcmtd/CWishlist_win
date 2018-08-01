@@ -13,8 +13,6 @@ namespace CWishlist_win
             s.CopyTo(ds, 32767); //short.MaxValue
             ds.Close();
             s.Close();
-            ds.Dispose();
-            s.Dispose();
             d.Close();
             return d.ToArray();
         }
@@ -27,8 +25,6 @@ namespace CWishlist_win
             ds.CopyTo(d, 32767); //short.MaxValue
             ds.Close();
             s.Close();
-            ds.Dispose();
-            s.Dispose();
             d.Close();
             return d.ToArray();
         }

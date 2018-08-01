@@ -123,6 +123,16 @@ namespace CWishlist_win
         {
             return b ? s.PadLeft(digits, c) : s;
         }
+
+        public static void add<T>(this List<T> l, params T[] ts)
+        {
+            l.AddRange(ts);
+        }
+
+        public static void add(this List<byte> l, params byte[] ts)
+        {
+            l.AddRange(ts);
+        }
     }
 
     class NotSupportedNumberFormatException : Exception

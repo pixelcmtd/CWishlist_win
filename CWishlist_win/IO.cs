@@ -39,14 +39,8 @@ namespace CWishlist_win
         {
             List<byte> u = new List<byte>(); //uncompressed
             foreach (Item i in wl)
-            {
-                u.AddRange(Encoding.Unicode.GetBytes(i.name));
-                u.Add(10);
-                u.Add(13);
-                u.AddRange(Encoding.Unicode.GetBytes(i.url));
-                u.Add(10);
-                u.Add(13);
-            }
+                u.add(i.bytes());
+
             Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
 
             s.write(cwld_header);
@@ -79,26 +73,28 @@ namespace CWishlist_win
 
             byte[] u = Deflate.decompress(c); //uncompressed
             List<Item> items = new List<Item>();
-            string s = "";
+            StringBuilder s = new StringBuilder();
             bool nus = false; //Name Url Switch
             Item itm = new Item();
+            char chr;
 
             for (int i = 0; i < u.Length; i += 2)
-                if (u[i] == 10 && u[i + 1] == 13) //10 is LF and 13 is CR
+                if ((chr = to_unicode(u[i], u[i + 1])) == '\u0a0d')
                 {
+                    string t = s.ToString();
+                    s.Clear();
                     if (nus)
                     {
-                        itm.url = s;
+                        itm.url = t;
                         items.Add(itm);
                         itm = new Item();
                     }
                     else
-                        itm.name = s;
+                        itm.name = t;
                     nus = !nus;
-                    s = "";
                 }
                 else
-                    s += to_unicode(u[i], u[i + 1]);
+                    s.Append(chr);
 
             return new WL(items.ToArray());
         }

@@ -1,11 +1,21 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CWishlist_win
 {
     public struct WL : IEnumerable
     {
-        public WL(params Item[] items) => this.items = items;
+        public WL(params Item[] items)
+        {
+            this.items = items;
+        }
+
+        public WL(List<Item> items)
+        {
+            this.items = items.ToArray();
+        }
 
         public Item[] items;
 
@@ -105,13 +115,13 @@ namespace CWishlist_win
 
         public override bool Equals(object obj) => (obj is Item) ? ((Item) obj).name == name && ((Item) obj).url == url : false;
 		
-		public bool Equals(Item itm) => itm.name == name && itm.url == url;
+		public bool Equals(Item i) => i.name == name && i.url == url;
 
         public override int GetHashCode()
 		{
 			unchecked
 			{
-				return name.GetHashCode() + url.GetHashCode();
+				return name.GetHashCode() * url.GetHashCode();
 			}
 		}
 
@@ -127,15 +137,30 @@ namespace CWishlist_win
 
         public static bool operator >=(Item first, Item second) => first.name.CompareTo(second.name) == 0 || first.name == second.name;
 
-        public static implicit operator string(Item item) => item.ToString();
+        public static implicit operator string(Item i) => i.ToString();
 
-        public static implicit operator long(Item item) => item.url.Length + item.name.Length;
+        public static implicit operator long(Item i) => i.LongLength;
 
-        public static implicit operator uint(Item item) => (uint)(item.url.Length + item.name.Length);
+        public static implicit operator uint(Item i) => i.Length;
 
-        public int Length
+        public uint Length
         {
-            get => name.Length;
+            get => ((uint)name.Length) + ((uint)url.Length);
+        }
+
+        public long LongLength
+        {
+            get => ((long)url.Length) + ((long)name.Length);
+        }
+
+        public byte[] bytes()
+        {
+            List<byte> b = new List<byte>();
+            b.add(Encoding.Unicode.GetBytes(name));
+            b.add(10, 13);
+            b.add(Encoding.Unicode.GetBytes(url));
+            b.add(10, 13);
+            return b.ToArray();
         }
     }
 }
