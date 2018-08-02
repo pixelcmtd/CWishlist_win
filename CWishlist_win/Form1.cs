@@ -450,7 +450,13 @@ namespace CWishlist_win
 
         void btn9_click(object sender, EventArgs e)
         {
-            wl.items = MergeSorting.MergeSort(wl.items);
+            update_ui();
+            long n = stack_size;
+            double log = Math.Log(n, 2);
+            long space_complexity = (long)((n * (log + 1)) + (n * log));
+            if (space_complexity > 800000)
+                MessageBox.Show($"The math shows the space complexity of this merge sort is {space_complexity}B and is a bit high for the 1MiB Stack, a backup is saved, be warned!");
+            wl.items = Sorting.merge_sort_items(wl.items);
             update_ui();
         }
 
@@ -470,13 +476,13 @@ namespace CWishlist_win
             textBox3.SelectionLength = textBox3.TextLength;
         }
 
-        public uint stack_size
+        public long stack_size
         {
             get
             {
-                uint s = 0;
+                long s = 0;
                 foreach (Item i in wl)
-                    s += i;
+                    s += i.MemoryLength;
                 return s;
             }
         }

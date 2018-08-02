@@ -96,7 +96,7 @@ namespace CWishlist_win
                 else
                     s.Append(chr);
 
-            return new WL(items.ToArray());
+            return new WL(items);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace CWishlist_win
             xml.Close();
             zip.Dispose();
 
-            return new WL(items.ToArray());
+            return new WL(items);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace CWishlist_win
                     items.Add(new Item(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("n"))), Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("u")))));
             xml.Close();
             zip.Dispose();
-            return new WL(items.ToArray());
+            return new WL(items);
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace CWishlist_win
                     items.Add(new Item(xml.GetAttribute("name"), xml.GetAttribute("url")));
             xml.Close();
             zip.Dispose();
-            return new WL(items.ToArray());
+            return new WL(items);
         }
 
         /// <summary>

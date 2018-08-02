@@ -153,6 +153,11 @@ namespace CWishlist_win
             get => ((long)url.Length) + ((long)name.Length);
         }
 
+        public long MemoryLength
+        {
+            get => LongLength * 2;
+        }
+
         public byte[] bytes()
         {
             List<byte> b = new List<byte>();

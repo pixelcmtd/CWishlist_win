@@ -65,13 +65,15 @@ namespace CWishlist_win.Properties {
         ///	&lt;lang code=&quot;de&quot; name=&quot;deutsch&quot; /&gt;
         ///	&lt;translation name=&quot;misc.changelog&quot; type=&quot;str_arr&quot; value=&quot; CWishlist von chrissx bei chrissx Media Inc. Changelog:\
         ///\
+        ///Version 6.0.0:\
+        ///-Der CWishlistDeflate v1 Standart wurde hinzugefügt\
+        ///-Das Speichern und Laden der Listen wurde bzgl. Performance und RAM-Verbrauch verbessert\
+        ///\
         ///Version 5.0.1:\
         ///-Hotfix für einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
         ///\
         ///Version 5.0.0:\
-        ///-Sprachdateien können jetzt erstellt und hinzugefügt werden.\
-        ///-Ein kleiner Bug in der Suchfunktion wurde behoben(Großbuchstaben).\
-        ///-Die Version 2 des recent.cwls-Standarts ist da! Heißt: Die zuletzt geöffneten Dateien  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///-Sprachdateien können jetzt erstellt und hinzugefügt we [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string de_lang_xml {
             get {
@@ -84,15 +86,16 @@ namespace CWishlist_win.Properties {
         ///	&lt;lang code=&quot;en&quot; name=&quot;english&quot; /&gt;
         ///	&lt;translation name=&quot;misc.changelog&quot; type=&quot;str_arr&quot; value=&quot; CWishlist by chrissx @ chrissx Media Inc. Changelog:\
         ///\
+        ///Version 6.0.0:\
+        ///-Added the new CWishlistDeflate v1 standard which reduces your file size by up to 80%\
+        ///-Improved loading and saving of the lists performance- and memorywise\
+        ///\
         ///Version 5.0.1:\
         ///-Hotfix for broken and not loaded at all recents-files\
         ///\
         ///Version 5.0.0:\
         ///-Language-files can now be created and put into this program.\
-        ///-A little bug in the search function was fixed.\
-        ///-The version 2 of the recent.cwls-standard is in da house! That means: The recently opened files are now saved more efficiently.\
-        ///\
-        ///Versi [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///-A little [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string en_lang_xml {
             get {
