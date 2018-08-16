@@ -1,12 +1,13 @@
-﻿using CWishlist_win.Properties;
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
+using static CWishlist_win.CLinq;
+using static CWishlist_win.LanguageProvider;
+using static CWishlist_win.Properties.Resources;
 
 namespace CWishlist_win
 {
@@ -21,9 +22,9 @@ namespace CWishlist_win
         public string appdir { get; } = Program.appdata + "\\CWishlist";
         public string plugin_dir { get; } = Program.appdata + "\\CWishlist\\plugins";
 		public string lang_dir { get; } = Program.appdata + "\\CWishlist\\langs";
-        public string ver_str = "6.0.0";
-        public uint ver_int = 600;
-        public byte[] version = new byte[] { 5, 1, 0 };
+        public string ver_str = "6.1.0";
+        public uint ver_int = 610;
+        public byte[] version = new byte[] { 6, 1, 0 };
 
         public Form1()
         {
@@ -44,16 +45,12 @@ namespace CWishlist_win
 
             if (!Directory.Exists(lang_dir))
                 Directory.CreateDirectory(lang_dir);
+            
+            if (!File.Exists(lang_dir + "\\de.xml") || !arrequ(Encoding.UTF8.GetBytes(de_lang_xml), File.ReadAllBytes(lang_dir + "\\de.xml")))
+                File.WriteAllText(lang_dir + "\\de.xml", de_lang_xml);
 
-            //using MD5 because we care about the files being equal or not equal, THIS IS NOT SECURITY so it's not designed to be secure, it just checks
-            using (MD5 md5 = new MD5CryptoServiceProvider())
-            {
-                if (!File.Exists(lang_dir + "\\de.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.de_lang_xml)).arr_equal(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\de.xml"))))
-                    File.WriteAllText(lang_dir + "\\de.xml", Resources.de_lang_xml);
-
-                if (!File.Exists(lang_dir + "\\en.xml") || !md5.ComputeHash(Encoding.UTF8.GetBytes(Resources.en_lang_xml)).arr_equal(md5.ComputeHash(File.ReadAllBytes(lang_dir + "\\en.xml"))))
-                    File.WriteAllText(lang_dir + "\\en.xml", Resources.en_lang_xml);
-            }
+            if (!File.Exists(lang_dir + "\\en.xml") || !arrequ(Encoding.UTF8.GetBytes(en_lang_xml), File.ReadAllBytes(lang_dir + "\\en.xml")))
+                File.WriteAllText(lang_dir + "\\en.xml", en_lang_xml);
 
             foreach (string f in Directory.GetFiles(lang_dir))
                 LanguageProvider.load_lang_xml(f);
@@ -72,17 +69,16 @@ namespace CWishlist_win
 
             if (!File.Exists(appdir + "\\RESTORE_BACKUP"))
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-            else if (File.ReadAllBytes(appdir + "\\RESTORE_BACKUP")[0] == 0x01)
-                if (MessageBox.Show(LanguageProvider.get_translated("prompt.restore_backup"), LanguageProvider.get_translated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    wl = IO.backup_load(appdir + "\\backup.cwl");
-
+            else if (File.ReadAllBytes(appdir + "\\RESTORE_BACKUP")[0] == 0x01 && MessageBox.Show(get_translated("prompt.restore_backup"), get_translated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
+                wl = IO.backup_load(appdir + "\\backup.cwl");
+            
             if (File.Exists(appdir + "\\LANG"))
             {
-                byte[] lang_file_input = File.ReadAllBytes(appdir + "\\LANG");
-                if (lang_file_input.Length == 1)
-                    LanguageProvider.selected = LanguageProvider.get_lang(lang_file_input[0] == 0x00 ? "en" : "de");
+                byte[] lfi = File.ReadAllBytes(appdir + "\\LANG");
+                if (lfi.Length == 1)
+                    selected = get_lang(lfi[0] == 0 ? "en" : "de");
                 else
-                    LanguageProvider.selected = LanguageProvider.get_lang(Encoding.ASCII.GetString(lang_file_input));
+                    selected = get_lang(Encoding.ASCII.GetString(lfi));
             }
 
             if (File.Exists(appdir + "\\WIDTH"))
@@ -104,7 +100,7 @@ namespace CWishlist_win
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(e.ToString(), $"Cannot load plugins from {file}.");
+                        MessageBox.Show(e.ToString(), string.Format(get_translated("caption.pluginloadfailed"), file));
                     }
 
                 plugin_manager.call_form_construct_listeners(this);
@@ -115,6 +111,7 @@ namespace CWishlist_win
 
         void update_ui()
         {
+            GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true); //no GC for 15MiB of small object heap and 127MiB for big object heap
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Length > 0)
                 foreach (string r in recents)
@@ -129,40 +126,31 @@ namespace CWishlist_win
                 }
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("N/A"));
-            for (int i = 0; i < wl; i++)
-                if (!wl[i].url.StartsWith("http://tinyurl.com") && IO.valid_url(wl[i].url) && wl[i].url.Length > 25)
+            for (long i = 0; i < wl.LongLength; i++)
+                if (!wl[i].url.StartsWith("http://tinyurl.com/") && wl[i].url.Length > 25 && IO.valid_url(wl[i].url))
                     wl.items[i].url = IO.tinyurl_create(wl[i].url);
             int index = listBox1.SelectedIndex;
             listBox1.Items.Clear();
             foreach(Item i in wl.items)
                 listBox1.Items.Add(i.ToString());
-            textBox1.Visible = false;
-            textBox2.Visible = false;
-            label1.Visible = false;
-            label2.Visible = false;
-            button4.Visible = false;
-            button5.Visible = false;
-            button6.Visible = false;
+            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = false;
+            button5.Visible = button6.Visible = false;
             IO.backup_save(wl, appdir + "\\backup.cwl");
-            File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x01 });
+            File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 1 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
                 MessageBox.Show(LanguageProvider.get_translated("prompt.stackoverflow"), LanguageProvider.get_translated("caption.stackoverflow"));
             Invalidate();
             Update();
-            GC.Collect();
+            GC.EndNoGCRegion();
+            GC.Collect(2, GCCollectionMode.Forced, false, false);
         }
 
         void lstbx_index_change(object sender, EventArgs e)
         {
 			bool f = listBox1.SelectedIndex != -1;
-            textBox1.Visible = f;
-            textBox2.Visible = f;
-            label1.Visible = f;
-            label2.Visible = f;
-            button4.Visible = f;
-            button5.Visible = f;
-            button6.Visible = f;
+            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = f;
+            button5.Visible = button6.Visible = f;
 			if (f)
 			{
 				textBox1.Text = wl.items[listBox1.SelectedIndex].name;
@@ -313,14 +301,14 @@ namespace CWishlist_win
 
         void open_click(object sender, EventArgs e)
         {
-            if ((current_file == "" && wl != 0) || (current_file != "" && wl != loaded_wl))
+            if ((current_file == "" && wl.Length != 0) || (current_file != "" && wl != loaded_wl))
                 if (MessageBox.Show(LanguageProvider.get_translated("prompt.open"), LanguageProvider.get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Filter = "CWishlists|*.cwl;*.cwlb;*.cwlu",
+                Filter = "CWishlists|*.cwl;*.cwlb;*.cwlu;*.cwld",
                 Title = "Load CWishlist",
                 ValidateNames = true,
                 Multiselect = false
@@ -346,15 +334,15 @@ namespace CWishlist_win
                 save_as_click(sender, e);
             else
             {
-                if (current_file[current_file.Length - 1] != 'd')
-                    if (current_file[current_file.Length - 1] == 'l')
-                        current_file += 'd';
-                    else
-                    {
-                        char[] c = current_file.ToCharArray();
-                        c[current_file.Length - 1] = 'd';
-                        current_file = new string(c);
-                    }
+                int lm1 = current_file.Length - 1;
+                if (current_file[lm1] == 'l')
+                    current_file += 'd';
+                else if (current_file[lm1] != 'd')
+                {
+                    char[] c = current_file.ToCharArray();
+                    c[lm1] = 'd';
+                    current_file = new string(c);
+                }
                 IO.cwld_save(wl, current_file);
             }
         }
@@ -455,7 +443,7 @@ namespace CWishlist_win
             double log = Math.Log(n, 2);
             long space_complexity = (long)((n * (log + 1)) + (n * log));
             if (space_complexity > 800000)
-                MessageBox.Show($"The math shows the space complexity of this merge sort is {space_complexity}B and is a bit high for the 1MiB Stack, a backup is saved, be warned!");
+                MessageBox.Show($"The math shows the space complexity of this merge sort is {space_complexity} Bytes and is a bit high for the 1MiB Stack, a backup is saved, be warned!");
             wl.items = Sorting.merge_sort_items(wl.items);
             update_ui();
         }
@@ -533,6 +521,11 @@ namespace CWishlist_win
             wl = IO.load(file);
             current_file = file;
             loaded_wl = wl;
+        }
+
+        void debugToolupdateuiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            update_ui();
         }
     }
 }

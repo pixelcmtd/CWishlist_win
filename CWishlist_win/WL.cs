@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace CWishlist_win
@@ -141,16 +142,16 @@ namespace CWishlist_win
 
         public static implicit operator long(Item i) => i.LongLength;
 
-        public static implicit operator uint(Item i) => i.Length;
+        public static implicit operator int(Item i) => i.Length;
 
-        public uint Length
+        public int Length
         {
-            get => ((uint)name.Length) + ((uint)url.Length);
+            get => name.Length + url.Length;
         }
 
         public long LongLength
         {
-            get => ((long)url.Length) + ((long)name.Length);
+            get => (long)url.Length + (long)name.Length;
         }
 
         public long MemoryLength
@@ -158,14 +159,39 @@ namespace CWishlist_win
             get => LongLength * 2;
         }
 
-        public byte[] bytes()
+        public byte[] bytes(string format)
         {
-            List<byte> b = new List<byte>();
-            b.add(Encoding.Unicode.GetBytes(name));
-            b.add(10, 13);
-            b.add(Encoding.Unicode.GetBytes(url));
-            b.add(10, 13);
-            return b.ToArray();
+            MemoryStream ms = new MemoryStream();
+            write_bytes(ms, format);
+            ms.Close();
+            return ms.ToArray();
+        }
+
+        public void write_bytes(Stream s, string format)
+        {
+            if (format == "D1")
+            {
+                s.write(Encoding.Unicode.GetBytes(name));
+                s.write(10, 13);
+                s.write(Encoding.Unicode.GetBytes(url));
+                s.write(10, 13);
+            }
+            else if (format == "D2")
+            {
+                s.write(Encoding.Unicode.GetBytes(name));
+                s.write(11);
+                if (url.StartsWith("http://tinyurl.com/"))
+                {
+                    s.write(1);
+                    s.write(Encoding.Unicode.GetBytes(url.Substring(19)));
+                }
+                else
+                {
+                    s.write(0);
+                    s.write(Encoding.Unicode.GetBytes(url));
+                }
+                s.write(11);
+            }
         }
     }
 }

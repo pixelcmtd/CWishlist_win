@@ -5,6 +5,8 @@ using System.Xml;
 using System.IO.Compression;
 using System;
 using System.Net;
+using static CWishlist_win.CLinq;
+using System.Windows.Forms;
 
 namespace CWishlist_win
 {
@@ -37,66 +39,119 @@ namespace CWishlist_win
         /// </summary>
         public static void cwld_save(WL wl, string file)
         {
-            List<byte> u = new List<byte>(); //uncompressed
-            foreach (Item i in wl)
-                u.add(i.bytes());
-
             Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
 
             s.write(cwld_header);
-            s.write(4, 1);
-            s.write(Deflate.compress(u.ToArray()));
+            s.write(4, 2);
 
-            s.Close();
+            DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
+
+            foreach (Item i in wl)
+                i.write_bytes(d, "D2");
+
+            d.Close();
         }
 
         /// <summary>
         /// Read func for the CWLD-format<para />
         /// Name: CWishlistDeflate (A custom binary format compressed with Deflate)<para />
-        /// File version: 4<para />
-        /// Format version: 1
+        /// File version: 4 (saved, checked)<para />
+        /// Format versions: 1, 2(saved, checked)
         /// </summary>
         public static WL cwld_load(string file)
         {
-            byte[] raw = File.ReadAllBytes(file);
+            Stream raw = File.Open(file, FileMode.Open, FileAccess.Read);
 
             byte[] h = new byte[8]; //header
-            Array.Copy(raw, h, 8);
+            raw.Read(h, 0, 8);
+            int v = -1;
 
-            byte[] c = new byte[raw.Length - 10]; //compressed
-            Array.Copy(raw, 10, c, 0, c.Length);
-
-            if (!h.arr_equal(cwld_header))
+            if (!arrequ(h, cwld_header))
+            {
+                raw.Close();
                 throw new InvalidHeaderException("CWLD", cwld_header, h);
-            if (raw[8] != 4 || raw[9] != 1)
+            }
+            if (raw.ReadByte() != 4 || (v = raw.ReadByte()) > 2)
+            {
+                raw.Close();
                 throw new NotSupportedFileVersionException();
+            }
 
-            byte[] u = Deflate.decompress(c); //uncompressed
-            List<Item> items = new List<Item>();
-            StringBuilder s = new StringBuilder();
-            bool nus = false; //Name Url Switch
-            Item itm = new Item();
-            char chr;
+            if(v == 1)
+            {
+                DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
+                List<Item> items = new List<Item>();
+                StringBuilder s = new StringBuilder();
+                bool nus = false; //Name Url Switch
+                Item i = new Item();
+                char chr;
+                int j = -1;
 
-            for (int i = 0; i < u.Length; i += 2)
-                if ((chr = to_unicode(u[i], u[i + 1])) == '\u0a0d')
-                {
-                    string t = s.ToString();
-                    s.Clear();
-                    if (nus)
+                while ((j = d.ReadByte()) != -1)
+                    if ((chr = to_unicode((byte)j, (byte)d.ReadByte())) == '\u0a0d')
                     {
-                        itm.url = t;
-                        items.Add(itm);
-                        itm = new Item();
+                        if (nus)
+                        {
+                            i.url = s.ToString();
+                            items.Add(i);
+                            i = new Item();
+                        }
+                        else
+                            i.name = s.ToString();
+                        s.Clear();
+                        nus = !nus;
                     }
                     else
-                        itm.name = t;
-                    nus = !nus;
-                }
-                else
-                    s.Append(chr);
+                        s.Append(chr);
 
-            return new WL(items);
+                d.Close();
+
+                MessageBox.Show(items.Count.ToString());
+
+                return new WL(items);
+            }
+            else
+            {
+                DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
+                List<Item> itms = new List<Item>();
+                StringBuilder s = new StringBuilder();
+                int flags = 0;
+                Item i = new Item();
+                int j = -1;
+                byte b = 0;
+
+                while((j = d.ReadByte()) != -1)
+                {
+                    if (j == 11 && (flags & 0b10) == 0)
+                    {
+                        if ((flags & 0b01) == 0)
+                        {
+                            i.name = s.ToString();
+                            flags |= 0b01;
+                        }
+                        else
+                        {
+                            i.url = s.ToString();
+                            itms.Add(i);
+                            i = new Item();
+                            flags &= 0b01;
+                        }
+                        s.Clear();
+                    }
+                    else if((flags & 0b10) == 0)
+                    {
+                        b = (byte)j;
+                        flags |= 0b10;
+                    }
+                    else
+                    {
+                        s.Append(to_unicode(b, (byte)j));
+                        flags &= 0b10;
+                    }
+                }
+
+                return new WL(itms);
+            }
         }
 
         /// <summary>

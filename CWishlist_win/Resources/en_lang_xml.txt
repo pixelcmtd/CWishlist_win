@@ -2,6 +2,11 @@
 	<lang code="en" name="english" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
+Version 6.1.0:\
+-Fixed the Open-Dialog not accepting CWLD-files\
+-Introduced CWishlistDeflate v2 which reduces the file size even more\
+-Improved the efficiency of loading CWLD v1 files (and with that CWLD v2 files)\
+\
 Version 6.0.0:\
 -Added the new CWishlistDeflate v1 standard which reduces your file size by up to 80%\
 -Improved loading and saving of the lists performance- and memorywise\
@@ -60,5 +65,6 @@ Version 2.3.1:\
 	<translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
 	<translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
 	<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
+	<translation name="caption.pluginloadfailed" type="str" value="Loading plugins from {0} failed." />
 	<translation name="title.switch_lang" type="str" value="Please select your language." />
 </cwl_lang>

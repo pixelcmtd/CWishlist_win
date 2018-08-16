@@ -60,5 +60,6 @@ Version 2.3.1:\
 	<translation name="caption.open" type="str" value="Du willschd weagli ne andre Dadei öffneñ?" />
 	<translation name="prompt.stackoverflow" type="str" value="Ihre Stack-Größe ist nahe am Limit, bitte versichern Sie sich, Ihre Liste immer zu speichern." />
 	<translation name="caption.stackoverflow" type="str" value="Du willschd weagli nen Schdägg-Ofafloo verursacheñ?" />
+	<translation name="caption.pluginloadfailed" type="str" value="Laden der Plugins aus {0} fehlgeschlagen." />
 	<translation name="title.switch_lang" type="str" value="Bitte wählen Sie die Sprache aus." />
 </cwl_lang>

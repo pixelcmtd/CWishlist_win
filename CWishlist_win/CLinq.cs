@@ -43,12 +43,12 @@ namespace CWishlist_win
             return ie.to_enumerable().where(p);
         }
 
-        public static bool arr_equal(this Array left, Array right)
+        public static bool arrequ<T>(T[] left, T[] right)
         {
             if (left.Length != right.Length)
                 return false;
             for (int i = 0; i < left.Length; i++)
-                if (!left.GetValue(i).Equals(right.GetValue(i)))
+                if (!left[i].Equals(right[i]))
                     return false;
             return true;
         }
