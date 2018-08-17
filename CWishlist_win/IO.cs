@@ -257,13 +257,13 @@ namespace CWishlist_win
         /// Read func for the CWLS-format<para />
         /// Name: CWishlists<para />
         /// File version 1 (originally not, but later saved)<para />
-        /// Format versions: 1, 2
+        /// Format versions: 1, 2, 3 (saved, checked)
         /// </summary>
         public static string[] load_recent(string file)
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
             int v = zip.read_entry_byte("V");
-            if (v > 2)
+            if (v > 3)
                 throw new TooNewRecentsFileException();
             else if (v == 1)
             {
@@ -276,7 +276,7 @@ namespace CWishlist_win
                 zip.Dispose();
                 return r.ToArray();
             }
-            else
+            else if (v == 2)
             {
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
@@ -284,6 +284,24 @@ namespace CWishlist_win
                     if (x.Name == "f")
                         r.Add(x.GetAttribute("f"));
                 x.Close();
+                zip.Dispose();
+                return r.ToArray();
+            }
+            else
+            {
+                List<string> r = new List<string>();
+                Stream s = zip.GetEntry("R").Open();
+                int i = -1;
+                int j = -1;
+                byte[] bfr = new byte[65535 * 2];
+                while ((i = s.ReadByte()) != -1)
+                {
+                    j = s.ReadByte();
+                    int len = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new byte[] { (byte)i, (byte)j } : new byte[] { (byte)j, (byte)i }, 0);
+                    s.Read(bfr, 0, len);
+                    r.Add(Encoding.Unicode.GetString(bfr, 0, len * 2));
+                }
+                s.Close();
                 zip.Dispose();
                 return r.ToArray();
             }
