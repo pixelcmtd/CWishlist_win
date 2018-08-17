@@ -4,8 +4,10 @@
 \
 Version 6.1.0:\
 -Fixed the Open-Dialog not accepting CWLD-files\
--Introduced CWishlistDeflate v2 which reduces the file size even more\
+-Introduced CWishlistDeflate v2 which reduces the file size even more (we measured 15.5% and 22%)\
 -Improved the efficiency of loading CWLD v1 files (and with that CWLD v2 files)\
+-Fixed &quot;Unsafed changes&quot; when you tried to close wishlists you loaded through Ctrl+O or the toolbar\
+-Fixed files sometimes not being added to recents\
 \
 Version 6.0.0:\
 -Added the new CWishlistDeflate v1 standard which reduces your file size by up to 80%\

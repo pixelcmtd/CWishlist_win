@@ -8,6 +8,12 @@ using System.Windows.Forms;
 using static CWishlist_win.CLinq;
 using static CWishlist_win.LanguageProvider;
 using static CWishlist_win.Properties.Resources;
+using static System.BitConverter;
+using static CWishlist_win.Program;
+using static System.Text.Encoding;
+using static System.Convert;
+using static System.Diagnostics.Process;
+using static CWishlist_win.IO;
 
 namespace CWishlist_win
 {
@@ -30,10 +36,10 @@ namespace CWishlist_win
         {
             InitializeComponent();
             
-            Program.form = this;
+            form = this;
 
-            if (Program.args.Length > 0)
-                load_wl(Program.args[0]);
+            if (args.Length > 0)
+                load_wl(args[0]);
             else
                 wl = WL.NEW;
 
@@ -46,31 +52,31 @@ namespace CWishlist_win
             if (!Directory.Exists(lang_dir))
                 Directory.CreateDirectory(lang_dir);
             
-            if (!File.Exists(lang_dir + "\\de.xml") || !arrequ(Encoding.UTF8.GetBytes(de_lang_xml), File.ReadAllBytes(lang_dir + "\\de.xml")))
+            if (!File.Exists(lang_dir + "\\de.xml") || !arrequ(UTF8.GetBytes(de_lang_xml), File.ReadAllBytes(lang_dir + "\\de.xml")))
                 File.WriteAllText(lang_dir + "\\de.xml", de_lang_xml);
 
-            if (!File.Exists(lang_dir + "\\en.xml") || !arrequ(Encoding.UTF8.GetBytes(en_lang_xml), File.ReadAllBytes(lang_dir + "\\en.xml")))
+            if (!File.Exists(lang_dir + "\\en.xml") || !arrequ(UTF8.GetBytes(en_lang_xml), File.ReadAllBytes(lang_dir + "\\en.xml")))
                 File.WriteAllText(lang_dir + "\\en.xml", en_lang_xml);
 
             foreach (string f in Directory.GetFiles(lang_dir))
-                LanguageProvider.load_lang_xml(f);
+                load_lang_xml(f);
 
             if (File.Exists(appdir + "\\recent.cwls"))
                 try
                 {
-                    recents = IO.load_recent(appdir + "\\recent.cwls");
+                    recents = load_recent(appdir + "\\recent.cwls");
                 }
                 catch
                 {
-                    IO.write_recent(appdir + "\\recent.cwls", recents);
+                    write_recent(appdir + "\\recent.cwls", recents);
                 }
             else
-                IO.write_recent(appdir + "\\recent.cwls", recents);
+                write_recent(appdir + "\\recent.cwls", recents);
 
             if (!File.Exists(appdir + "\\RESTORE_BACKUP"))
                 File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
             else if (File.ReadAllBytes(appdir + "\\RESTORE_BACKUP")[0] == 0x01 && MessageBox.Show(get_translated("prompt.restore_backup"), get_translated("caption.restore_backup"), MessageBoxButtons.YesNo) == DialogResult.Yes)
-                wl = IO.backup_load(appdir + "\\backup.cwl");
+                wl = backup_load(appdir + "\\backup.cwl");
             
             if (File.Exists(appdir + "\\LANG"))
             {
@@ -78,17 +84,17 @@ namespace CWishlist_win
                 if (lfi.Length == 1)
                     selected = get_lang(lfi[0] == 0 ? "en" : "de");
                 else
-                    selected = get_lang(Encoding.ASCII.GetString(lfi));
+                    selected = get_lang(ASCII.GetString(lfi));
             }
 
             if (File.Exists(appdir + "\\WIDTH"))
-                Width = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\WIDTH"), 0);
+                Width = ToInt32(File.ReadAllBytes(appdir + "\\WIDTH"), 0);
 
             if (File.Exists(appdir + "\\HEIGHT"))
-                Height = BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\HEIGHT"), 0);
+                Height = ToInt32(File.ReadAllBytes(appdir + "\\HEIGHT"), 0);
 
             if (File.Exists(appdir + "\\COLOR"))
-                set_color(BitConverter.ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
+                set_color(ToInt32(File.ReadAllBytes(appdir + "\\COLOR"), 0));
 
             //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
             if (false)
@@ -127,19 +133,19 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("N/A"));
             for (long i = 0; i < wl.LongLength; i++)
-                if (!wl[i].url.StartsWith("http://tinyurl.com/") && wl[i].url.Length > 25 && IO.valid_url(wl[i].url))
-                    wl.items[i].url = IO.tinyurl_create(wl[i].url);
+                if (!wl[i].url.StartsWith("http://tinyurl.com/") && wl[i].url.Length > 25 && valid_url(wl[i].url))
+                    wl.items[i].url = tinyurl_create(wl[i].url);
             int index = listBox1.SelectedIndex;
             listBox1.Items.Clear();
             foreach(Item i in wl.items)
                 listBox1.Items.Add(i.ToString());
             textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = false;
             button5.Visible = button6.Visible = false;
-            IO.backup_save(wl, appdir + "\\backup.cwl");
+            backup_save(wl, appdir + "\\backup.cwl");
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 1 });
             listBox1.SelectedIndex = index;
             if (stack_size > 800000)
-                MessageBox.Show(LanguageProvider.get_translated("prompt.stackoverflow"), LanguageProvider.get_translated("caption.stackoverflow"));
+                MessageBox.Show(get_translated("prompt.stackoverflow"), get_translated("caption.stackoverflow"));
             Invalidate();
             Update();
             GC.EndNoGCRegion();
@@ -208,7 +214,7 @@ namespace CWishlist_win
             if (listBox1.SelectedIndex == -1)
                 return;
             var url = wl.items[listBox1.SelectedIndex].url;
-            Process.Start(url.StartsWith("http") ? url : "http://" + url);
+            Start(url.StartsWith("http") ? url : "http://" + url);
         }
 
         void btn7_click(object sender, EventArgs e)
@@ -233,7 +239,8 @@ namespace CWishlist_win
 
         void size_change(object sender, EventArgs e)
         {
-            int w = Width, h = Height;
+            int w = Width;
+            int h = Height;
             button1.Location = new Point(w - 271, h / 2 - 16 - 33);
             button2.Location = new Point(w - 271, h / 2 - 10);
             listBox1.Size = new Size(w - 289, h - 93);
@@ -256,17 +263,19 @@ namespace CWishlist_win
         {
             if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
             {
-                bool flag = MessageBox.Show(LanguageProvider.get_translated("prompt.close"), LanguageProvider.get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
+                bool flag = MessageBox.Show(get_translated("prompt.close"), get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
                 e.Cancel = flag;
                 if (flag)
                     return;
             }
-            IO.write_recent(appdir + "\\recent.cwls", recents);
+            if (current_file != "")
+                add_recent_item(current_file);
+            write_recent(appdir + "\\recent.cwls", recents);
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 0x00 });
-            File.WriteAllBytes(appdir + "\\LANG", Encoding.ASCII.GetBytes(LanguageProvider.selected.code));
-            File.WriteAllBytes(appdir + "\\WIDTH", BitConverter.GetBytes(Width));
-            File.WriteAllBytes(appdir + "\\HEIGHT", BitConverter.GetBytes(Height));
-            File.WriteAllBytes(appdir + "\\COLOR", BitConverter.GetBytes(BackColor.ToArgb()));
+            File.WriteAllBytes(appdir + "\\LANG", ASCII.GetBytes(selected.code));
+            File.WriteAllBytes(appdir + "\\WIDTH", GetBytes(Width));
+            File.WriteAllBytes(appdir + "\\HEIGHT", GetBytes(Height));
+            File.WriteAllBytes(appdir + "\\COLOR", GetBytes(BackColor.ToArgb()));
         }
 
         public void add_recent_item(string file)
@@ -283,7 +292,7 @@ namespace CWishlist_win
         void new_click(object sender, EventArgs e)
         {
             if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
-                if (MessageBox.Show(LanguageProvider.get_translated("prompt.new"), LanguageProvider.get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
                     return;
             if (current_file != "")
             {
@@ -301,9 +310,9 @@ namespace CWishlist_win
 
         void open_click(object sender, EventArgs e)
         {
-            if ((current_file == "" && wl.Length != 0) || (current_file != "" && wl != loaded_wl))
-                if (MessageBox.Show(LanguageProvider.get_translated("prompt.open"), LanguageProvider.get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
-                    return;
+            if (((current_file == "" && wl.Length != 0) || (current_file != "" && wl != loaded_wl))
+                && MessageBox.Show(get_translated("prompt.open"), get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
+                return;
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 CheckFileExists = true,
@@ -313,13 +322,12 @@ namespace CWishlist_win
                 ValidateNames = true,
                 Multiselect = false
             };
-            var res = ofd.ShowDialog();
+            DialogResult res = ofd.ShowDialog();
             if (res == DialogResult.Yes || res == DialogResult.OK)
             {
                 if (current_file != "")
                     add_recent_item(current_file);
-                wl = IO.load(ofd.FileName);
-                current_file = ofd.FileName;
+                load_wl(ofd.FileName);
                 try
                 {
                     update_ui();
@@ -343,7 +351,7 @@ namespace CWishlist_win
                     c[lm1] = 'd';
                     current_file = new string(c);
                 }
-                IO.cwld_save(wl, current_file);
+                cwld_save(wl, current_file);
             }
         }
 
@@ -362,7 +370,7 @@ namespace CWishlist_win
             {
                 add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
-                IO.cwld_save(wl, current_file);
+                cwld_save(wl, current_file);
             }
         }
 
@@ -424,17 +432,17 @@ namespace CWishlist_win
         void btn8_click(object sender, EventArgs e)
         {
             foreach(Item i in wl)
-                Process.Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
+                Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
         }
 
         void chnglg_click(object sender, EventArgs e)
         {
             string tmp = Path.GetTempFileName();
-            File.WriteAllLines(tmp, LanguageProvider.get_translated("misc.changelog"));
-            Process.Start("notepad", tmp);
+            File.WriteAllLines(tmp, get_translated("misc.changelog"));
+            Start("notepad", tmp);
         }
 
-        void version_click(object sender, EventArgs e) => Process.Start("https://github.com/chrissxYT/CWishlist_win");
+        void version_click(object sender, EventArgs e) => Start("https://github.com/chrissxYT/CWishlist_win");
 
         void btn9_click(object sender, EventArgs e)
         {
@@ -448,7 +456,7 @@ namespace CWishlist_win
             update_ui();
         }
 
-        void lang_click(object sender, EventArgs e) => new LanguageSelectionDialog(LanguageProvider.get_translated("title.switch_lang")).ShowDialog();
+        void lang_click(object sender, EventArgs e) => new LanguageSelectionDialog(get_translated("title.switch_lang")).ShowDialog();
 
         void txtbx3_change(object sender, EventArgs e)
         {
@@ -475,7 +483,7 @@ namespace CWishlist_win
             }
         }
 
-        public void set_color(string hex) => set_color(Convert.ToByte(hex.Substring(0, 2), 16), Convert.ToByte(hex.Substring(2, 2), 16), Convert.ToByte(hex.Substring(4, 2), 16));
+        public void set_color(string hex) => set_color(ToByte(hex.Substring(0, 2), 16), ToByte(hex.Substring(2, 2), 16), ToByte(hex.Substring(4, 2), 16));
 
         public void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
 
@@ -512,13 +520,13 @@ namespace CWishlist_win
             }
         }
         
-        void plugindir_click(object sender, EventArgs e) => Process.Start("explorer", plugin_dir);
+        void plugindir_click(object sender, EventArgs e) => Start("explorer", plugin_dir);
 
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e, this);
 
         public void load_wl(string file)
         {
-            wl = IO.load(file);
+            wl = load(file);
             current_file = file;
             loaded_wl = wl;
         }

@@ -183,7 +183,7 @@ namespace CWishlist_win
                 if (url.StartsWith("http://tinyurl.com/"))
                 {
                     s.write(1);
-                    s.write(Encoding.Unicode.GetBytes(url.Substring(19)));
+                    s.write(Encoding.ASCII.GetBytes(url.Substring(19)));
                 }
                 else
                 {

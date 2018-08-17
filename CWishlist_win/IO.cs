@@ -88,7 +88,7 @@ namespace CWishlist_win
                 int j = -1;
 
                 while ((j = d.ReadByte()) != -1)
-                    if ((chr = to_unicode((byte)j, (byte)d.ReadByte())) == '\u0a0d')
+                    if ((chr = to_unicode((byte)j, (byte)d.ReadByte())) == '\u0d0a')
                     {
                         if (nus)
                         {
@@ -97,16 +97,18 @@ namespace CWishlist_win
                             i = new Item();
                         }
                         else
+                        {
                             i.name = s.ToString();
+                        }
                         s.Clear();
                         nus = !nus;
                     }
                     else
+                    {
                         s.Append(chr);
+                    }
 
                 d.Close();
-
-                MessageBox.Show(items.Count.ToString());
 
                 return new WL(items);
             }
@@ -115,38 +117,48 @@ namespace CWishlist_win
                 DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
                 List<Item> itms = new List<Item>();
                 StringBuilder s = new StringBuilder();
-                int flags = 0;
+                bool cs = false; //char switch
+                bool nus = false; //name url switch
+                bool tu = false; //tinyurl
                 Item i = new Item();
                 int j = -1;
                 byte b = 0;
 
                 while((j = d.ReadByte()) != -1)
                 {
-                    if (j == 11 && (flags & 0b10) == 0)
+                    if (j == 11 && !cs)
                     {
-                        if ((flags & 0b01) == 0)
+                        tu = false;
+                        if (!nus)
                         {
                             i.name = s.ToString();
-                            flags |= 0b01;
+                            nus = true;
+                            tu = d.ReadByte() == 1;
                         }
                         else
                         {
                             i.url = s.ToString();
                             itms.Add(i);
                             i = new Item();
-                            flags &= 0b01;
+                            nus = false;
                         }
                         s.Clear();
+                        if (tu)
+                            s.Append("http://tinyurl.com/");
                     }
-                    else if((flags & 0b10) == 0)
+                    else if (tu)
+                    {
+                        s.Append(Encoding.ASCII.GetChars(new byte[] { (byte)j }));
+                    }
+                    else if (!cs)
                     {
                         b = (byte)j;
-                        flags |= 0b10;
+                        cs = true;
                     }
                     else
                     {
                         s.Append(to_unicode(b, (byte)j));
-                        flags &= 0b10;
+                        cs = false;
                     }
                 }
 
