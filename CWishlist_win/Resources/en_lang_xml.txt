@@ -2,6 +2,10 @@
 	<lang code="en" name="english" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
+Version 6.2.0:\
+-Added CWLS v3, which is just a little improvement of CWLS v2\
+-Added CWLS v4, which reduced the recents.cwls size by 59.7% for us\
+\
 Version 6.1.0:\
 -Fixed the Open-Dialog not accepting CWLD-files\
 -Introduced CWishlistDeflate v2 which reduces the file size even more (we measured 15.5% and 22%)\

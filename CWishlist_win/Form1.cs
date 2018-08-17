@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using static CWishlist_win.CLinq;
 using static CWishlist_win.LanguageProvider;
@@ -28,9 +26,9 @@ namespace CWishlist_win
         public string appdir { get; } = Program.appdata + "\\CWishlist";
         public string plugin_dir { get; } = Program.appdata + "\\CWishlist\\plugins";
 		public string lang_dir { get; } = Program.appdata + "\\CWishlist\\langs";
-        public string ver_str = "6.1.0";
-        public uint ver_int = 610;
-        public byte[] version = new byte[] { 6, 1, 0 };
+        public string ver_str = "6.2.0";
+        public uint ver_int = 620;
+        public byte[] version = new byte[] {6,2,0};
 
         public Form1()
         {

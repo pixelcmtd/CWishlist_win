@@ -2,9 +2,13 @@
 	<lang code="de" name="deutsch" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist von chrissx bei chrissx Media Inc. Changelog:\
 \
+Version 6.2.0:\
+-CWLS Standard v3 hinzugefügt, welcher ein kleines Update von CWLS v2 ist\
+-CWLS Standard v4 hinzugefügt, welcher die Größe von recents.cwls bei uns um 59,7% reduziert hat\
+\
 Version 6.1.0:\
 -Der Öffnen-Dialog akzeptiert jetzt auch CWLD-files\
--CWishlistDeflate v2 wurde hinzugefügt (reduziert die Dateigröße weiter, wir haben 15.5% and 22% gemessen)\
+-CWishlistDeflate v2 wurde hinzugefügt (reduziert die Dateigröße weiter, wir haben 15,5% and 22% gemessen)\
 -Die Effizienz beim Laden von CWLD v1 Dateien (und damit auch CWLD v2 Dateien) wurde verbessert\
 -&quot;Nicht gespeicherte Änderungen&quot; wird jetzt nicht mehr angezeigt, wenn man Dateien, die über Strg+O oder die Toolbar geöffnet wurden, schließt\
 -Manchmal wurden Dateien nicht in die recents gespeichert\

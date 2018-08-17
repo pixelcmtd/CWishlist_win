@@ -6,13 +6,13 @@ using System.IO.Compression;
 using System;
 using System.Net;
 using static CWishlist_win.CLinq;
-using System.Windows.Forms;
 
 namespace CWishlist_win
 {
     static class IO
     {
         static byte[] cwld_header { get; } = new byte[8] { 67, 87, 76, 68, 13, 10, 26, 10 }; //C W L D CR LF EOF LF
+        static byte[] cwls_header { get; } = new byte[8] { 67, 87, 76, 83, 13, 10, 26, 10 }; //C W L S CR LF EOF LF
 
         public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
 
@@ -240,33 +240,35 @@ namespace CWishlist_win
         {
             if (File.Exists(file))
                 File.Delete(file);
-            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Create, Encoding.ASCII);
-            zip.add_entry("V", 2);
-            zip.add_entry("F", 1);
-            BufferedStream s = new BufferedStream(zip.CreateEntry("R", CompressionLevel.Optimal).Open(), 1048576);
-            s.write_utf8("<r>");
+            Stream fs = File.Open(file, FileMode.Create, FileAccess.Write);
+            fs.write(cwls_header);
+            fs.write(1, 4);
+            DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (string r in recents)
-                s.write_utf8($"<f f=\"{r.xml_esc()}\" />");
-            s.write_utf8("</r>");
-            s.Flush();
-            s.Close();
-            zip.Dispose();
+            {
+                byte[] l = BitConverter.GetBytes((ushort)r.Length);
+                if (!BitConverter.IsLittleEndian)
+                    Array.Reverse(l);
+                ds.write(l);
+                ds.write(Encoding.Unicode.GetBytes(r));
+            }
+            ds.Close();
         }
 
         /// <summary>
         /// Read func for the CWLS-format<para />
         /// Name: CWishlists<para />
-        /// File version 1 (originally not, but later saved)<para />
-        /// Format versions: 1, 2, 3 (saved, checked)
+        /// File version 1 (starting saving in 2, not checked)<para />
+        /// Format versions: 1, 2, 3, 4 (saved, checked)
         /// </summary>
         public static string[] load_recent(string file)
         {
-            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
-            int v = zip.read_entry_byte("V");
-            if (v > 3)
+            int v = get_cwls_version(file);
+            if (v > 4)
                 throw new TooNewRecentsFileException();
             else if (v == 1)
             {
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
                 while (x.Read())
@@ -278,6 +280,7 @@ namespace CWishlist_win
             }
             else if (v == 2)
             {
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
                 while (x.Read())
@@ -287,24 +290,64 @@ namespace CWishlist_win
                 zip.Dispose();
                 return r.ToArray();
             }
-            else
+            else if (v == 3)
             {
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
                 List<string> r = new List<string>();
                 Stream s = zip.GetEntry("R").Open();
                 int i = -1;
                 int j = -1;
-                byte[] bfr = new byte[65535 * 2];
+                byte[] bfr = new byte[131070]; //ushort.MaxValue * 2 (128KiB)
                 while ((i = s.ReadByte()) != -1)
                 {
                     j = s.ReadByte();
                     int len = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new byte[] { (byte)i, (byte)j } : new byte[] { (byte)j, (byte)i }, 0);
-                    s.Read(bfr, 0, len);
+                    s.Read(bfr, 0, len * 2);
                     r.Add(Encoding.Unicode.GetString(bfr, 0, len * 2));
                 }
                 s.Close();
                 zip.Dispose();
                 return r.ToArray();
             }
+            else
+            {
+                List<string> r = new List<string>();
+                Stream rawfs = File.Open(file, FileMode.Open, FileAccess.Read);
+                rawfs.Seek(10, SeekOrigin.Begin);
+                Stream s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
+                int i = -1;
+                int j = -1;
+                byte[] bfr = new byte[131070]; //ushort.MaxValue * 2 (128KiB)
+                while ((i = s.ReadByte()) != -1)
+                {
+                    j = s.ReadByte();
+                    int len = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new byte[] { (byte)i, (byte)j } : new byte[] { (byte)j, (byte)i }, 0);
+                    s.Read(bfr, 0, len * 2);
+                    r.Add(Encoding.Unicode.GetString(bfr, 0, len * 2));
+                }
+                s.Close();
+                return r.ToArray();
+            }
+        }
+
+        static int get_cwls_version(string f)
+        {
+            Stream s = File.Open(f, FileMode.Open, FileAccess.Read);
+            int v = -1;
+            if (s.ReadByte() == 80 && s.ReadByte() == 75)
+            {
+                s.Close();
+                ZipArchive z = ZipFile.Open(f, ZipArchiveMode.Read, Encoding.ASCII);
+                v = z.read_entry_byte("V");
+                z.Dispose();
+            }
+            else
+            {
+                s.Seek(9, SeekOrigin.Begin);
+                v = s.ReadByte();
+                s.Close();
+            }
+            return v;
         }
 
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
