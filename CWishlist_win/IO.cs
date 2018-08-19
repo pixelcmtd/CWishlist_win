@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System;
 using System.Net;
 using static CWishlist_win.CLinq;
+using static System.BitConverter;
 
 namespace CWishlist_win
 {
@@ -13,6 +14,7 @@ namespace CWishlist_win
     {
         static byte[] cwld_header { get; } = new byte[8] { 67, 87, 76, 68, 13, 10, 26, 10 }; //C W L D CR LF EOF LF
         static byte[] cwls_header { get; } = new byte[8] { 67, 87, 76, 83, 13, 10, 26, 10 }; //C W L S CR LF EOF LF
+        static byte[] cwll_header { get; } = new byte[8] { 67, 87, 76, 76, 13, 10, 26, 10 }; //C W L L CR LF EOF LF
 
         public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
 
@@ -31,6 +33,45 @@ namespace CWishlist_win
         public static void backup_save(WL wl, string f)
         {
             cwld_save(wl, f);
+        }
+
+        public static void cwll_save(WL wl, string file)
+        {
+
+        }
+
+        public static WL cwll_load(string file)
+        {
+            SevenZip.Compression.LZMA.Decoder d = new SevenZip.Compression.LZMA.Decoder();
+            FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read);
+            byte[] bfr = new byte[8];
+            fs.Read(bfr, 0, 8);
+            if(!arrequ(bfr, cwll_header))
+            {
+                fs.Close();
+                throw new InvalidHeaderException("CWLL", cwll_header, bfr);
+            }
+            int file_ver = fs.ReadByte();
+            int format_ver = fs.ReadByte();
+            if(file_ver != 5 || format_ver > 1)
+            {
+                fs.Close();
+                throw new NotSupportedFileVersionException();
+            }
+            fs.Read(bfr, 0, 8);
+            if (!IsLittleEndian)
+                Array.Reverse(bfr);
+            long len = ToInt64(bfr, 0);
+            bfr = new byte[5];
+            fs.Read(bfr, 0, 5);
+            d.SetDecoderProperties(bfr);
+            MemoryStream ms = new MemoryStream();
+            d.Code(fs, ms, fs.Length, len, null);
+            List<Item> i = new List<Item>();
+            //READ FROM MS
+            ms.Close();
+            fs.Close();
+            return new WL(i);
         }
 
         /// <summary>
