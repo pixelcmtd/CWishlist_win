@@ -133,6 +133,23 @@ namespace CWishlist_win
         {
             l.AddRange(ts);
         }
+
+        public static byte[] b64(string s)
+        {
+            return Convert.FromBase64String(s);
+        }
+
+        public static string b64(byte[] b)
+        {
+            return Convert.ToBase64String(b);
+        }
+
+        public static string b64(Stream s, int bytelen)
+        {
+            byte[] b = new byte[bytelen];
+            s.Read(b, 0, bytelen);
+            return Convert.ToBase64String(b);
+        }
     }
 
     class NotSupportedNumberFormatException : Exception

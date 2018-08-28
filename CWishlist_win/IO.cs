@@ -7,16 +7,13 @@ using System;
 using System.Net;
 using static CWishlist_win.CLinq;
 using static System.BitConverter;
+using static CWishlist_win.Consts;
 
 namespace CWishlist_win
 {
     static class IO
     {
-        static byte[] cwld_header { get; } = new byte[8] { 67, 87, 76, 68, 13, 10, 26, 10 }; //C W L D CR LF EOF LF
-        static byte[] cwls_header { get; } = new byte[8] { 67, 87, 76, 83, 13, 10, 26, 10 }; //C W L S CR LF EOF LF
-        static byte[] cwll_header { get; } = new byte[8] { 67, 87, 76, 76, 13, 10, 26, 10 }; //C W L L CR LF EOF LF
-
-        public static string tinyurl_create(string url) => new WebClient().DownloadString("http://tinyurl.com/api-create.php?url=" + url);
+        public static string tinyurl_create(string url) => new WebClient().DownloadString(tinyurl_api + url);
 
         public static bool valid_url(string url) => Uri.TryCreate(url, UriKind.Absolute, out Uri u);
 
@@ -67,11 +64,62 @@ namespace CWishlist_win
             d.SetDecoderProperties(bfr);
             MemoryStream ms = new MemoryStream();
             d.Code(fs, ms, fs.Length, len, null);
-            List<Item> i = new List<Item>();
-            //READ FROM MS
+            List<Item> items = new List<Item>();
+            Item i = new Item();
+            int j = -1;
+            int k = -1;
+            bool us = false;
+            StringBuilder b = new StringBuilder();
+            while ((j = ms.ReadByte()) != -1)
+            {
+                if (!us)
+                {
+                    if (j == cwll_is_tinyurl)
+                    {
+                        i.name = b.ToString();
+                        b.Clear();
+                        i.url = "http://tinyurl.com/" + b64(ms, 6);
+                    }
+                    else if (j == cwll_is_http || j == cwll_is_https || j == cwll_is_https_www || j == cwll_is_http_www || j == cwll_no_protocol)
+                    {
+                        i.name = b.ToString();
+                        b.Clear();
+                        b = new StringBuilder(j == cwll_is_http ? http : j == cwll_is_https ? https :
+                            j == cwll_is_http_www ? http_www : j == cwll_is_https_www ? https_www : "");
+                        while ((j = ms.ReadByte()) != -1)
+                        {
+                            if (j == cwll_item_end && !us)
+                                break;
+                            else if (us)
+                                b.Append(to_unicode((byte)k, (byte)j));
+                            else
+                                k = j;
+                            us = !us;
+                        }
+                        i.url = b.ToString();
+                        b.Clear();
+                    }
+                    else
+                        k = j;
+                    if (i.url != null)
+                    {
+                        j = k = -1;
+                        us = false;
+                        items.Add(i);
+                        i = new Item();
+                    }
+                    else
+                        us = true;
+                }
+                else
+                {
+                    b.Append(to_unicode((byte)k, (byte)j));
+                    us = false;
+                }
+            }
             ms.Close();
             fs.Close();
-            return new WL(i);
+            return new WL(items);
         }
 
         /// <summary>
@@ -138,16 +186,12 @@ namespace CWishlist_win
                             i = new Item();
                         }
                         else
-                        {
                             i.name = s.ToString();
-                        }
                         s.Clear();
                         nus = !nus;
                     }
                     else
-                    {
                         s.Append(chr);
-                    }
 
                 d.Close();
 
@@ -166,7 +210,6 @@ namespace CWishlist_win
                 byte b = 0;
 
                 while((j = d.ReadByte()) != -1)
-                {
                     if (j == 11 && !cs)
                     {
                         tu = false;
@@ -188,21 +231,15 @@ namespace CWishlist_win
                             s.Append("http://tinyurl.com/");
                     }
                     else if (tu)
-                    {
                         s.Append(Encoding.ASCII.GetChars(new byte[] { (byte)j }));
-                    }
-                    else if (!cs)
-                    {
-                        b = (byte)j;
-                        cs = true;
-                    }
                     else
                     {
-                        s.Append(to_unicode(b, (byte)j));
-                        cs = false;
+                        if (cs)
+                            s.Append(to_unicode(b, (byte)j));
+                        else
+                            b = (byte)j;
+                        cs = !cs;
                     }
-                }
-
                 return new WL(itms);
             }
         }

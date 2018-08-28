@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace CWishlist_win
 {
@@ -99,99 +97,5 @@ namespace CWishlist_win
         public Item[] SearchItems(Predicate<Item> predicate) => Array.FindAll(items, predicate);
 
         public int GetFirstIndex(Predicate<Item> predicate) => Array.FindIndex(items, predicate);
-    }
-
-    public struct Item
-    {
-        public Item(string name, string url)
-        {
-            this.name = name;
-            this.url = url;
-        }
-
-        public string name;
-        public string url;
-
-        public override string ToString() => name != "" ? name : @"[/unnamed item\]";
-
-        public override bool Equals(object obj) => (obj is Item) ? ((Item) obj).name == name && ((Item) obj).url == url : false;
-		
-		public bool Equals(Item i) => i.name == name && i.url == url;
-
-        public override int GetHashCode()
-		{
-			unchecked
-			{
-				return name.GetHashCode() * url.GetHashCode();
-			}
-		}
-
-        public static bool operator ==(Item first, Item second) => first.name == second.name && first.url == second.url;
-
-        public static bool operator !=(Item first, Item second) => first.name != second.name || first.url != second.url;
-
-        public static bool operator <(Item first, Item second) => first.name.CompareTo(second.name) == 1;
-
-        public static bool operator >(Item first, Item second) => first.name.CompareTo(second.name) == 0;
-
-        public static bool operator <=(Item first, Item second) => first.name.CompareTo(second.name) == 1 || first.name == second.name;
-
-        public static bool operator >=(Item first, Item second) => first.name.CompareTo(second.name) == 0 || first.name == second.name;
-
-        public static implicit operator string(Item i) => i.ToString();
-
-        public static implicit operator long(Item i) => i.LongLength;
-
-        public static implicit operator int(Item i) => i.Length;
-
-        public int Length
-        {
-            get => name.Length + url.Length;
-        }
-
-        public long LongLength
-        {
-            get => (long)url.Length + (long)name.Length;
-        }
-
-        public long MemoryLength
-        {
-            get => LongLength * 2;
-        }
-
-        public byte[] bytes(string format)
-        {
-            MemoryStream ms = new MemoryStream();
-            write_bytes(ms, format);
-            ms.Close();
-            return ms.ToArray();
-        }
-
-        public void write_bytes(Stream s, string format)
-        {
-            if (format == "D1")
-            {
-                s.write(Encoding.Unicode.GetBytes(name));
-                s.write(10, 13);
-                s.write(Encoding.Unicode.GetBytes(url));
-                s.write(10, 13);
-            }
-            else if (format == "D2")
-            {
-                s.write(Encoding.Unicode.GetBytes(name));
-                s.write(11);
-                if (url.StartsWith("http://tinyurl.com/"))
-                {
-                    s.write(1);
-                    s.write(Encoding.ASCII.GetBytes(url.Substring(19)));
-                }
-                else
-                {
-                    s.write(0);
-                    s.write(Encoding.Unicode.GetBytes(url));
-                }
-                s.write(11);
-            }
-        }
     }
 }
