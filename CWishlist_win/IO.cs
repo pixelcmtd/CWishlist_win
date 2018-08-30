@@ -35,7 +35,7 @@ namespace CWishlist_win
             cwld_save(wl, f);
         }
 
-        static string cwll_str_read(Stream s)
+        static string cwll_str_read(Stream s, bool utf8)
         {
 
         }
@@ -86,7 +86,7 @@ namespace CWishlist_win
                         b.Clear();
                         i.url = "http://tinyurl.com/" + b64(ms, 6);
                     }
-                    else if (j == cwll_is_http || j == cwll_is_https || j == cwll_is_https_www || j == cwll_is_http_www || j == cwll_no_protocol)
+                    else if (j > 0xdf && j < 0xf9)
                     {
                         i.name = b.ToString();
                         b.Clear();

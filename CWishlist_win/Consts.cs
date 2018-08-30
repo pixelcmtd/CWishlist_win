@@ -10,14 +10,20 @@
         
         //all these values are used after a unicode string (name), so we need to use the private use zone (e000-f8ff)
         public static byte cwll_is_tinyurl { get; } = 0xe0;
-        public static byte cwll_is_https_www { get; } = 0xe1;
-        public static byte cwll_is_http_www { get; } = 0xe2;
-        public static byte cwll_is_https { get; } = 0xe3;
-        public static byte cwll_is_http { get; } = 0xe4;
-        public static byte cwll_no_protocol { get; } = 0xe5;
+        public static byte cwll_is_https_www_utf8 { get; } = 0xe1;
+        public static byte cwll_is_http_www_utf8 { get; } = 0xe2;
+        public static byte cwll_is_https_utf8 { get; } = 0xe3;
+        public static byte cwll_is_http_utf8 { get; } = 0xe4;
+        public static byte cwll_no_protocol_utf8 { get; } = 0xe5;
+        public static byte cwll_is_https_www_utf16 { get; } = 0xe6;
+        public static byte cwll_is_http_www_utf16 { get; } = 0xe7;
+        public static byte cwll_is_https_utf16 { get; } = 0xe8;
+        public static byte cwll_is_http_utf16 { get; } = 0xe9;
+        public static byte cwll_no_protocol_utf16 { get; } = 0xea;
 
         //this is also used after a unicode string (the url, maybe without the protocol), so we need to use the private use zone once more
-        public static byte cwll_item_end { get; } = 0xe6;
+        public static byte cwll_item_end_utf16 { get; } = 0xe6;
+        public static byte cwll_item_end_utf8 { get; } = 23;
 
         public static string http { get; } = "http://";
         public static string https { get; } = "https://";
