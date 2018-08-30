@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenZip.Compression.RangeCoder
+namespace SevenZip.Utils.range
 {
 	struct BitEncoder
 	{
@@ -24,8 +24,6 @@ namespace SevenZip.Compression.RangeCoder
 
 		public void Encode(Encoder encoder, uint symbol)
 		{
-			// encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
-			// UpdateModel(symbol);
 			uint newBound = (encoder.Range >> kNumBitModelTotalBits) * Prob;
 			if (symbol == 0)
 			{
@@ -45,17 +43,17 @@ namespace SevenZip.Compression.RangeCoder
 			}
 		}
 
-		private static UInt32[] ProbPrices = new UInt32[kBitModelTotal >> kNumMoveReducingBits];
+		static uint[] ProbPrices = new uint[kBitModelTotal >> kNumMoveReducingBits];
 
 		static BitEncoder()
 		{
 			const int kNumBits = (kNumBitModelTotalBits - kNumMoveReducingBits);
 			for (int i = kNumBits - 1; i >= 0; i--)
 			{
-				UInt32 start = (UInt32)1 << (kNumBits - i - 1);
-				UInt32 end = (UInt32)1 << (kNumBits - i);
-				for (UInt32 j = start; j < end; j++)
-					ProbPrices[j] = ((UInt32)i << kNumBitPriceShiftBits) +
+                uint start = (uint)1 << (kNumBits - i - 1);
+				uint end = (uint)1 << (kNumBits - i);
+				for (uint j = start; j < end; j++)
+					ProbPrices[j] = ((uint)i << kNumBitPriceShiftBits) +
 						(((end - j) << kNumBitPriceShiftBits) >> (kNumBits - i - 1));
 			}
 		}
@@ -86,7 +84,7 @@ namespace SevenZip.Compression.RangeCoder
 
 		public void Init() { Prob = kBitModelTotal >> 1; }
 
-		public uint Decode(RangeCoder.Decoder rangeDecoder)
+		public uint Decode(Decoder rangeDecoder)
 		{
 			uint newBound = (uint)(rangeDecoder.Range >> kNumBitModelTotalBits) * (uint)Prob;
 			if (rangeDecoder.Code < newBound)

@@ -1,6 +1,6 @@
 // LzOutWindow.cs
 
-namespace SevenZip.Compression.LZ
+namespace SevenZip.Utils
 {
 	public class OutWindow
 	{

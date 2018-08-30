@@ -150,6 +150,92 @@ namespace CWishlist_win
             s.Read(b, 0, bytelen);
             return Convert.ToBase64String(b);
         }
+
+        public static short int16(byte[] b)
+        {
+            return (short)((b[0] << 8) | b[1]);
+        }
+
+        public static ushort uint16(byte[] b)
+        {
+            return (ushort)((b[0] << 8) | b[1]);
+        }
+
+        public static int int32(byte[] b)
+        {
+            return (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
+        }
+
+        public static uint uint32(byte[] b)
+        {
+            return ((uint)b[0] << 24) | ((uint)b[1] << 16) | ((uint)b[2] << 8) | b[3];
+        }
+
+        public static long int64(byte[] b)
+        {
+            return ((long)b[0] << 56) | ((long)b[1] << 48) | ((long)b[2] << 40) | ((long)b[3] << 32)
+                | ((long)b[4] << 24) | ((long)b[5] << 16) | ((long)b[6] << 8) | b[7];
+        }
+
+        public static ulong uint64(byte[] b)
+        {
+            return ((ulong)b[0] << 56) | ((ulong)b[1] << 48) | ((ulong)b[2] << 40) | ((ulong)b[3] << 32)
+                | ((ulong)b[4] << 24) | ((ulong)b[5] << 16) | ((ulong)b[6] << 8) | b[7];
+        }
+        //this piece of code is just to beautiful to delete xd
+        //public static unsafe byte[] bytes(short i)
+        //{
+        //    short[] s = new short[] { i };
+        //    byte[] b = new byte[2];
+        //    fixed(short *t = s)
+        //    {
+        //        fixed(byte *c = b)
+        //        {
+        //            Buffer.MemoryCopy(t, c, 2, 2);
+        //        }
+        //    }
+        //    return b;
+        //}
+
+        public static byte[] bytes(short i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8) };
+        }
+
+        public static byte[] bytes(ushort i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8) };
+        }
+
+        public static byte[] bytes(int i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24) };
+        }
+
+        public static byte[] bytes(uint i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24) };
+        }
+
+        public static byte[] bytes(long i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24),
+            (byte)(i >> 32),(byte)(i >> 40),(byte)(i >> 48),(byte)(i >> 56)};
+        }
+
+        public static byte[] bytes(ulong i)
+        {
+            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24),
+            (byte)(i >> 32),(byte)(i >> 40),(byte)(i >> 48),(byte)(i >> 56)};
+        }
+
+        public static bool is_utf8_only(string s)
+        {
+            foreach (char c in s)
+                if (Encoding.Unicode.GetBytes(new char[] { c })[0] != 0)
+                    return false;
+            return true;
+        }
     }
 
     class NotSupportedNumberFormatException : Exception
@@ -159,7 +245,7 @@ namespace CWishlist_win
 
     class Enumerable<T> : IEnumerable<T>
     {
-        IEnumerator<T> ie;
+        readonly IEnumerator<T> ie;
 
         public Enumerable(IEnumerator<T> ie)
         {

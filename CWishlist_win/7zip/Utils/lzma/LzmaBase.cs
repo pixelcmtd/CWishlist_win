@@ -1,6 +1,6 @@
 // LzmaBase.cs
 
-namespace SevenZip.Compression.LZMA
+namespace SevenZip.Utils.lzma
 {
 	internal abstract class Base
 	{

@@ -1,21 +1,21 @@
-using System;
+using System.IO;
 
-namespace SevenZip.Compression.RangeCoder
+namespace SevenZip.Utils.range
 {
 	class Encoder
 	{
 		public const uint kTopValue = (1 << 24);
 
-		System.IO.Stream Stream;
+		Stream Stream;
 
-		public UInt64 Low;
+		public ulong Low;
 		public uint Range;
 		uint _cacheSize;
 		byte _cache;
 
 		long StartPosition;
 
-		public void SetStream(System.IO.Stream stream)
+		public void SetStream(Stream stream)
 		{
 			Stream = stream;
 		}

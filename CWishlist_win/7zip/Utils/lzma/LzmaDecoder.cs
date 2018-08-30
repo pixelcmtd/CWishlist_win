@@ -1,12 +1,12 @@
 // LzmaDecoder.cs
 
 using System;
+using System.IO;
+using SevenZip.Utils.range;
 
-namespace SevenZip.Compression.LZMA
+namespace SevenZip.Utils.lzma
 {
-	using RangeCoder;
-
-	public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
+    public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
 	{
 		class LenDecoder
 		{
@@ -39,7 +39,7 @@ namespace SevenZip.Compression.LZMA
 				m_HighCoder.Init();
 			}
 
-			public uint Decode(RangeCoder.Decoder rangeDecoder, uint posState)
+			public uint Decode(range.Decoder rangeDecoder, uint posState)
 			{
 				if (m_Choice.Decode(rangeDecoder) == 0)
 					return m_LowCoder[posState].Decode(rangeDecoder);
@@ -66,7 +66,7 @@ namespace SevenZip.Compression.LZMA
 				public void Create() { m_Decoders = new BitDecoder[0x300]; }
 				public void Init() { for (int i = 0; i < 0x300; i++) m_Decoders[i].Init(); }
 
-				public byte DecodeNormal(RangeCoder.Decoder rangeDecoder)
+				public byte DecodeNormal(range.Decoder rangeDecoder)
 				{
 					uint symbol = 1;
 					do
@@ -75,7 +75,7 @@ namespace SevenZip.Compression.LZMA
 					return (byte)symbol;
 				}
 
-				public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, byte matchByte)
+				public byte DecodeWithMatchByte(range.Decoder rangeDecoder, byte matchByte)
 				{
 					uint symbol = 1;
 					do
@@ -125,15 +125,15 @@ namespace SevenZip.Compression.LZMA
 			uint GetState(uint pos, byte prevByte)
 			{ return ((pos & m_PosMask) << m_NumPrevBits) + (uint)(prevByte >> (8 - m_NumPrevBits)); }
 
-			public byte DecodeNormal(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte)
+			public byte DecodeNormal(range.Decoder rangeDecoder, uint pos, byte prevByte)
 			{ return m_Coders[GetState(pos, prevByte)].DecodeNormal(rangeDecoder); }
 
-			public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
+			public byte DecodeWithMatchByte(range.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
 			{ return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
 		};
 
-		LZ.OutWindow m_OutWindow = new LZ.OutWindow();
-		RangeCoder.Decoder m_RangeDecoder = new RangeCoder.Decoder();
+		OutWindow m_OutWindow = new OutWindow();
+		range.Decoder m_RangeDecoder = new range.Decoder();
 
 		BitDecoder[] m_IsMatchDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
 		BitDecoder[] m_IsRepDecoders = new BitDecoder[Base.kNumStates];
@@ -177,17 +177,11 @@ namespace SevenZip.Compression.LZMA
 
 		void SetLiteralProperties(int lp, int lc)
 		{
-			if (lp > 8)
-				throw new InvalidParamException();
-			if (lc > 8)
-				throw new InvalidParamException();
 			m_LiteralDecoder.Create(lp, lc);
 		}
 
 		void SetPosBitsProperties(int pb)
 		{
-			if (pb > Base.kNumPosStatesBitsMax)
-				throw new InvalidParamException();
 			uint numPosStates = (uint)1 << pb;
 			m_LenDecoder.Create(numPosStates);
 			m_RepLenDecoder.Create(numPosStates);
@@ -236,12 +230,10 @@ namespace SevenZip.Compression.LZMA
 			state.Init();
 			uint rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
 
-			UInt64 nowPos64 = 0;
-			UInt64 outSize64 = (UInt64)outSize;
+			ulong nowPos64 = 0;
+			ulong outSize64 = (ulong)outSize;
 			if (nowPos64 < outSize64)
 			{
-				if (m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax].Decode(m_RangeDecoder) != 0)
-					throw new DataErrorException();
 				state.UpdateChar();
 				byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
 				m_OutWindow.PutByte(b);
@@ -249,7 +241,7 @@ namespace SevenZip.Compression.LZMA
 			}
 			while (nowPos64 < outSize64)
 			{
-				// UInt64 next = Math.Min(nowPos64 + (1 << 18), outSize64);
+				// ulong next = Math.Min(nowPos64 + (1 << 18), outSize64);
 					// while(nowPos64 < next)
 				{
 					uint posState = (uint)nowPos64 & m_PosStateMask;
@@ -330,11 +322,9 @@ namespace SevenZip.Compression.LZMA
 							else
 								rep0 = posSlot;
 						}
-						if (rep0 >= m_OutWindow.TrainSize + nowPos64 || rep0 >= m_DictionarySizeCheck)
+						if (rep0 >= m_OutWindow.TrainSize + nowPos64 || rep0 >= m_DictionarySizeCheck && rep0 == 0xFFFFFFFF)
 						{
-							if (rep0 == 0xFFFFFFFF)
-								break;
-							throw new DataErrorException();
+                            break;
 						}
 						m_OutWindow.CopyBlock(rep0, len);
 						nowPos64 += len;
@@ -348,23 +338,19 @@ namespace SevenZip.Compression.LZMA
 
 		public void SetDecoderProperties(byte[] properties)
 		{
-			if (properties.Length < 5)
-				throw new InvalidParamException();
 			int lc = properties[0] % 9;
 			int remainder = properties[0] / 9;
 			int lp = remainder % 5;
 			int pb = remainder / 5;
-			if (pb > Base.kNumPosStatesBitsMax)
-				throw new InvalidParamException();
-			UInt32 dictionarySize = 0;
+			uint dictionarySize = 0;
 			for (int i = 0; i < 4; i++)
-				dictionarySize += ((UInt32)(properties[1 + i])) << (i * 8);
+				dictionarySize += ((uint)(properties[1 + i])) << (i * 8);
 			SetDictionarySize(dictionarySize);
 			SetLiteralProperties(lp, lc);
 			SetPosBitsProperties(pb);
 		}
 
-		public bool Train(System.IO.Stream stream)
+		public bool Train(Stream stream)
 		{
 			_solid = true;
 			return m_OutWindow.Train(stream);

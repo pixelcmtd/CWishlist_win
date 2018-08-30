@@ -2,7 +2,7 @@
 
 using System;
 
-namespace SevenZip.Compression.LZ
+namespace SevenZip.Utils
 {
 	public class InWindow
 	{

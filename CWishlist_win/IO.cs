@@ -6,8 +6,8 @@ using System.IO.Compression;
 using System;
 using System.Net;
 using static CWishlist_win.CLinq;
-using static System.BitConverter;
 using static CWishlist_win.Consts;
+using static SevenZip.SevenZipHelper;
 
 namespace CWishlist_win
 {
@@ -15,7 +15,10 @@ namespace CWishlist_win
     {
         public static string tinyurl_create(string url) => new WebClient().DownloadString(tinyurl_api + url);
 
-        public static bool valid_url(string url) => Uri.TryCreate(url, UriKind.Absolute, out Uri u);
+        public static bool valid_url(string url)
+        {
+            return url.ToLower().StartsWith("http://") || url.ToLower().StartsWith("https://") && url.Contains(".");
+        }
 
         public static WL load(string f)
         {
@@ -32,14 +35,26 @@ namespace CWishlist_win
             cwld_save(wl, f);
         }
 
-        public static void cwll_save(WL wl, string file)
+        static string cwll_str_read(Stream s)
         {
 
         }
 
+        public static void cwll_save(WL wl, string file)
+        {
+            FileStream fs = File.Open(file, FileMode.Create, FileAccess.Write);
+            fs.Write(cwll_header, 0, 8);
+            fs.write(5, 1);
+            MemoryStream ms = new MemoryStream();
+            foreach (Item i in wl)
+                i.write_bytes(ms, "L1");
+            Compress(ms, fs);
+            ms.Close();
+            fs.Close();
+        }
+
         public static WL cwll_load(string file)
         {
-            SevenZip.Compression.LZMA.Decoder d = new SevenZip.Compression.LZMA.Decoder();
             FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read);
             byte[] bfr = new byte[8];
             fs.Read(bfr, 0, 8);
@@ -48,22 +63,13 @@ namespace CWishlist_win
                 fs.Close();
                 throw new InvalidHeaderException("CWLL", cwll_header, bfr);
             }
-            int file_ver = fs.ReadByte();
-            int format_ver = fs.ReadByte();
-            if(file_ver != 5 || format_ver > 1)
+            if(fs.ReadByte() != 5 || fs.ReadByte() > 1)
             {
                 fs.Close();
                 throw new NotSupportedFileVersionException();
             }
-            fs.Read(bfr, 0, 8);
-            if (!IsLittleEndian)
-                Array.Reverse(bfr);
-            long len = ToInt64(bfr, 0);
-            bfr = new byte[5];
-            fs.Read(bfr, 0, 5);
-            d.SetDecoderProperties(bfr);
             MemoryStream ms = new MemoryStream();
-            d.Code(fs, ms, fs.Length, len, null);
+            Decompress(fs, ms);
             List<Item> items = new List<Item>();
             Item i = new Item();
             int j = -1;

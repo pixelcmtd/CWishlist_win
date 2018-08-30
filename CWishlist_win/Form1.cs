@@ -113,9 +113,10 @@ namespace CWishlist_win
             update_ui();
         }
 
-        void update_ui()
+        public void update_ui()
         {
-            GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true); //no GC for 15MiB of small object heap and 127MiB for big object heap
+            //no GC for [up to]15MiB of small object heap and 127MiB for big object heap
+            GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Length > 0)
                 foreach (string r in recents)
@@ -131,7 +132,7 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("N/A"));
             for (long i = 0; i < wl.LongLength; i++)
-                if (!wl[i].url.StartsWith("http://tinyurl.com/") && wl[i].url.Length > 25 && valid_url(wl[i].url))
+                if (!wl[i].url.StartsWith("http://tinyurl.com/") && wl[i].url.Length > 27 && valid_url(wl[i].url))
                     wl.items[i].url = tinyurl_create(wl[i].url);
             int index = listBox1.SelectedIndex;
             listBox1.Items.Clear();
@@ -527,11 +528,17 @@ namespace CWishlist_win
             wl = load(file);
             current_file = file;
             loaded_wl = wl;
+            update_ui();
         }
 
         void debugToolupdateuiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             update_ui();
+        }
+
+        void debugToolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new DebugTools(this).ShowDialog();
         }
     }
 }
