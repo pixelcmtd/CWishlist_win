@@ -12,6 +12,14 @@ using static System.Text.Encoding;
 using static System.Convert;
 using static System.Diagnostics.Process;
 using static CWishlist_win.IO;
+using static System.GC;
+using static CWishlist_win.WL;
+using static System.Windows.Forms.Clipboard;
+using static System.Drawing.Color;
+using static CWishlist_win.Sorting;
+using static System.Windows.Forms.Keys;
+using static System.Windows.Forms.DialogResult;
+using static System.Windows.Forms.MessageBoxButtons;
 
 namespace CWishlist_win
 {
@@ -20,7 +28,7 @@ namespace CWishlist_win
         public PluginManager plugin_manager { get; } = new PluginManager();
         public WL wl;
         public string current_file = "";
-        public WL loaded_wl = WL.NEW;
+        public WL loaded_wl = NEW;
         public string[] recents = new string[0];
         public string appdata { get; } = Program.appdata;
         public string appdir { get; } = Program.appdata + "\\CWishlist";
@@ -39,7 +47,7 @@ namespace CWishlist_win
             if (args.Length > 0)
                 load_wl(args[0]);
             else
-                wl = WL.NEW;
+                wl = NEW;
 
             if (!Directory.Exists(appdir))
                 Directory.CreateDirectory(appdir);
@@ -116,7 +124,7 @@ namespace CWishlist_win
         public void update_ui()
         {
             //no GC for [up to]15MiB of small object heap and 127MiB for big object heap
-            GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
+            TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Length > 0)
                 foreach (string r in recents)
@@ -143,12 +151,10 @@ namespace CWishlist_win
             backup_save(wl, appdir + "\\backup.cwl");
             File.WriteAllBytes(appdir + "\\RESTORE_BACKUP", new byte[] { 1 });
             listBox1.SelectedIndex = index;
-            if (stack_size > 800000)
-                MessageBox.Show(get_translated("prompt.stackoverflow"), get_translated("caption.stackoverflow"));
             Invalidate();
             Update();
-            GC.EndNoGCRegion();
-            GC.Collect(2, GCCollectionMode.Forced, false, false);
+            EndNoGCRegion();
+            Collect(2, GCCollectionMode.Forced, false, false);
         }
 
         void lstbx_index_change(object sender, EventArgs e)
@@ -186,11 +192,11 @@ namespace CWishlist_win
 
         void btn4_click(object sender, EventArgs e)
         {
-            if (Clipboard.ContainsText())
+            if (ContainsText())
                 for (uint i = 0; i < uint.MaxValue; i++)
                     try
                     {
-                        textBox1.Text = Clipboard.GetText();
+                        textBox1.Text = GetText();
                         break;
                     }
                     catch { }
@@ -198,11 +204,11 @@ namespace CWishlist_win
 
         void btn5_click(object sender, EventArgs e)
         {
-            if(Clipboard.ContainsText())
+            if(ContainsText())
                 for(uint i = 0; i < uint.MaxValue; i++)
                     try
                     {
-                        textBox2.Text = Clipboard.GetText();
+                        textBox2.Text = GetText();
                         break;
                     }
                     catch { }
@@ -260,7 +266,7 @@ namespace CWishlist_win
 
         void closing(object sender, FormClosingEventArgs e)
         {
-            if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
+            if ((wl > 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
             {
                 bool flag = MessageBox.Show(get_translated("prompt.close"), get_translated("caption.close"), MessageBoxButtons.YesNo) == DialogResult.No;
                 e.Cancel = flag;
@@ -290,16 +296,16 @@ namespace CWishlist_win
 
         void new_click(object sender, EventArgs e)
         {
-            if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
-                if (MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), MessageBoxButtons.YesNo) == DialogResult.No)
+            if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl)
+                && MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), YesNo) == No)
                     return;
             if (current_file != "")
             {
                 add_recent_item(current_file);
                 current_file = "";
             }
-            wl = WL.NEW;
-            loaded_wl = WL.NEW;
+            wl = NEW;
+            loaded_wl = NEW;
             try
             {
                 update_ui();
@@ -309,8 +315,8 @@ namespace CWishlist_win
 
         void open_click(object sender, EventArgs e)
         {
-            if (((current_file == "" && wl.Length != 0) || (current_file != "" && wl != loaded_wl))
-                && MessageBox.Show(get_translated("prompt.open"), get_translated("caption.open"), MessageBoxButtons.YesNo) == DialogResult.No)
+            if (((current_file == "" && wl.Length > 0) || (current_file != "" && wl != loaded_wl))
+                && MessageBox.Show(get_translated("prompt.open"), get_translated("caption.open"), YesNo) == No)
                 return;
             OpenFileDialog ofd = new OpenFileDialog()
             {
@@ -322,16 +328,11 @@ namespace CWishlist_win
                 Multiselect = false
             };
             DialogResult res = ofd.ShowDialog();
-            if (res == DialogResult.Yes || res == DialogResult.OK)
+            if (res == Yes || res == DialogResult.OK)
             {
                 if (current_file != "")
                     add_recent_item(current_file);
                 load_wl(ofd.FileName);
-                try
-                {
-                    update_ui();
-                }
-                catch { }
             }
         }
 
@@ -365,7 +366,7 @@ namespace CWishlist_win
                 Title = "Save CWishlist"
             };
             var res = sfd.ShowDialog();
-            if (res == DialogResult.Yes || res == DialogResult.OK)
+            if (res == Yes || res == DialogResult.OK)
             {
                 add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
@@ -375,20 +376,21 @@ namespace CWishlist_win
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == (Keys.Control | Keys.S))
+            if (keyData == (Keys.Control | S))
                 save_click(keyData, null);
-            else if (keyData == (Keys.Control | Keys.Shift | Keys.S))
+            else if (keyData == (Keys.Control | Shift | S))
                 save_as_click(keyData, null);
-            else if (keyData == (Keys.Control | Keys.O))
+            else if (keyData == (Keys.Control | O))
                 open_click(keyData, null);
-            else if (keyData == (Keys.Control | Keys.N))
+            else if (keyData == (Keys.Control | N))
                 new_click(keyData, null);
-            else if (keyData == Keys.Up && listBox1.SelectedIndex > -1)
+            else if (keyData == Up && listBox1.SelectedIndex > -1)
                 listBox1.SelectedIndex--;
-            else if (keyData == Keys.Down && listBox1.SelectedIndex + 1 < listBox1.Items.Count)
+            else if (keyData == Down && listBox1.SelectedIndex + 1 < listBox1.Items.Count)
                 listBox1.SelectedIndex++;
             else
                 return base.ProcessCmdKey(ref msg, keyData);
+            update_ui();
             return true;
         }
 
@@ -446,12 +448,7 @@ namespace CWishlist_win
         void btn9_click(object sender, EventArgs e)
         {
             update_ui();
-            long n = stack_size;
-            double log = Math.Log(n, 2);
-            long space_complexity = (long)((n * (log + 1)) + (n * log));
-            if (space_complexity > 800000)
-                MessageBox.Show($"The math shows the space complexity of this merge sort is {space_complexity} Bytes and is a bit high for the 1MiB Stack, a backup is saved, be warned!");
-            wl.items = Sorting.merge_sort_items(wl.items);
+            wl.items = merge_sort_items(wl.items);
             update_ui();
         }
 
@@ -471,23 +468,24 @@ namespace CWishlist_win
             textBox3.SelectionLength = textBox3.TextLength;
         }
 
-        public long stack_size
-        {
-            get
-            {
-                long s = 0;
-                foreach (Item i in wl)
-                    s += i.MemoryLength;
-                return s;
-            }
-        }
-
+        /// <summary>
+        /// Sets all the colors to the given one.
+        /// </summary>
         public void set_color(string hex) => set_color(ToByte(hex.Substring(0, 2), 16), ToByte(hex.Substring(2, 2), 16), ToByte(hex.Substring(4, 2), 16));
 
-        public void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
+        /// <summary>
+        /// Sets all the colors to the given one.
+        /// </summary>
+        public void set_color(byte r, byte g, byte b) => set_color(FromArgb(r, g, b));
 
-        public void set_color(int argb) => set_color(Color.FromArgb(argb));
+        /// <summary>
+        /// Sets all the colors to the given one.
+        /// </summary>
+        public void set_color(int argb) => set_color(FromArgb(argb));
 		
+        /// <summary>
+        /// Sets all the colors to the given one.
+        /// </summary>
 		public void set_color(Color c)
 		{
 			BackColor = c;
@@ -507,6 +505,9 @@ namespace CWishlist_win
             menuStrip1.BackColor = c;
 		}
 
+        /// <summary>
+        /// Opens an InputBox for the color.
+        /// </summary>
         void style_click(object sender, EventArgs e)
         {
             try
@@ -519,23 +520,35 @@ namespace CWishlist_win
             }
         }
         
+        /// <summary>
+        /// Starts the windows explorer in the plugin dir.
+        /// </summary>
         void plugindir_click(object sender, EventArgs e) => Start("explorer", plugin_dir);
 
+        /// <summary>
+        /// "Hook" to invoke the paint listeners in the plugin manager.
+        /// </summary>
         void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e, this);
 
+        /// <summary>
+        /// Loads the CWL from the given file to loaded_wl, wl and current_file.
+        /// </summary>
+        /// <param name="file">The file to load the CWL from.</param>
         public void load_wl(string file)
         {
             wl = load(file);
             current_file = file;
             loaded_wl = wl;
-            update_ui();
+            try
+            {
+                update_ui();
+            }
+            catch { }
         }
 
-        void debugToolupdateuiToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            update_ui();
-        }
-
+        /// <summary>
+        /// Shows the DebugTools as a dialog.
+        /// </summary>
         void debugToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new DebugTools(this).ShowDialog();

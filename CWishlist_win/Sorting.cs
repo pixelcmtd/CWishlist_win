@@ -1,4 +1,4 @@
-﻿using System;
+﻿using static System.GC;
 
 namespace CWishlist_win
 {
@@ -6,68 +6,73 @@ namespace CWishlist_win
     {
         public static Item[] merge_sort_items(Item[] u)
         {
-            GC.TryStartNoGCRegion(8 * 1024 * 1024);
-            Item[] i = m(u);
-            GC.EndNoGCRegion();
+            TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
+            Item[] i = s(u);
+            EndNoGCRegion();
             return i;
         }
 
-        public static Item[] m(Item[] u)
+        static Item[] s(Item[] u)
         {
             if (u.Length < 2)
                 return u;
 
-            int mid = u.Length / 2; //Structs are stored on the stack, so there is a 1 MiB limit to them, so 32bit length is ok
-            Item[] l = new Item[mid];
-            Item[] r = new Item[u.Length % 2 == 1 ? mid + 1 : mid];
+            long m = u.LongLength / 2;
+            Item[] l = new Item[m];
+            Item[] r = new Item[u.Length % 2 == 1 ? m + 1 : m];
 
-            for (int i = 0; i < mid; i++)
+            for (long i = 0; i < m; i++)
                 l[i] = u[i];
 
-            for (int i = mid; i < u.Length; i++)
-                r[i - mid] = u[i];
+            for (long i = m; i < u.Length; i++)
+                r[i - m] = u[i];
 
-            l = m(l);
-            r = m(r);
-            return m(l, r);
+            l = s(l);
+            r = s(r);
+            return s(l, r);
         }
 
-        static Item[] m(Item[] l, Item[] r)
+        static Item[] s(Item[] l, Item[] r)
         {
-            Item[] res = new Item[l.Length + r.Length];
-            int res_idx = 0;
-            int li = 0;
-            int ri = 0;
+            Item[] a = new Item[l.LongLength + r.LongLength];
+            long ai = 0;
+            long li = 0;
+            long ri = 0;
+            long ll = l.LongLength;
+            long rl = r.LongLength;
+            bool ld;
+            bool rd;
 
-            while (l.Length > 0 || r.Length > 0)
+            while ((ld = ll - li > 0) || rl - ri > 0)
             {
-                if (l.Length > 0 && r.Length > 0)
-                    if (l[0] >= r[0])
+                rd = rl - ri > 0;
+                if (ld && rd)
+                    if (l[li] >= r[ri])
                     {
-                        res[res_idx] = l[li];
-                        res_idx++;
+                        a[ai] = l[li];
+                        ai++;
                         li++;
                     }
                     else
                     {
-                        res[res_idx] = r[ri];
-                        res_idx++;
+                        a[ai] = r[ri];
+                        ai++;
                         ri++;
                     }
-                else if (l.Length > 0)
+                else if (ld)
                 {
-                    res[res_idx] = l[li];
-                    res_idx++;
+                    a[ai] = l[li];
+                    ai++;
                     li++;
                 }
-                else if (r.Length > 0)
+                else if (rd)
                 {
-                    res[res_idx] = r[ri];
-                    res_idx++;
+                    a[ai] = r[ri];
+                    ai++;
                     ri++;
                 }
             }
-            return res;
+            return a;
         }
     }
 }

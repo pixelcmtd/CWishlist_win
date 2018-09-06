@@ -108,26 +108,26 @@ namespace CWishlist_win
                 }
                 else
                 {
-                    if(url.StartsWith("https://www."))
-                        write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16);
-                    else if(url.StartsWith("http://www."))
-                        write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16);
-                    else if (url.StartsWith("https://"))
-                        write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16);
-                    else if (url.StartsWith("http://"))
-                        write_str(s, url.Substring(7), cwll_is_http_utf8, cwll_is_http_utf16);
+                    if(url.StartsWith(https_www))
+                        write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if(url.StartsWith(http_www))
+                        write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if (url.StartsWith(https))
+                        write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if (url.StartsWith(http))
+                        write_str(s, url.Substring(7), cwll_is_http_utf8, cwll_is_http_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
                     else
-                        write_str(s, url, cwll_no_protocol_utf8, cwll_no_protocol_utf16);
-                    s.write(cwll_item_end);
+                        write_str(s, url, cwll_no_protocol_utf8, cwll_no_protocol_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
                 }
             }
         }
 
-        void write_str(Stream s, string t, byte utf8_sep, byte utf16_sep)
+        void write_str(Stream s, string t, byte utf8_sep, byte utf16_sep, byte utf8_end, byte utf16_end)
         {
             bool b = is_utf8_only(t);
             s.write(b ? utf8_sep : utf16_sep);
             s.write(b ? Encoding.UTF8.GetBytes(t) : Encoding.Unicode.GetBytes(t));
+            s.write(b ? utf8_end : utf16_end);
         }
     }
 }

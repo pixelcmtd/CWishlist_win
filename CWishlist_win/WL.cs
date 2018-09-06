@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using static System.Array;
 
 namespace CWishlist_win
 {
-    public struct WL : IEnumerable
+    public class WL : IEnumerable
     {
         public WL(params Item[] items)
         {
@@ -22,15 +23,25 @@ namespace CWishlist_win
 
         public static bool operator ==(WL first, WL second)
         {
-            if (first.Length != second.Length)
+            long f = first.LongLength;
+            if (f != second.LongLength)
                 return false;
-            for (int i = 0; i < first.Length; i++)
+            for (long i = 0; i < f; i++)
                 if (first[i] != second[i])
                     return false;
             return true;
         }
 
-        public static bool operator !=(WL first, WL second) => !(first == second);
+        public static bool operator !=(WL first, WL second)
+        {
+            long f = first.LongLength;
+            if (f != second.LongLength)
+                return true;
+            for (long i = 0; i < f; i++)
+                if (first[i] != second[i])
+                    return true;
+            return false;
+        }
 
         public Item this[ulong index] => items[index];
 
@@ -58,7 +69,7 @@ namespace CWishlist_win
             return new WL(items);
         }
 
-        public static implicit operator int(WL wl) => wl.Length;
+        public static implicit operator int(WL wl) => wl.items.Length;
 
         public static implicit operator long(WL wl)
         {
@@ -71,13 +82,10 @@ namespace CWishlist_win
 
         public override int GetHashCode()
 		{
-			unchecked
-			{
-				int hc = 0;
-				foreach(Item i in items)
-					hc += i.GetHashCode();
-				return hc;
-			}
+		    int hc = 0;
+            foreach (Item i in items)
+                hc = unchecked(hc * i.GetHashCode());
+		    return hc;
 		}
 
         public override string ToString() => items.ToString();
@@ -94,8 +102,8 @@ namespace CWishlist_win
             get => items.LongLength;
         }
 
-        public Item[] SearchItems(Predicate<Item> predicate) => Array.FindAll(items, predicate);
+        public Item[] SearchItems(Predicate<Item> predicate) => FindAll(items, predicate);
 
-        public int GetFirstIndex(Predicate<Item> predicate) => Array.FindIndex(items, predicate);
+        public int GetFirstIndex(Predicate<Item> predicate) => FindIndex(items, predicate);
     }
 }

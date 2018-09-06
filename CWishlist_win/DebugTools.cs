@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CWishlist_win
@@ -49,7 +42,7 @@ namespace CWishlist_win
 
         void button5_Click(object sender, EventArgs e)
         {
-            FileStream fs = File.Open("text.deflated_cwll", FileMode.Create, FileAccess.Write);
+            FileStream fs = File.Open("test.deflated_cwll", FileMode.Create, FileAccess.Write);
             fs.Write(Consts.cwll_header, 0, 8);
             fs.write(5, 255);
             DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);

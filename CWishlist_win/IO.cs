@@ -8,6 +8,9 @@ using System.Net;
 using static CWishlist_win.CLinq;
 using static CWishlist_win.Consts;
 using static SevenZip.SevenZipHelper;
+using static System.IO.FileMode;
+using static System.Text.Encoding;
+using static System.IO.Compression.CompressionLevel;
 
 namespace CWishlist_win
 {
@@ -35,14 +38,23 @@ namespace CWishlist_win
             cwld_save(wl, f);
         }
 
-        static string cwll_str_read(Stream s, bool utf8)
+        static string cwll_url_str_read(Stream s, bool is_utf8)
         {
-
+            StringBuilder b = new StringBuilder();
+            int i;
+            while ((i = s.ReadByte()) != -1)
+                if ((is_utf8 && i == cwll_item_end_utf8) || (!is_utf8 && i == cwll_item_end_utf16))
+                    break;
+                else if (is_utf8)
+                    b.Append(utf8(i));
+                else
+                    b.Append(utf16(i, s.ReadByte()));
+            return b.ToString();
         }
 
         public static void cwll_save(WL wl, string file)
         {
-            FileStream fs = File.Open(file, FileMode.Create, FileAccess.Write);
+            FileStream fs = File.Open(file, Create, FileAccess.Write);
             fs.Write(cwll_header, 0, 8);
             fs.write(5, 1);
             MemoryStream ms = new MemoryStream();
@@ -55,7 +67,7 @@ namespace CWishlist_win
 
         public static WL cwll_load(string file)
         {
-            FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read);
+            FileStream fs = File.Open(file, Open, FileAccess.Read);
             byte[] bfr = new byte[8];
             fs.Read(bfr, 0, 8);
             if(!arrequ(bfr, cwll_header))
@@ -70,61 +82,49 @@ namespace CWishlist_win
             }
             MemoryStream ms = new MemoryStream();
             Decompress(fs, ms);
+            fs.Close();
             List<Item> items = new List<Item>();
             Item i = new Item();
-            int j = -1;
-            int k = -1;
-            bool us = false;
+            int j;
             StringBuilder b = new StringBuilder();
             while ((j = ms.ReadByte()) != -1)
             {
-                if (!us)
+                if (j > 0xdf && j < 0xf9) //the private area of utf16 (values that are not typable or displayable)
                 {
                     if (j == cwll_is_tinyurl)
                     {
                         i.name = b.ToString();
                         b.Clear();
                         i.url = "http://tinyurl.com/" + b64(ms, 6);
-                    }
-                    else if (j > 0xdf && j < 0xf9)
-                    {
-                        i.name = b.ToString();
-                        b.Clear();
-                        b = new StringBuilder(j == cwll_is_http ? http : j == cwll_is_https ? https :
-                            j == cwll_is_http_www ? http_www : j == cwll_is_https_www ? https_www : "");
-                        while ((j = ms.ReadByte()) != -1)
-                        {
-                            if (j == cwll_item_end && !us)
-                                break;
-                            else if (us)
-                                b.Append(to_unicode((byte)k, (byte)j));
-                            else
-                                k = j;
-                            us = !us;
-                        }
-                        i.url = b.ToString();
-                        b.Clear();
-                    }
-                    else
-                        k = j;
-                    if (i.url != null)
-                    {
-                        j = k = -1;
-                        us = false;
                         items.Add(i);
                         i = new Item();
                     }
                     else
-                        us = true;
+                    {
+                        i.name = b.ToString();
+                        b.Clear();
+                        bool c = j == cwll_is_https_utf8;
+                        bool f = j == cwll_is_https_www_utf8;
+                        bool h = j == cwll_is_http_utf8;
+                        bool m = j == cwll_is_http_www_utf8;
+                        if (c || j == cwll_is_https_utf16)
+                            i.url = cwll_url_str_read(ms, c);
+                        else if (j == cwll_is_https_www_utf16 || f)
+                            i.url = cwll_url_str_read(ms, f);
+                        else if (j == cwll_is_http_utf16 || h)
+                            i.url = cwll_url_str_read(ms, h);
+                        else if (j == cwll_is_http_www_utf16 || m)
+                            i.url = cwll_url_str_read(ms, m);
+                        else
+                            i.url = cwll_url_str_read(ms, j == cwll_no_protocol_utf8);
+                        items.Add(i);
+                        i = new Item();
+                    }
                 }
                 else
-                {
-                    b.Append(to_unicode((byte)k, (byte)j));
-                    us = false;
-                }
+                    b.Append(utf16(j, ms.ReadByte()));
             }
             ms.Close();
-            fs.Close();
             return new WL(items);
         }
 
@@ -134,7 +134,7 @@ namespace CWishlist_win
         /// </summary>
         public static void cwld_save(WL wl, string file)
         {
-            Stream s = File.Open(file, FileMode.Create, FileAccess.Write);
+            Stream s = File.Open(file, Create, FileAccess.Write);
 
             s.write(cwld_header);
             s.write(4, 2);
@@ -155,7 +155,7 @@ namespace CWishlist_win
         /// </summary>
         public static WL cwld_load(string file)
         {
-            Stream raw = File.Open(file, FileMode.Open, FileAccess.Read);
+            Stream raw = File.Open(file, Open, FileAccess.Read);
 
             byte[] h = new byte[8]; //header
             raw.Read(h, 0, 8);
@@ -183,7 +183,7 @@ namespace CWishlist_win
                 int j = -1;
 
                 while ((j = d.ReadByte()) != -1)
-                    if ((chr = to_unicode((byte)j, (byte)d.ReadByte())) == '\u0d0a')
+                    if ((chr = utf16(j, d.ReadByte())) == '\u0d0a')
                     {
                         if (nus)
                         {
@@ -237,11 +237,11 @@ namespace CWishlist_win
                             s.Append("http://tinyurl.com/");
                     }
                     else if (tu)
-                        s.Append(Encoding.ASCII.GetChars(new byte[] { (byte)j }));
+                        s.Append(ascii(j));
                     else
                     {
                         if (cs)
-                            s.Append(to_unicode(b, (byte)j));
+                            s.Append(utf16(b, j));
                         else
                             b = (byte)j;
                         cs = !cs;
@@ -260,11 +260,11 @@ namespace CWishlist_win
         {
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
 
-            if (zip.read_entry_byte("F") > 3)
-                throw new NotSupportedFileVersionException();
-            if (zip.read_entry_byte("V") > 1)
+            //check major & minor
+            if (zip.read_entry_byte("F") != 3 || zip.read_entry_byte("V") != 1)
                 throw new NotSupportedFileVersionException();
 
+            //start reading W
             XmlReader xml = XmlReader.Create(new StreamReader(zip.GetEntry("W").Open(), Encoding.Unicode));
             List<Item> items = new List<Item>();
 
@@ -286,12 +286,12 @@ namespace CWishlist_win
         /// </summary>
         static WL cwlb_load(string file)
         {
-            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
+            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
             XmlReader xml = XmlReader.Create(zip.GetEntry("W").Open());
             List<Item> items = new List<Item>();
             while (xml.Read())
                 if (xml.Name == "i")
-                    items.Add(new Item(Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("n"))), Encoding.UTF32.GetString(Convert.FromBase64String(xml.GetAttribute("u")))));
+                    items.Add(new Item(utf32(b64(xml.GetAttribute("n"))), utf32(b64(xml.GetAttribute("u")))));
             xml.Close();
             zip.Dispose();
             return new WL(items);
@@ -305,7 +305,7 @@ namespace CWishlist_win
         /// </summary>
         static WL cwl_load(string file)
         {
-            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.UTF8);
+            ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, UTF8);
             XmlReader xml = XmlReader.Create(zip.Entries[0].Open());
             List<Item> items = new List<Item>();
             while (xml.Read())
@@ -324,17 +324,14 @@ namespace CWishlist_win
         {
             if (File.Exists(file))
                 File.Delete(file);
-            Stream fs = File.Open(file, FileMode.Create, FileAccess.Write);
+            Stream fs = File.Open(file, Create, FileAccess.Write);
             fs.write(cwls_header);
             fs.write(1, 4);
-            DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
+            DeflateStream ds = new DeflateStream(fs, Optimal, false);
             foreach (string r in recents)
             {
-                byte[] l = BitConverter.GetBytes((ushort)r.Length);
-                if (!BitConverter.IsLittleEndian)
-                    Array.Reverse(l);
-                ds.write(l);
-                ds.write(Encoding.Unicode.GetBytes(r));
+                ds.write(bytes((ushort)r.Length));
+                ds.write(utf16(r));
             }
             ds.Close();
         }
@@ -352,19 +349,19 @@ namespace CWishlist_win
                 throw new TooNewRecentsFileException();
             else if (v == 1)
             {
-                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
                 while (x.Read())
                     if (x.Name == "r")
-                        r.Add(Encoding.UTF32.GetString(Convert.FromBase64String(x.GetAttribute("f"))));
+                        r.Add(utf32(b64(x.GetAttribute("f"))));
                 x.Close();
                 zip.Dispose();
                 return r.ToArray();
             }
             else if (v == 2)
             {
-                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
                 XmlReader x = XmlReader.Create(zip.GetEntry("R").Open());
                 List<string> r = new List<string>();
                 while (x.Read())
@@ -376,7 +373,7 @@ namespace CWishlist_win
             }
             else if (v == 3)
             {
-                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, Encoding.ASCII);
+                ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
                 List<string> r = new List<string>();
                 Stream s = zip.GetEntry("R").Open();
                 int i = -1;
@@ -387,7 +384,7 @@ namespace CWishlist_win
                     j = s.ReadByte();
                     int len = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new byte[] { (byte)i, (byte)j } : new byte[] { (byte)j, (byte)i }, 0);
                     s.Read(bfr, 0, len * 2);
-                    r.Add(Encoding.Unicode.GetString(bfr, 0, len * 2));
+                    r.Add(Unicode.GetString(bfr, 0, len * 2));
                 }
                 s.Close();
                 zip.Dispose();
@@ -396,7 +393,7 @@ namespace CWishlist_win
             else
             {
                 List<string> r = new List<string>();
-                Stream rawfs = File.Open(file, FileMode.Open, FileAccess.Read);
+                Stream rawfs = File.Open(file, Open, FileAccess.Read);
                 rawfs.Seek(10, SeekOrigin.Begin);
                 Stream s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
                 int i = -1;
@@ -407,7 +404,7 @@ namespace CWishlist_win
                     j = s.ReadByte();
                     int len = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new byte[] { (byte)i, (byte)j } : new byte[] { (byte)j, (byte)i }, 0);
                     s.Read(bfr, 0, len * 2);
-                    r.Add(Encoding.Unicode.GetString(bfr, 0, len * 2));
+                    r.Add(Unicode.GetString(bfr, 0, len * 2));
                 }
                 s.Close();
                 return r.ToArray();
@@ -416,12 +413,12 @@ namespace CWishlist_win
 
         static int get_cwls_version(string f)
         {
-            Stream s = File.Open(f, FileMode.Open, FileAccess.Read);
+            Stream s = File.Open(f, Open, FileAccess.Read);
             int v = -1;
             if (s.ReadByte() == 80 && s.ReadByte() == 75)
             {
                 s.Close();
-                ZipArchive z = ZipFile.Open(f, ZipArchiveMode.Read, Encoding.ASCII);
+                ZipArchive z = ZipFile.Open(f, ZipArchiveMode.Read, ASCII);
                 v = z.read_entry_byte("V");
                 z.Dispose();
             }
@@ -435,8 +432,6 @@ namespace CWishlist_win
         }
 
         static bool cose(this string s, byte o, char c) => s[s.Length - o] == c;
-
-        static char to_unicode(byte one, byte two) => Encoding.Unicode.GetChars(new byte[] { one, two })[0];
     }
 
     class InvalidHeaderException : Exception
