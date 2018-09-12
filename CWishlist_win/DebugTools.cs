@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SevenZip;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
@@ -43,12 +44,41 @@ namespace CWishlist_win
         void button5_Click(object sender, EventArgs e)
         {
             FileStream fs = File.Open("test.deflated_cwll", FileMode.Create, FileAccess.Write);
-            fs.Write(Consts.cwll_header, 0, 8);
-            fs.write(5, 255);
+            fs.Write(Consts.cwll_header, 0, 4);
+            fs.write(255);
             DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (Item i in src_form.wl)
                 i.write_bytes(ds, "L1");
             ds.Close();
+        }
+
+        void button6_Click(object sender, EventArgs e)
+        {
+            FileStream fs = File.Open("test.cwll_withoutbase64decode", FileMode.Create, FileAccess.Write);
+            fs.Write(Consts.cwll_header, 0, 4);
+            fs.write(1);
+            MemoryStream ms = new MemoryStream();
+            foreach (Item i in src_form.wl)
+                i.write_bytes(ms, "L1WITHOUTBASE64DECODE");
+            SevenZipHelper.Compress(ms, fs);
+            ms.Close();
+            fs.Close();
+        }
+
+        void button7_Click(object sender, EventArgs e)
+        {
+            FileStream fs = File.Open("test.uncompressed_cwll_withoutbase64decode", FileMode.Create, FileAccess.Write);
+            foreach (Item i in src_form.wl)
+                i.write_bytes(fs, "L1WITHOUTBASE64DECODE");
+            fs.Close();
+        }
+
+        void button8_Click(object sender, EventArgs e)
+        {
+            FileStream fs = File.Open("test.uncompressed_cwld", FileMode.Create, FileAccess.Write);
+            foreach (Item i in src_form.wl)
+                i.write_bytes(fs, "D2");
+            fs.Close();
         }
     }
 }

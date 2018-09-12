@@ -77,30 +77,30 @@ namespace CWishlist_win
         {
             if (format == "D1")
             {
-                s.write(Encoding.Unicode.GetBytes(name));
+                s.write(utf16(name));
                 s.write(10, 13);
-                s.write(Encoding.Unicode.GetBytes(url));
+                s.write(utf16(url));
                 s.write(10, 13);
             }
             else if (format == "D2")
             {
-                s.write(Encoding.Unicode.GetBytes(name));
+                s.write(utf16(name));
                 s.write(11);
                 if (url.StartsWith("http://tinyurl.com/"))
                 {
                     s.write(1);
-                    s.write(Encoding.ASCII.GetBytes(url.Substring(19)));
+                    s.write(ascii(url.Substring(19)));
                 }
                 else
                 {
                     s.write(0);
-                    s.write(Encoding.Unicode.GetBytes(url));
+                    s.write(utf16(url));
                 }
                 s.write(11);
             }
             else if (format == "L1")
             {
-                s.write(Encoding.Unicode.GetBytes(name));
+                s.write(utf16(name));
                 if(url.StartsWith("http://tinyurl.com/") && url.Length == 27)
                 {
                     s.write(cwll_is_tinyurl);
@@ -111,6 +111,28 @@ namespace CWishlist_win
                     if(url.StartsWith(https_www))
                         write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
                     else if(url.StartsWith(http_www))
+                        write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if (url.StartsWith(https))
+                        write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if (url.StartsWith(http))
+                        write_str(s, url.Substring(7), cwll_is_http_utf8, cwll_is_http_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else
+                        write_str(s, url, cwll_no_protocol_utf8, cwll_no_protocol_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                }
+            }
+            else if (format == "L1WITHOUTBASE64DECODE")
+            {
+                s.write(utf16(name));
+                if (url.StartsWith("http://tinyurl.com/") && url.Length == 27)
+                {
+                    s.write(cwll_is_tinyurl);
+                    s.write(ascii(url.Substring(19)));
+                }
+                else
+                {
+                    if (url.StartsWith(https_www))
+                        write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    else if (url.StartsWith(http_www))
                         write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
                     else if (url.StartsWith(https))
                         write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16, cwll_item_end_utf8, cwll_item_end_utf16);

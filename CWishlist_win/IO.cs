@@ -55,8 +55,8 @@ namespace CWishlist_win
         public static void cwll_save(WL wl, string file)
         {
             FileStream fs = File.Open(file, Create, FileAccess.Write);
-            fs.Write(cwll_header, 0, 8);
-            fs.write(5, 1);
+            fs.Write(cwll_header, 0, 4);
+            fs.write(1);
             MemoryStream ms = new MemoryStream();
             foreach (Item i in wl)
                 i.write_bytes(ms, "L1");
@@ -68,14 +68,14 @@ namespace CWishlist_win
         public static WL cwll_load(string file)
         {
             FileStream fs = File.Open(file, Open, FileAccess.Read);
-            byte[] bfr = new byte[8];
-            fs.Read(bfr, 0, 8);
-            if(!arrequ(bfr, cwll_header))
+            byte[] bfr = new byte[4];
+            fs.Read(bfr, 0, 4);
+            if (!arrequ(bfr, cwll_header))
             {
                 fs.Close();
                 throw new InvalidHeaderException("CWLL", cwll_header, bfr);
             }
-            if(fs.ReadByte() != 5 || fs.ReadByte() > 1)
+            if (fs.ReadByte() != 1)
             {
                 fs.Close();
                 throw new NotSupportedFileVersionException();
