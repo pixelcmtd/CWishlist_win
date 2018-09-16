@@ -52,27 +52,6 @@ namespace CWishlist_win
             ds.Close();
         }
 
-        void button6_Click(object sender, EventArgs e)
-        {
-            FileStream fs = File.Open("test.cwll_withoutbase64decode", FileMode.Create, FileAccess.Write);
-            fs.Write(Consts.cwll_header, 0, 4);
-            fs.write(1);
-            MemoryStream ms = new MemoryStream();
-            foreach (Item i in src_form.wl)
-                i.write_bytes(ms, "L1WITHOUTBASE64DECODE");
-            SevenZipHelper.Compress(ms, fs);
-            ms.Close();
-            fs.Close();
-        }
-
-        void button7_Click(object sender, EventArgs e)
-        {
-            FileStream fs = File.Open("test.uncompressed_cwll_withoutbase64decode", FileMode.Create, FileAccess.Write);
-            foreach (Item i in src_form.wl)
-                i.write_bytes(fs, "L1WITHOUTBASE64DECODE");
-            fs.Close();
-        }
-
         void button8_Click(object sender, EventArgs e)
         {
             FileStream fs = File.Open("test.uncompressed_cwld", FileMode.Create, FileAccess.Write);

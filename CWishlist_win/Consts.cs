@@ -7,27 +7,17 @@
         public static byte[] cwll_header { get; } = new byte[4] { 67, 87, 76, 76 }; //CWLL
 
         public static string tinyurl_api { get; } = "http://tinyurl.com/api-create.php?url=";
-        
-        //all these values are used after a unicode string (name), so we need to use the private use zone (e000-f8ff)
-        public static byte cwll_is_tinyurl { get; } = 0xe0;
-        public static byte cwll_is_https_www_utf8 { get; } = 0xe1;
-        public static byte cwll_is_http_www_utf8 { get; } = 0xe2;
-        public static byte cwll_is_https_utf8 { get; } = 0xe3;
-        public static byte cwll_is_http_utf8 { get; } = 0xe4;
-        public static byte cwll_no_protocol_utf8 { get; } = 0xe5;
-        public static byte cwll_is_https_www_utf16 { get; } = 0xe6;
-        public static byte cwll_is_http_www_utf16 { get; } = 0xe7;
-        public static byte cwll_is_https_utf16 { get; } = 0xe8;
-        public static byte cwll_is_http_utf16 { get; } = 0xe9;
-        public static byte cwll_no_protocol_utf16 { get; } = 0xea;
 
-        //this is also used after a unicode string (the url, maybe without the protocol), so we need to use the private use zone once more
-        public static byte cwll_item_end_utf16 { get; } = 0xe6;
-        public static byte cwll_item_end_utf8 { get; } = 23;
+        public static byte cwll_utf8_base { get; } = 0b00010000;
+        public static byte cwll_utf16_base { get; } = 0b11100000;
+        public static byte cwll_tinyurl { get; } = 0b00001111;
+        public static byte cwll_http { get; } = 0b00001000;
+        public static byte cwll_https { get; } = 0b00000100;
+        public static byte cwll_www { get; } = 0b00000010;
+        public static byte cwll_utf8 { get; } = 0b00000001;
 
         public static string http { get; } = "http://";
         public static string https { get; } = "https://";
-        public static string http_www { get; } = "http://www.";
-        public static string https_www { get; } = "https://www.";
+        public static string www { get; } = "www.";
     }
 }

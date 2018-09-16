@@ -98,58 +98,49 @@ namespace CWishlist_win
                 }
                 s.write(11);
             }
-            else if (format == "L1")
+            else if (format.StartsWith("L1"))
             {
-                s.write(utf16(name));
+                bool url_before_utf8 = format.Length > 2 && format[2] != 'a';
+                bool name_utf8 = is_utf8_only(name);
+                int name_sep = url_before_utf8 ? cwll_utf8_base : cwll_utf16_base;
+                if (name_utf8)
+                    name_sep |= cwll_utf8;
+                s.write(name_utf8 ? utf8(name) : utf16(name));
                 if(url.StartsWith("http://tinyurl.com/") && url.Length == 27)
                 {
-                    s.write(cwll_is_tinyurl);
+                    s.write((byte)(cwll_tinyurl | (name_utf8 ? cwll_utf8_base : cwll_utf16_base)));
                     s.write(b64(url.Substring(19)));
                 }
                 else
                 {
-                    if(url.StartsWith(https_www))
-                        write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else if(url.StartsWith(http_www))
-                        write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else if (url.StartsWith(https))
-                        write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    int flags = 0;
+                    if (url.StartsWith(https))
+                    {
+                        flags |= cwll_https;
+                        url = url.Substring(8);
+                    }
                     else if (url.StartsWith(http))
-                        write_str(s, url.Substring(7), cwll_is_http_utf8, cwll_is_http_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else
-                        write_str(s, url, cwll_no_protocol_utf8, cwll_no_protocol_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                }
-            }
-            else if (format == "L1WITHOUTBASE64DECODE")
-            {
-                s.write(utf16(name));
-                if (url.StartsWith("http://tinyurl.com/") && url.Length == 27)
-                {
-                    s.write(cwll_is_tinyurl);
-                    s.write(ascii(url.Substring(19)));
-                }
-                else
-                {
-                    if (url.StartsWith(https_www))
-                        write_str(s, url.Substring(12), cwll_is_https_www_utf8, cwll_is_https_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else if (url.StartsWith(http_www))
-                        write_str(s, url.Substring(11), cwll_is_http_www_utf8, cwll_is_http_www_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else if (url.StartsWith(https))
-                        write_str(s, url.Substring(8), cwll_is_https_utf8, cwll_is_https_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else if (url.StartsWith(http))
-                        write_str(s, url.Substring(7), cwll_is_http_utf8, cwll_is_http_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
-                    else
-                        write_str(s, url, cwll_no_protocol_utf8, cwll_no_protocol_utf16, cwll_item_end_utf8, cwll_item_end_utf16);
+                    {
+                        flags |= cwll_http;
+                        url = url.Substring(7);
+                    }
+                    if (url.StartsWith(www))
+                    {
+                        flags |= cwll_www;
+                        url = url.Substring(4);
+                    }
+                    write_str(s, url, flags, name_utf8);
                 }
             }
         }
 
-        void write_str(Stream s, string t, byte utf8_sep, byte utf16_sep, byte utf8_end, byte utf16_end)
+        void write_str(Stream s, string t, int flags, bool str_before_utf8)
         {
             bool b = is_utf8_only(t);
-            s.write(b ? utf8_sep : utf16_sep);
-            s.write(b ? Encoding.UTF8.GetBytes(t) : Encoding.Unicode.GetBytes(t));
-            s.write(b ? utf8_end : utf16_end);
+            if (b)
+                flags |= cwll_utf8;
+            s.write((byte)((str_before_utf8 ? cwll_utf8_base : cwll_utf16_base) | flags));
+            s.write(b ? utf8(t) : utf16(t));
         }
     }
 }
