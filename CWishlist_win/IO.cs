@@ -38,18 +38,19 @@ namespace CWishlist_win
             cwld_save(wl, f);
         }
 
-        static string cwll_url_str_read(Stream s, bool is_utf8)
+        static void cwll_url_str_read(Stream s, bool is_utf8, StringBuilder b)
         {
-            StringBuilder b = new StringBuilder();
             int i;
             while ((i = s.ReadByte()) != -1)
-                if ((is_utf8 && i == cwll_item_end_utf8) || (!is_utf8 && i == cwll_item_end_utf16))
+                if ((is_utf8 && (i & cwll_utf8_base) == cwll_utf8_base) || (!is_utf8 && (i & cwll_utf16_base) == cwll_utf16_base))
+                {
+                    s.Seek(-1, SeekOrigin.Current);
                     break;
+                }
                 else if (is_utf8)
                     b.Append(utf8(i));
                 else
                     b.Append(utf16(i, s.ReadByte()));
-            return b.ToString();
         }
 
         public static void cwll_save(WL wl, string file)
@@ -91,7 +92,7 @@ namespace CWishlist_win
             {
                 if (j > 0xdf && j < 0xf9) //the private area of utf16 (values that are not typable or displayable)
                 {
-                    if (j == cwll_is_tinyurl)
+                    if ((j & cwll_tinyurl) == cwll_tinyurl)
                     {
                         i.name = b.ToString();
                         b.Clear();
@@ -103,20 +104,15 @@ namespace CWishlist_win
                     {
                         i.name = b.ToString();
                         b.Clear();
-                        bool c = j == cwll_is_https_utf8;
-                        bool f = j == cwll_is_https_www_utf8;
-                        bool h = j == cwll_is_http_utf8;
-                        bool m = j == cwll_is_http_www_utf8;
-                        if (c || j == cwll_is_https_utf16)
-                            i.url = cwll_url_str_read(ms, c);
-                        else if (j == cwll_is_https_www_utf16 || f)
-                            i.url = cwll_url_str_read(ms, f);
-                        else if (j == cwll_is_http_utf16 || h)
-                            i.url = cwll_url_str_read(ms, h);
-                        else if (j == cwll_is_http_www_utf16 || m)
-                            i.url = cwll_url_str_read(ms, m);
-                        else
-                            i.url = cwll_url_str_read(ms, j == cwll_no_protocol_utf8);
+                        if ((j & cwll_http) != 0)
+                            b.Append(http);
+                        else if ((j & cwll_https) != 0)
+                            b.Append(https);
+                        if ((j & cwll_www) != 0)
+                            b.Append(www);
+                        cwll_url_str_read(ms, (j & cwll_utf8) != 0, b);
+                        i.url = b.ToString();
+                        b.Clear();
                         items.Add(i);
                         i = new Item();
                     }

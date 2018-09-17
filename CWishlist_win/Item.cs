@@ -105,6 +105,7 @@ namespace CWishlist_win
                 int name_sep = url_before_utf8 ? cwll_utf8_base : cwll_utf16_base;
                 if (name_utf8)
                     name_sep |= cwll_utf8;
+                s.WriteByte((byte)name_sep);
                 s.write(name_utf8 ? utf8(name) : utf16(name));
                 if(url.StartsWith("http://tinyurl.com/") && url.Length == 27)
                 {
