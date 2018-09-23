@@ -1,12 +1,10 @@
-// LzmaDecoder.cs
-
 using System;
 using System.IO;
 using SevenZip.Utils.range;
 
 namespace SevenZip.Utils.lzma
 {
-    public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
+    public class Decoder : ICoder, ISetDecoderProperties
 	{
 		class LenDecoder
 		{
@@ -189,7 +187,7 @@ namespace SevenZip.Utils.lzma
 		}
 
 		bool _solid = false;
-		void Init(System.IO.Stream inStream, System.IO.Stream outStream)
+		void Init(Stream inStream, Stream outStream)
 		{
 			m_RangeDecoder.Init(inStream);
 			m_OutWindow.Init(outStream, _solid);
@@ -212,7 +210,6 @@ namespace SevenZip.Utils.lzma
 			m_LiteralDecoder.Init();
 			for (i = 0; i < Base.kNumLenToPosStates; i++)
 				m_PosSlotDecoder[i].Init();
-			// m_PosSpecDecoder.Init();
 			for (i = 0; i < Base.kNumFullDistances - Base.kEndPosModelIndex; i++)
 				m_PosDecoders[i].Init();
 
@@ -221,8 +218,8 @@ namespace SevenZip.Utils.lzma
 			m_PosAlignDecoder.Init();
 		}
 
-		public void Code(System.IO.Stream inStream, System.IO.Stream outStream,
-			Int64 inSize, Int64 outSize, ICodeProgress progress)
+		public void Code(Stream inStream, Stream outStream,
+			long inSize, long outSize, ICodeProgress progress)
 		{
 			Init(inStream, outStream);
 
@@ -241,15 +238,13 @@ namespace SevenZip.Utils.lzma
 			}
 			while (nowPos64 < outSize64)
 			{
-				// ulong next = Math.Min(nowPos64 + (1 << 18), outSize64);
-					// while(nowPos64 < next)
 				{
 					uint posState = (uint)nowPos64 & m_PosStateMask;
 					if (m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState].Decode(m_RangeDecoder) == 0)
 					{
 						byte b;
 						byte prevByte = m_OutWindow.GetByte(0);
-						if (!state.IsCharState())
+						if (!state.IsCharState)
 							b = m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
 								(uint)nowPos64, prevByte, m_OutWindow.GetByte(rep0));
 						else
@@ -355,30 +350,5 @@ namespace SevenZip.Utils.lzma
 			_solid = true;
 			return m_OutWindow.Train(stream);
 		}
-
-		/*
-		public override bool CanRead { get { return true; }}
-		public override bool CanWrite { get { return true; }}
-		public override bool CanSeek { get { return true; }}
-		public override long Length { get { return 0; }}
-		public override long Position
-		{
-			get { return 0;	}
-			set { }
-		}
-		public override void Flush() { }
-		public override int Read(byte[] buffer, int offset, int count) 
-		{
-			return 0;
-		}
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-		}
-		public override long Seek(long offset, System.IO.SeekOrigin origin)
-		{
-			return 0;
-		}
-		public override void SetLength(long value) {}
-		*/
 	}
 }

@@ -1,12 +1,9 @@
-// LzmaEncoder.cs
-
 using System;
+using SevenZip.Utils.range;
+using System.IO;
 
 namespace SevenZip.Utils.lzma
 {
-    using SevenZip.Utils.range;
-    using System.IO;
-
     public class Encoder : ICoder, ISetCoderProperties, IWriteCoderProperties
 	{
 		enum EMatchFinderType
@@ -606,7 +603,7 @@ namespace SevenZip.Utils.lzma
 			uint posState = (position & _posStateMask);
 
 			_optimum[1].Price = _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice0() +
-					_literalEncoder.GetSubCoder(position, _previousbyte).GetPrice(!_state.IsCharState(), matchbyte, currentbyte);
+					_literalEncoder.GetSubCoder(position, _previousbyte).GetPrice(!_state.IsCharState, matchbyte, currentbyte);
 			_optimum[1].MakeAsChar();
 
 			uint matchPrice = _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice1();
@@ -807,7 +804,7 @@ namespace SevenZip.Utils.lzma
 				uint curAnd1Price = curPrice +
 					_isMatch[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice0() +
 					_literalEncoder.GetSubCoder(position, _matchFinder.GetIndexByte(0 - 2)).
-					GetPrice(!state.IsCharState(), matchbyte, currentbyte);
+					GetPrice(!state.IsCharState, matchbyte, currentbyte);
 
 				Optimal nextOptimum = _optimum[cur + 1];
 
@@ -1060,7 +1057,7 @@ namespace SevenZip.Utils.lzma
 			_rangeEncoder.FlushStream();
 		}
 
-		public void CodeOneBlock(out Int64 inSize, out Int64 outSize, out bool finished)
+		public void CodeOneBlock(out long inSize, out long outSize, out bool finished)
 		{
 			inSize = 0;
 			outSize = 0;
@@ -1081,7 +1078,7 @@ namespace SevenZip.Utils.lzma
 			_finished = true;
 
 
-			Int64 progressPosValuePrev = nowPos64;
+			long progressPosValuePrev = nowPos64;
 			if (nowPos64 == 0)
 			{
 				if (_matchFinder.GetNumAvailableBytes() == 0)
@@ -1117,7 +1114,7 @@ namespace SevenZip.Utils.lzma
 					_isMatch[complexState].Encode(_rangeEncoder, 0);
 					byte curbyte = _matchFinder.GetIndexByte((int)(0 - _additionalOffset));
 					LiteralEncoder.Encoder2 subCoder = _literalEncoder.GetSubCoder((uint)nowPos64, _previousbyte);
-					if (!_state.IsCharState())
+					if (!_state.IsCharState)
 					{
 						byte matchbyte = _matchFinder.GetIndexByte((int)(0 - _repDistances[0] - 1 - _additionalOffset));
 						subCoder.EncodeMatched(_rangeEncoder, matchbyte, curbyte);
@@ -1237,7 +1234,7 @@ namespace SevenZip.Utils.lzma
 			}
 		}
 
-		void SetOutStream(System.IO.Stream outStream) { _rangeEncoder.SetStream(outStream); }
+		void SetOutStream(Stream outStream) { _rangeEncoder.SetStream(outStream); }
 		void ReleaseOutStream() { _rangeEncoder.ReleaseStream(); }
 
 		void ReleaseStreams()
@@ -1246,8 +1243,7 @@ namespace SevenZip.Utils.lzma
 			ReleaseOutStream();
 		}
 
-		void SetStreams(System.IO.Stream inStream, System.IO.Stream outStream,
-				Int64 inSize, Int64 outSize)
+		void SetStreams(Stream inStream, Stream outStream, long inSize, long outSize)
 		{
 			_inStream = inStream;
 			_finished = false;
@@ -1255,11 +1251,8 @@ namespace SevenZip.Utils.lzma
 			SetOutStream(outStream);
 			Init();
 
-			// if (!_fastMode)
-			{
-				FillDistancesPrices();
-				FillAlignPrices();
-			}
+			FillDistancesPrices();
+		    FillAlignPrices();
 
 			_lenEncoder.SetTableSize(_numFastbytes + 1 - Base.kMatchMinLen);
 			_lenEncoder.UpdateTables((uint)1 << _posStateBits);
@@ -1270,8 +1263,8 @@ namespace SevenZip.Utils.lzma
 		}
 
 
-		public void Code(System.IO.Stream inStream, System.IO.Stream outStream,
-			Int64 inSize, Int64 outSize, ICodeProgress progress)
+		public void Code(Stream inStream, Stream outStream,
+			long inSize, long outSize, ICodeProgress progress)
 		{
 			_needReleaseMFStream = false;
 			try
@@ -1279,8 +1272,8 @@ namespace SevenZip.Utils.lzma
 				SetStreams(inStream, outStream, inSize, outSize);
 				while (true)
 				{
-					Int64 processedInSize;
-					Int64 processedOutSize;
+					long processedInSize;
+					long processedOutSize;
 					bool finished;
 					CodeOneBlock(out processedInSize, out processedOutSize, out finished);
 					if (finished)
@@ -1300,7 +1293,7 @@ namespace SevenZip.Utils.lzma
 		const int kPropSize = 5;
 		byte[] properties = new byte[kPropSize];
 
-		public void WriteCoderProperties(System.IO.Stream outStream)
+		public void WriteCoderProperties(Stream outStream)
 		{
 			properties[0] = (byte)((_posStateBits * 5 + _numLiteralPosStateBits) * 9 + _numLiteralContextBits);
 			for (int i = 0; i < 4; i++)

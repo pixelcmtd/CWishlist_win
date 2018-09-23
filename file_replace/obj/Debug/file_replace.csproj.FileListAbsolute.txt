@@ -1,0 +1,7 @@
+D:\workspace_VS\CWishlist_win\file_replace\bin\Debug\file_replace.exe.config
+D:\workspace_VS\CWishlist_win\file_replace\bin\Debug\file_replace.exe
+D:\workspace_VS\CWishlist_win\file_replace\bin\Debug\file_replace.pdb
+D:\workspace_VS\CWishlist_win\file_replace\obj\Debug\file_replace.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\file_replace\obj\Debug\file_replace.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\file_replace\obj\Debug\file_replace.exe
+D:\workspace_VS\CWishlist_win\file_replace\obj\Debug\file_replace.pdb

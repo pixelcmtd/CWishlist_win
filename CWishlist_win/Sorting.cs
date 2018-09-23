@@ -6,7 +6,7 @@ namespace CWishlist_win
     {
         public static Item[] merge_sort_items(Item[] u)
         {
-            TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
+            TryStartNoGCRegion(148897792, 133169152, true);
             Item[] i = s(u);
             EndNoGCRegion();
             return i;

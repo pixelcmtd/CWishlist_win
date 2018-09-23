@@ -15,7 +15,7 @@ namespace CWishlist_win
 
         public static void load_lang_xml(string file)
         {
-            lang l = default;
+            lang l = new lang("na-lang", "Language not available.");
             Dictionary<string, dynamic> translations = new Dictionary<string, dynamic>();
             XmlReader xml = XmlReader.Create(file);
             while (xml.Read())
@@ -27,7 +27,7 @@ namespace CWishlist_win
                         string name = xml.GetAttribute("name");
                         string type = xml.GetAttribute("type");
                         string val = xml.GetAttribute("value");
-                        dynamic v = -1;
+                        dynamic v = "NOPE...NO TRANSLATION HERE";
                         switch (type)
                         {
                             case "str_arr": v = val.Split('\\'); break;
@@ -54,7 +54,7 @@ namespace CWishlist_win
                             case "bool": v = bool.Parse(val); break;
                             case "char_arr": v = val.Split('\\').parse_chars(); break;
                             case "char": v = char.Parse(val); break;
-                            default: v = -1; break;
+                            default: v = $"Bad language translation. (lang: {l.code}/{l.name}, name: {name}, type: {type}, raw value: {val})"; break;
                         }
                         translations.Add(name, v);
                     }
@@ -73,8 +73,19 @@ namespace CWishlist_win
         public string code;
         public string name;
 
-        public override bool Equals(object obj) => obj is lang ? code == ((lang)obj).code && name == ((lang)obj).name : false;
+        public override bool Equals(object obj)
+        {
+            return obj is lang ? code == ((lang)obj).code && name == ((lang)obj).name : false;
+        }
 
-        public override int GetHashCode() => code.GetHashCode();
+        public bool Equals(lang lang)
+        {
+            return lang.code == code && lang.name == name;
+        }
+
+        public override int GetHashCode()
+        {
+            return code.GetHashCode();
+        }
     }
 }

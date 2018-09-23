@@ -1,4 +1,4 @@
-// LzOutWindow.cs
+using System.IO;
 
 namespace SevenZip.Utils
 {
@@ -8,7 +8,7 @@ namespace SevenZip.Utils
 		uint _pos;
 		uint _windowSize = 0;
 		uint _streamPos;
-		System.IO.Stream _stream;
+		Stream _stream;
 
 		public uint TrainSize = 0;
 
@@ -16,7 +16,6 @@ namespace SevenZip.Utils
 		{
 			if (_windowSize != windowSize)
 			{
-				// System.GC.Collect();
 				_buffer = new byte[windowSize];
 			}
 			_windowSize = windowSize;
@@ -24,7 +23,7 @@ namespace SevenZip.Utils
 			_streamPos = 0;
 		}
 
-		public void Init(System.IO.Stream stream, bool solid)
+		public void Init(Stream stream, bool solid)
 		{
 			ReleaseStream();
 			_stream = stream;
@@ -36,7 +35,7 @@ namespace SevenZip.Utils
 			}
 		}
 	
-		public bool Train(System.IO.Stream stream)
+		public bool Train(Stream stream)
 		{
 			long len = stream.Length;
 			uint size = (len < _windowSize) ? (uint)len : _windowSize;

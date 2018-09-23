@@ -64,7 +64,7 @@ namespace SevenZip.Utils.range
 
 		public void ShiftLow()
 		{
-			if ((uint)Low < (uint)0xFF000000 || (uint)(Low >> 32) == 1)
+			if (Low < 0xFF000000 || (uint)(Low >> 32) == 1)
 			{
 				byte temp = _cache;
 				do
@@ -113,23 +113,19 @@ namespace SevenZip.Utils.range
 
 		public long GetProcessedSizeAdd()
 		{
-			return _cacheSize +
-				Stream.Position - StartPosition + 4;
-			// (long)Stream.GetProcessedSize();
+			return _cacheSize + Stream.Position - StartPosition + 4;
 		}
 	}
 
 	class Decoder
 	{
-		public const uint kTopValue = (1 << 24);
+		public const uint kTopValue = 1 << 24;
 		public uint Range;
 		public uint Code;
-		// public Buffer.InBuffer Stream = new Buffer.InBuffer(1 << 16);
-		public System.IO.Stream Stream;
+		public Stream Stream;
 
-		public void Init(System.IO.Stream stream)
+		public void Init(Stream stream)
 		{
-			// Stream.Init(stream);
 			Stream = stream;
 
 			Code = 0;
@@ -140,7 +136,6 @@ namespace SevenZip.Utils.range
 
 		public void ReleaseStream()
 		{
-			// Stream.ReleaseStream();
 			Stream = null;
 		}
 
@@ -187,14 +182,6 @@ namespace SevenZip.Utils.range
 			for (int i = numTotalBits; i > 0; i--)
 			{
 				range >>= 1;
-				/*
-				result <<= 1;
-				if (code >= range)
-				{
-					code -= range;
-					result |= 1;
-				}
-				*/
 				uint t = (code - range) >> 31;
 				code -= range & (t - 1);
 				result = (result << 1) | (1 - t);
@@ -228,7 +215,5 @@ namespace SevenZip.Utils.range
 			Normalize();
 			return symbol;
 		}
-
-		// ulong GetProcessedSize() {return Stream.GetProcessedSize(); }
 	}
 }

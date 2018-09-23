@@ -1,0 +1,2 @@
+D:\workspace_VS\CWishlist_win\test_plugin\obj\Debug\test_plugin.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\test_plugin\obj\Debug\test_plugin.csproj.CoreCompileInputs.cache

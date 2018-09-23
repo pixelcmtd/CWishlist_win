@@ -153,7 +153,6 @@
     <Compile Include="LanguageSelectionDialog.Designer.cs">
       <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="NumberFormat.cs" />
     <Compile Include="Parsing.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
@@ -207,11 +206,6 @@
   <ItemGroup>
     <None Include="Resources\file_replace_32.exe" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="7zip\Common\" />
-    <Folder Include="7zip\Compress\LZMA\" />
-    <Folder Include="7zip\Compress\LZ\" />
-    <Folder Include="7zip\Compress\RangeCoder\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

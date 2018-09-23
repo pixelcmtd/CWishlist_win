@@ -147,7 +147,7 @@ namespace CWishlist_win
             this.button7.TabIndex = 11;
             this.button7.Text = "Remove item";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.btn7_click);
+            this.button7.Click += new System.EventHandler(this.remove_click);
             // 
             // menuStrip1
             // 
@@ -344,7 +344,7 @@ namespace CWishlist_win
             this.textBox3.Size = new System.Drawing.Size(205, 26);
             this.textBox3.TabIndex = 17;
             this.textBox3.Text = "search...";
-            this.textBox3.Click += new System.EventHandler(this.txtbx3_click);
+            this.textBox3.Click += new System.EventHandler(this.search_click);
             this.textBox3.TextChanged += new System.EventHandler(this.txtbx3_change);
             // 
             // debugToolsToolStripMenuItem

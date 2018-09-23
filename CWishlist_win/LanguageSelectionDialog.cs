@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using static CWishlist_win.LanguageProvider;
 
 namespace CWishlist_win
 {
@@ -10,14 +11,14 @@ namespace CWishlist_win
         {
             InitializeComponent();
             Text = title;
-            foreach (lang l in LanguageProvider.langs.Keys)
+            foreach (lang l in langs.Keys)
                 listBox1.Items.Add(l.name);
         }
 
         void button1_Click(object sender, EventArgs e)
         {
             if (listBox1.SelectedIndex != -1)
-                LanguageProvider.selected = LanguageProvider.langs.Keys.ToArray()[listBox1.SelectedIndex];
+                selected = langs.Keys.ElementAt(listBox1.SelectedIndex);
             Close();
         }
     }

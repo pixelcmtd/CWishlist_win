@@ -1,5 +1,3 @@
-using System;
-
 namespace SevenZip.Utils.range
 {
 	struct BitEncoder
@@ -12,7 +10,7 @@ namespace SevenZip.Utils.range
 
 		uint Prob;
 
-		public void Init() { Prob = kBitModelTotal >> 1; }
+		public void Init() => Prob = kBitModelTotal >> 1;
 
 		public void UpdateModel(uint symbol)
 		{
@@ -86,7 +84,7 @@ namespace SevenZip.Utils.range
 
 		public uint Decode(Decoder rangeDecoder)
 		{
-			uint newBound = (uint)(rangeDecoder.Range >> kNumBitModelTotalBits) * (uint)Prob;
+			uint newBound = (rangeDecoder.Range >> kNumBitModelTotalBits) * Prob;
 			if (rangeDecoder.Code < newBound)
 			{
 				rangeDecoder.Range = newBound;

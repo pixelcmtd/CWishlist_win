@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading;
 
 namespace CWishlist_win
 {
@@ -53,21 +54,12 @@ namespace CWishlist_win
             return true;
         }
 
-        public static string ToString(this byte[] bytes, NumberFormat format)
+        public static string ToHexString(this byte[] bytes)
         {
             string s = "";
-            if(format != NumberFormat.DEC)
-            {
-                foreach (byte b in bytes)
-                    s += b.ToString(format);
-                return s;
-            }
-            else
-            {
-                foreach (byte b in bytes)
-                    s += b.ToString(format) + ", ";
-                return s.Substring(0, s.Length - 2);
-            }
+            foreach (byte b in bytes)
+                s += b.ToString("x2") + ", ";
+            return s.Substring(0, s.Length - 2);
         }
 
         public static string xml_esc(this string s)
@@ -106,32 +98,17 @@ namespace CWishlist_win
 
         public static void write_ascii(this Stream s, string t)
         {
-            s.write(Encoding.ASCII.GetBytes(t));
+            s.write(ascii(t));
         }
 
         public static void write_utf8(this Stream s, string t)
         {
-            s.write(Encoding.UTF8.GetBytes(t));
+            s.write(utf8(t));
         }
 
         public static void write_utf16(this Stream s, string t)
         {
-            s.write(Encoding.Unicode.GetBytes(t));
-        }
-
-        public static string pad_left_if(this string s, bool b, int digits, char c)
-        {
-            return b ? s.PadLeft(digits, c) : s;
-        }
-
-        public static void add<T>(this List<T> l, params T[] ts)
-        {
-            l.AddRange(ts);
-        }
-
-        public static void add(this List<byte> l, params byte[] ts)
-        {
-            l.AddRange(ts);
+            s.write(utf16(t));
         }
 
         public static byte[] b64(string s)
@@ -149,6 +126,69 @@ namespace CWishlist_win
             byte[] b = new byte[bytelen];
             s.Read(b, 0, bytelen);
             return Convert.ToBase64String(b);
+        }
+
+        public static short int16(byte b, byte c)
+        {
+            return (short)((b << 8) | c);
+        }
+
+        public static ushort uint16(byte b, byte c)
+        {
+            return (ushort)((b << 8) | c);
+        }
+
+        public static int int32(byte b, byte c, byte d, byte e)
+        {
+            return (b << 24) | (c << 16) | (d << 8) | e;
+        }
+
+        public static uint uint32(byte b, byte c, byte d, byte e)
+        {
+            return ((uint)b << 24) | ((uint)c << 16) | ((uint)d << 8) | e;
+        }
+
+        public static long int64(byte b, byte c, byte d, byte e, byte f, byte g, byte h, byte i)
+        {
+            return ((long)b << 56) | ((long)c << 48) | ((long)d << 40) | ((long)e << 32)
+                | ((long)f << 24) | ((long)g << 16) | ((long)h << 8) | (long)i;
+        }
+
+        public static ulong uint64(byte b, byte c, byte d, byte e, byte f, byte g, byte h, byte i)
+        {
+            return ((ulong)b << 56) | ((ulong)c << 48) | ((ulong)d << 40) | ((ulong)e << 32)
+                | ((ulong)f << 24) | ((ulong)g << 16) | ((ulong)h << 8) | (ulong)i;
+        }
+
+        public static short int16(int i, int j)
+        {
+            return (short)((i << 8) | j);
+        }
+
+        public static ushort uint16(int i, int j)
+        {
+            return (ushort)((i << 8) | j);
+        }
+
+        public static int int32(int i, int j, int k, int l)
+        {
+            return (i << 24) | (j << 16) | (k << 8) | l;
+        }
+
+        public static uint uint32(int i, int j, int k, int l)
+        {
+            return ((uint)i << 24) | ((uint)j << 16) | ((uint)k << 8) | (uint)l;
+        }
+
+        public static long int64(int i, int j, int k, int l, int m, int n, int o, int p)
+        {
+            return ((long)i << 56) | ((long)j << 48) | ((long)k << 40) | ((long)l << 32)
+                | ((long)m << 24) | ((long)n << 16) | ((long)o << 8) | (long)p;
+        }
+
+        public static ulong uint64(int i, int j, int k, int l, int m, int n, int o, int p)
+        {
+            return uint64(new byte[] { (byte)i, (byte)j, (byte)k, (byte)l, (byte)m, (byte)n, (byte)o, (byte)p });
         }
 
         public static short int16(byte[] b)
@@ -182,21 +222,6 @@ namespace CWishlist_win
             return ((ulong)b[0] << 56) | ((ulong)b[1] << 48) | ((ulong)b[2] << 40) | ((ulong)b[3] << 32)
                 | ((ulong)b[4] << 24) | ((ulong)b[5] << 16) | ((ulong)b[6] << 8) | b[7];
         }
-
-        //this piece of code is just to beautiful to delete xd
-        //public static unsafe byte[] bytes(short i)
-        //{
-        //    short[] s = new short[] { i };
-        //    byte[] b = new byte[2];
-        //    fixed(short *t = s)
-        //    {
-        //        fixed(byte *c = b)
-        //        {
-        //            Buffer.MemoryCopy(t, c, 2, 2);
-        //        }
-        //    }
-        //    return b;
-        //}
 
         public static byte[] bytes(short i)
         {
@@ -337,11 +362,65 @@ namespace CWishlist_win
         {
             return Encoding.UTF32.GetBytes(new char[] { c });
         }
-    }
 
-    class NotSupportedNumberFormatException : Exception
-    {
-        public NotSupportedNumberFormatException(NumberFormat nf) : base($"The given NumberFormat {nf} is not supported.") { }
+        public static string ascii(byte[] b, int len)
+        {
+            return Encoding.ASCII.GetString(b, 0, len);
+        }
+
+        public static string utf8(byte[] b, int len)
+        {
+            return Encoding.UTF8.GetString(b, 0, len);
+        }
+
+        public static string utf16(byte[] b, int len)
+        {
+            return Encoding.Unicode.GetString(b, 0, len);
+        }
+
+        public static string utf32(byte[] b, int len)
+        {
+            return Encoding.UTF32.GetString(b, 0, len);
+        }
+
+        public static void memcpy<T>(T[] arr1, T[] arr2, long len)
+        {
+            for (long i = 0; i < len; i++)
+                arr2[i] = arr1[i];
+        }
+
+        public static byte hex(string hex)
+        {
+            return Convert.ToByte(hex, 16);
+        }
+
+        public static bool fcmp(FileStream stream1, FileStream stream2)
+        {
+            if (stream1.Length - stream1.Position != stream2.Length - stream2.Position)
+                return false;
+            int i;
+            while ((i = stream1.ReadByte()) != -1)
+                if (i != stream2.ReadByte())
+                    return false;
+            return true;
+        }
+
+        public static bool fcmp(string f1, string f2)
+        {
+            FileStream s1 = File.Open(f1, FileMode.Open, FileAccess.Read);
+            FileStream s2 = File.Open(f2, FileMode.Open, FileAccess.Read);
+            bool b = fcmp(s1, s2);
+            s1.Close();
+            s2.Close();
+            return b;
+        }
+
+        public static Thread start(ThreadStart main)
+        {
+            Thread t = new Thread(main);
+            t.Start();
+            return t;
+        }
     }
 
     class Enumerable<T> : IEnumerable<T>

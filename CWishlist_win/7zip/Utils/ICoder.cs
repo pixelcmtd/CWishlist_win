@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace SevenZip.Utils
@@ -40,7 +39,7 @@ namespace SevenZip.Utils
 
 	public interface IWriteCoderProperties
 	{
-		void WriteCoderProperties(System.IO.Stream outStream);
+		void WriteCoderProperties(Stream outStream);
 	}
 
 	public interface ISetDecoderProperties

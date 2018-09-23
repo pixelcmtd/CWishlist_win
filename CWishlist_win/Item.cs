@@ -100,6 +100,24 @@ namespace CWishlist_win
             }
             else if (format.StartsWith("L1"))
             {
+                bool u8 = is_utf8_only(name);
+                s.WriteByte(u8 ? (byte)1 : (byte)0);
+                s.write(u8 ? utf8(name) : utf16(name));
+                s.WriteByte(u8 ? (byte)11 : (byte)0xe0);
+                if (url.StartsWith("http://tinyurl.com/"))
+                {
+                    s.WriteByte(1);
+                    s.write(b64(url.Substring(19)));
+                }
+                else
+                {
+                    s.WriteByte(0);
+                    s.write(utf16(url));
+                    s.WriteByte(0xe0);
+                }
+            }
+            else if (format.StartsWith("LX"))
+            {
                 bool url_before_utf8 = format.Length > 2 && format[2] != 'a';
                 bool name_utf8 = is_utf8_only(name);
                 int name_sep = url_before_utf8 ? cwll_utf8_base : cwll_utf16_base;

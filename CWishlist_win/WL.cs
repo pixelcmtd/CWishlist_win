@@ -92,15 +92,9 @@ namespace CWishlist_win
 
         public IEnumerator GetEnumerator() => items.GetEnumerator();
 
-        public int Length
-        {
-            get => items.Length;
-        }
+        public int Length => items.Length;
 
-        public long LongLength
-        {
-            get => items.LongLength;
-        }
+        public long LongLength => items.LongLength;
 
         public Item[] SearchItems(Predicate<Item> predicate) => FindAll(items, predicate);
 

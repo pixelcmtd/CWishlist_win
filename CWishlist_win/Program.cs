@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace CWishlist_win
@@ -14,7 +15,8 @@ namespace CWishlist_win
                 args = ca;
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Form1());
+                form = new Form1();
+                Application.Run(form);
             }
             catch (Exception e)
             {
@@ -26,6 +28,6 @@ namespace CWishlist_win
 
         public static Form1 form = null;
 
-        public static string appdata { get; } = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
+        public static readonly string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
     }
 }
