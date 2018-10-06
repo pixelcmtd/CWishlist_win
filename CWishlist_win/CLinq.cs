@@ -240,19 +240,19 @@ namespace CWishlist_win
 
         public static byte[] bytes(uint i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24) };
+            return new byte[] { (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i };
         }
 
         public static byte[] bytes(long i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24),
-            (byte)(i >> 32),(byte)(i >> 40),(byte)(i >> 48),(byte)(i >> 56)};
+            return new byte[] { (byte)(i >> 56), (byte)(i >> 48), (byte)(i >> 40), (byte)(i >> 32),
+            (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i};
         }
 
         public static byte[] bytes(ulong i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24),
-            (byte)(i >> 32),(byte)(i >> 40),(byte)(i >> 48),(byte)(i >> 56)};
+            return new byte[] { (byte)(i >> 56), (byte)(i >> 48), (byte)(i >> 40), (byte)(i >> 32),
+            (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i};
         }
 
         public static char ascii(int i)
