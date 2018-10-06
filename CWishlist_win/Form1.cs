@@ -49,6 +49,9 @@ namespace CWishlist_win
         public string ver_str = "7.0.0a"; 
         public uint ver_int = 0x700a;
         public byte[] version = new byte[] { 7, 0, 0, 254 };
+        public object recents_mutex = new object();
+        public object backup_mutex = new object();
+        public object rbackup_mutex = new object();
 
         public Form1()
         {
@@ -101,25 +104,37 @@ namespace CWishlist_win
 
             (x = new Thread(() =>
             {
-                if (File.Exists(recents_file))
-                    try
-                    {
-                        recents = load_recent(recents_file);
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show("Corrupted recents:\n\n" + e);
+                lock (recents_mutex)
+                {
+                    if (File.Exists(recents_file))
                         try
+                        {
+                            lock (recents_mutex)
+                            {
+                                recents = load_recent(recents_file);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show("Corrupted recents:\n\n" + e);
+                            try
+                            {
+                                lock (recents_mutex)
+                                {
+                                    write_recent(recents_file, recents);
+                                }
+                            }
+                            catch (Exception e1)
+                            {
+                                MessageBox.Show("Unable to write new recents:\n\n" + e1);
+                            }
+                        }
+                    else
+                        lock (recents_mutex)
                         {
                             write_recent(recents_file, recents);
                         }
-                        catch (Exception e1)
-                        {
-                            MessageBox.Show("Unable to write new recents:\n\n" + e1);
-                        }
-                    }
-                else
-                    write_recent(recents_file, recents);
+                }
             })).Start();
 
             t.Join();
@@ -132,9 +147,7 @@ namespace CWishlist_win
                     load_lang_xml(f);
 
                 if (File.Exists(lang_file))
-                {
                     selected = get_lang(ascii(File.ReadAllBytes(lang_file)));
-                }
                 else if (File.Exists(legacy_lang_file))
                 {
                     byte[] c = File.ReadAllBytes(legacy_lang_file);
@@ -148,13 +161,16 @@ namespace CWishlist_win
                     File.WriteAllBytes(restore_backup, new byte[] { 0 });
                 else if (File.ReadAllBytes(restore_backup)[0] != 0 &&
                     MessageBox.Show(get_translated("prompt.restore_backup"), get_translated("caption.restore_backup"), YesNo) == Yes)
-                    wl = backup_load(backup_file);
+                    lock (backup_mutex)
+                    {
+                        wl = backup_load(backup_file);
+                    }
             })).Start();
 
             (y = new Thread(() =>
             {
                 if (File.Exists(width_file))
-                    Width = uint16(File.ReadAllBytes(width_file));
+                    Width = int32(File.ReadAllBytes(width_file));
                 else if (File.Exists(legacy_width_file))
                 {
                     Width = int32(File.ReadAllBytes(legacy_width_file));
@@ -165,7 +181,7 @@ namespace CWishlist_win
             (z = new Thread(() =>
             {
                 if (File.Exists(height_file))
-                    Height = uint16(File.ReadAllBytes(height_file));
+                    Height = int32(File.ReadAllBytes(height_file));
                 else if (File.Exists(legacy_height_file))
                 {
                     Height = int32(File.ReadAllBytes(legacy_height_file));
@@ -189,7 +205,6 @@ namespace CWishlist_win
                 }
             })).Start();
 
-            //NOPE, THIS SHOULDNT BE ENABLED AT THIS POINT
 #if false
             foreach (string file in Directory.GetFiles(plugin_dir, "*.cwlwnplg"))
                     try
@@ -237,19 +252,25 @@ namespace CWishlist_win
             foreach (Item i in wl)
                 if (!i.url.StartsWith("http://tinyurl.com/") && i.url.Length > 27 && valid_url(i.url))
                     t.Add(start(() => { i.url = tinyurl_create(i.url); }));
-            new Thread(() =>
-            {
-                try
-                {
-                    backup_save(wl, backup_file);
-                }
-                catch { }
-            }).Start();
             start(() =>
             {
                 try
                 {
-                    File.WriteAllBytes(restore_backup, new byte[] { 1 });
+                    lock(backup_mutex)
+                    {
+                        backup_save(wl, backup_file);
+                    }
+                }
+                catch { }
+            });
+            start(() =>
+            {
+                try
+                {
+                    lock(rbackup_mutex)
+                    {
+                        File.WriteAllBytes(restore_backup, new byte[] { 1 });
+                    }
                 }
                 catch { }
             });
@@ -356,7 +377,7 @@ namespace CWishlist_win
             }
         }
 
-        void size_change(object sender, EventArgs e)
+        void size_change(object _, EventArgs e)
         {
             int w = Width;
             int h = Height;
@@ -379,7 +400,7 @@ namespace CWishlist_win
             label2.Location = new Point(w - 271, 44);
         }
 
-        void closing(object sender, FormClosingEventArgs e)
+        void closing(object _, FormClosingEventArgs e)
         {
             if ((wl > 0 && current_file == "") || (current_file != "" && wl != loaded_wl))
             {
@@ -389,24 +410,12 @@ namespace CWishlist_win
                     return;
             }
             if (current_file != "")
-                add_recent_item(current_file);
-            write_recent(recents_file, recents);
-            start(() =>
-            {
-                File.WriteAllBytes(restore_backup, new byte[] { 0 });
-            });
-            start(() =>
-            {
-                File.WriteAllBytes(lang_file, ascii(selected.code));
-            });
-            start(() =>
-            {
-                File.WriteAllBytes(width_file, bytes((ushort)Width));
-            });
-            start(() =>
-            {
-                File.WriteAllBytes(height_file, bytes((ushort)Height));
-            });
+                start(() => { lock (recents_mutex) { add_recent_item(current_file); } });
+            start(() => { lock (recents_mutex) { write_recent(recents_file, recents); } });
+            start(() => File.WriteAllBytes(restore_backup, new byte[] { 0 }));
+            start(() => File.WriteAllBytes(lang_file, ascii(selected.code)));
+            start(() => File.WriteAllBytes(width_file, bytes(Width)));
+            start(() => File.WriteAllBytes(height_file, bytes(Height)));
             start(() =>
             {
                 Color c = BackColor;
@@ -416,16 +425,22 @@ namespace CWishlist_win
 
         public void add_recent_item(string file)
         {
-            if (recents.Length != 0 && recents[0] == file)
-                return;
-            string[] old = recents;
-            recents = new string[old.Length + 1];
-            recents[0] = file;
-            for (int i = 0; i < old.Length; i++)
-                recents[i + 1] = old[i];
+            start(() =>
+            {
+                lock (recents_mutex)
+                {
+                    if (recents.Length != 0 && recents[0] == file)
+                        return;
+                    string[] old = recents;
+                    recents = new string[old.Length + 1];
+                    recents[0] = file;
+                    for (int i = 0; i < old.Length; i++)
+                        recents[i + 1] = old[i];
+                }
+            });
         }
 
-        void new_click(object sender, EventArgs e)
+        void new_click(object _, EventArgs e)
         {
             if ((wl != 0 && current_file == "") || (current_file != "" && wl != loaded_wl)
                 && MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), YesNo) == No)

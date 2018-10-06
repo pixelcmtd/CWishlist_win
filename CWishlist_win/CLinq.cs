@@ -225,17 +225,17 @@ namespace CWishlist_win
 
         public static byte[] bytes(short i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8) };
+            return new byte[] { (byte)(i >> 8), (byte)i };
         }
 
         public static byte[] bytes(ushort i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8) };
+            return new byte[] { (byte)(i >> 8), (byte)i };
         }
 
         public static byte[] bytes(int i)
         {
-            return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24) };
+            return new byte[] { (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i };
         }
 
         public static byte[] bytes(uint i)
@@ -253,14 +253,6 @@ namespace CWishlist_win
         {
             return new byte[] { (byte)i, (byte)(i >> 8), (byte)(i >> 16), (byte)(i >> 24),
             (byte)(i >> 32),(byte)(i >> 40),(byte)(i >> 48),(byte)(i >> 56)};
-        }
-
-        public static bool is_utf8_only(string s)
-        {
-            foreach (char c in s)
-                if (Encoding.Unicode.GetBytes(new char[] { c })[0] != 0)
-                    return false;
-            return true;
         }
 
         public static char ascii(int i)

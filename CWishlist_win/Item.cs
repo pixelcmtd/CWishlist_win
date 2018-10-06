@@ -100,66 +100,19 @@ namespace CWishlist_win
             }
             else if (format.StartsWith("L1"))
             {
-                bool u8 = is_utf8_only(name);
-                s.WriteByte(u8 ? (byte)1 : (byte)0);
-                s.write(u8 ? utf8(name) : utf16(name));
-                s.WriteByte(u8 ? (byte)11 : (byte)0xe0);
+                s.write(utf8(name));
                 if (url.StartsWith("http://tinyurl.com/"))
                 {
-                    s.WriteByte(1);
+                    s.WriteByte(11);
                     s.write(b64(url.Substring(19)));
                 }
                 else
                 {
-                    s.WriteByte(0);
-                    s.write(utf16(url));
-                    s.WriteByte(0xe0);
+                    s.WriteByte(8);
+                    s.write(utf8(url));
+                    s.WriteByte(11);
                 }
             }
-            else if (format.StartsWith("LX"))
-            {
-                bool url_before_utf8 = format.Length > 2 && format[2] != 'a';
-                bool name_utf8 = is_utf8_only(name);
-                int name_sep = url_before_utf8 ? cwll_utf8_base : cwll_utf16_base;
-                if (name_utf8)
-                    name_sep |= cwll_utf8;
-                s.WriteByte((byte)name_sep);
-                s.write(name_utf8 ? utf8(name) : utf16(name));
-                if(url.StartsWith("http://tinyurl.com/") && url.Length == 27)
-                {
-                    s.write((byte)(cwll_tinyurl | (name_utf8 ? cwll_utf8_base : cwll_utf16_base)));
-                    s.write(b64(url.Substring(19)));
-                }
-                else
-                {
-                    int flags = 0;
-                    if (url.StartsWith(https))
-                    {
-                        flags |= cwll_https;
-                        url = url.Substring(8);
-                    }
-                    else if (url.StartsWith(http))
-                    {
-                        flags |= cwll_http;
-                        url = url.Substring(7);
-                    }
-                    if (url.StartsWith(www))
-                    {
-                        flags |= cwll_www;
-                        url = url.Substring(4);
-                    }
-                    write_str(s, url, flags, name_utf8);
-                }
-            }
-        }
-
-        void write_str(Stream s, string t, int flags, bool str_before_utf8)
-        {
-            bool b = is_utf8_only(t);
-            if (b)
-                flags |= cwll_utf8;
-            s.write((byte)((str_before_utf8 ? cwll_utf8_base : cwll_utf16_base) | flags));
-            s.write(b ? utf8(t) : utf16(t));
         }
     }
 }

@@ -41,21 +41,6 @@ namespace CWishlist_win
             cwld_save(wl, f);
         }
 
-        static void cwll_url_str_read(Stream s, bool is_utf8, StringBuilder b)
-        {
-            int i;
-            while ((i = s.ReadByte()) != -1)
-                if ((is_utf8 && (i & cwll_utf8_base) == cwll_utf8_base) || (!is_utf8 && (i & cwll_utf16_base) == cwll_utf16_base))
-                {
-                    s.Seek(-1, SeekOrigin.Current);
-                    return;
-                }
-                else if (is_utf8)
-                    b.Append(utf8(i));
-                else
-                    b.Append(utf16(i, s.ReadByte()));
-        }
-
         public static void cwll_save(WL wl, string file)
         {
             FileStream fs = File.Open(file, Create, FileAccess.Write);
@@ -72,46 +57,49 @@ namespace CWishlist_win
         public static WL cwll_load(string file)
         {
             FileStream fs = File.Open(file, Open, FileAccess.Read);
-            byte[] bfr = new byte[4];
-            fs.Read(bfr, 0, 4);
-            if (!arrequ(bfr, cwll_header))
+            byte[] hdr = new byte[4];
+            fs.Read(hdr, 0, 4);
+            if (!arrequ(hdr, cwll_header))
             {
                 fs.Close();
-                throw new InvalidHeaderException("CWLL", cwll_header, bfr);
+                throw new InvalidHeaderException("CWLL", cwll_header, hdr);
             }
             if (fs.ReadByte() != 1)
             {
                 fs.Close();
-                throw new Exception("This CWL version supports only version 1 of the CWLL standard.");
+                throw new Exception("This CWL version only supports v1 of the CWLL standard.");
             }
             MemoryStream ms = new MemoryStream();
             Decompress(fs, ms);
             fs.Close();
             List<Item> items = new List<Item>();
             int j;
-            StringBuilder b = new StringBuilder();
+            List<byte> bfr = new List<byte>();
             while ((j = ms.ReadByte()) != -1)
             {
-                b.Clear();
-                if (j != 0)
-                    while ((j = ms.ReadByte()) != 11)
-                        b.Append(utf8(j));
-                else
-                    while ((j = ms.ReadByte()) != 0xe0)
-                        b.Append(utf16(j, ms.ReadByte()));
-                string name = b.ToString();
-                b.Clear();
-                if (ms.ReadByte() != 0)
+                while (j != 11 && j != 8)
                 {
-                    b.Append("http://tinyurl.com/");
-                    bfr = new byte[6];
-                    ms.Read(bfr, 0, 6);
-                    b.Append(b64(bfr));
+                    bfr.Add((byte)j);
+                    j = ms.ReadByte();
+                }
+                string name = utf8(bfr.ToArray());
+                string url;
+                if (j == 11)
+                {
+                    byte[] b = new byte[6];
+                    ms.Read(b, 0, 6);
+                    url = tinyurl + b64(b);
+                }
+                else if (j == 8)
+                {
+                    bfr.Clear();
+                    while ((j = ms.ReadByte()) != 11)
+                        bfr.Add((byte)j);
+                    url = utf8(bfr.ToArray());
                 }
                 else
-                    while ((j = ms.ReadByte()) != 0xe0)
-                        b.Append(utf16(j, ms.ReadByte()));
-                items.Add(new Item(name, b.ToString()));
+                    throw new Exception("CWLL reading seems to be broken.");
+                items.Add(new Item(name, url));
             }
             return new WL(items);
         }
@@ -276,10 +264,10 @@ namespace CWishlist_win
             MemoryStream ms = new MemoryStream();
             foreach (string r in recents)
             {
-                bool u8 = is_utf8_only(r);
-                ms.WriteByte(u8 ? (byte)1 : (byte)0);
-                ms.write(u8 ? utf8(r) : utf16(r));
-                ms.WriteByte(u8 ? (byte)8 : (byte)0xe5);
+                //this is really broken code, it will be replaced by CWLSv6 soon
+                ms.WriteByte(0);
+                ms.write(utf16(r));
+                ms.WriteByte(0xe5);
             }
             ms.Seek(0, SeekOrigin.Begin);
             FileStream s = File.Open(DateTime.Now.Ticks.ToString(), Create, FileAccess.Write);
@@ -293,7 +281,7 @@ namespace CWishlist_win
         /// Read func for the CWLS-format<para />
         /// Name: CWishlists<para />
         /// File version 1 (starting saving in 2, not checked)<para />
-        /// Format versions: 1, 2, 3, 4 (saved, checked)
+        /// Format versions: 1, 2, 3, 4, 5 (saved, checked)
         /// </summary>
         public static string[] load_recent(string file)
         {
