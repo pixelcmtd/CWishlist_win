@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace CWishlist_win
@@ -28,6 +27,7 @@ namespace CWishlist_win
 
         public static Form1 form = null;
 
-        public static readonly string appdata = Registry.CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
+        public static readonly string appdata = Registry.
+            CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
     }
 }

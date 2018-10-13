@@ -103,7 +103,7 @@ namespace CWishlist_win
             this.button3.TabIndex = 7;
             this.button3.Text = "Add item";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.btn3_click);
+            this.button3.Click += new System.EventHandler(this.add_item);
             // 
             // button4
             // 

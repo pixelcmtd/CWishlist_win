@@ -407,11 +407,12 @@ namespace CWishlist_win
             return b;
         }
 
-        public static Thread start(ThreadStart main)
+        //writesinglebytefile
+        public static void writesbf(string file, byte b)
         {
-            Thread t = new Thread(main);
-            t.Start();
-            return t;
+            FileStream fs = File.Open(file, FileMode.Create, FileAccess.Write);
+            fs.WriteByte(b);
+            fs.Close();
         }
     }
 

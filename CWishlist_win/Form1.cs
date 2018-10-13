@@ -7,6 +7,7 @@ using static CWishlist_win.CLinq;
 using static CWishlist_win.LanguageProvider;
 using static CWishlist_win.Properties.Resources;
 using static CWishlist_win.Program;
+using static CWishlist_win.Consts;
 using static System.Diagnostics.Process;
 using static CWishlist_win.IO;
 using static System.GC;
@@ -17,14 +18,14 @@ using static CWishlist_win.Sorting;
 using static System.Windows.Forms.Keys;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace CWishlist_win
 {
     public partial class Form1 : Form
     {
-        public PluginManager plugin_manager { get; } = new PluginManager();
+        public readonly PluginManager plugin_manager = new PluginManager();
+        public readonly ThreadManager thread_manager = new ThreadManager();
         public WL wl;
         public string current_file = "";
         public WL loaded_wl = NEW;
@@ -46,23 +47,25 @@ namespace CWishlist_win
         public readonly string color_file = appdata + "\\CWishlist\\C";
         public readonly string legacy_color_file = appdata + "\\CWishlist\\COLOR";
         //this isnt even beta at this point, main features arent done and there are many bugs, so its an alpha
-        public string ver_str = "7.0.0a"; 
-        public uint ver_int = 0x700a;
-        public byte[] version = new byte[] { 7, 0, 0, 254 };
-        public object recents_mutex = new object();
-        public object backup_mutex = new object();
-        public object rbackup_mutex = new object();
+        public readonly string ver_str = "7.0.0a"; 
+        public readonly uint ver_int = 0x700a;
+        public readonly byte[] version = new byte[] { 7, 0, 0, 254 };
+        public readonly object recents_mutex = new object();
+        public readonly object backup_mutex = new object();
+        public readonly object rbackup_mutex = new object();
+
+        int start(function f)
+        {
+            return thread_manager.start(f);
+        }
+
+        void join(int id)
+        {
+            thread_manager.join(id);
+        }
 
         public Form1()
         {
-            Thread t;
-            Thread u;
-            Thread v;
-            Thread w;
-            Thread x;
-            Thread y;
-            Thread z;
-
             InitializeComponent();
 
             if (args.Length > 0)
@@ -70,43 +73,45 @@ namespace CWishlist_win
             else
                 wl = NEW;
 
-            (v = new Thread(() =>
+            int i = start(() =>
             {
                 if (!Directory.Exists(appdir))
                     Directory.CreateDirectory(appdir);
-            })).Start();
+            });
 
-            (x = new Thread(() =>
+            int j = start(() =>
             {
                 if (!Directory.Exists(lang_dir))
                     Directory.CreateDirectory(lang_dir);
-            })).Start();
+            });
 
-            (w = new Thread(() =>
+            start(() =>
             {
                 if (!Directory.Exists(plugin_dir))
                     Directory.CreateDirectory(plugin_dir);
-            })).Start();
+            });
 
-            x.Join();
-
-            (t = new Thread(() =>
+            int t = start(() =>
             {
+                join(j);
                 if (!File.Exists(lang_de) || !arrequ(utf8(de_lang_xml), File.ReadAllBytes(lang_de)))
                     File.WriteAllText(lang_de, de_lang_xml);
-            })).Start();
+            });
 
-            (u = new Thread(() =>
+            int u = start(() =>
             {
+                join(j);
                 if (!File.Exists(lang_en) || !arrequ(utf8(en_lang_xml), File.ReadAllBytes(lang_en)))
                     File.WriteAllText(lang_en, en_lang_xml);
-            })).Start();
+            });
 
-            (x = new Thread(() =>
+            start(() =>
             {
+                join(i);
                 lock (recents_mutex)
                 {
                     if (File.Exists(recents_file))
+                    {
                         try
                         {
                             lock (recents_mutex)
@@ -129,19 +134,21 @@ namespace CWishlist_win
                                 MessageBox.Show("Unable to write new recents:\n\n" + e1);
                             }
                         }
+                    }
                     else
+                    {
                         lock (recents_mutex)
                         {
                             write_recent(recents_file, recents);
                         }
+                    }
                 }
-            })).Start();
+            });
 
-            t.Join();
-
-            (t = new Thread(() =>
+            start(() =>
             {
-                u.Join();
+                join(t);
+                join(u);
 
                 foreach (string f in Directory.GetFiles(lang_dir))
                     load_lang_xml(f);
@@ -165,9 +172,9 @@ namespace CWishlist_win
                     {
                         wl = backup_load(backup_file);
                     }
-            })).Start();
+            });
 
-            (y = new Thread(() =>
+            start(() =>
             {
                 if (File.Exists(width_file))
                     Width = int32(File.ReadAllBytes(width_file));
@@ -176,9 +183,9 @@ namespace CWishlist_win
                     Width = int32(File.ReadAllBytes(legacy_width_file));
                     File.Delete(legacy_width_file);
                 }
-            })).Start();
+            });
 
-            (z = new Thread(() =>
+            start(() =>
             {
                 if (File.Exists(height_file))
                     Height = int32(File.ReadAllBytes(height_file));
@@ -187,11 +194,9 @@ namespace CWishlist_win
                     Height = int32(File.ReadAllBytes(legacy_height_file));
                     File.Delete(legacy_height_file);
                 }
-            })).Start();
+            });
 
-            u.Join();
-
-            (u = new Thread(() =>
+            start(() =>
             {
                 if (File.Exists(color_file))
                 {
@@ -203,7 +208,7 @@ namespace CWishlist_win
                     set_color(int32(File.ReadAllBytes(legacy_color_file)));
                     File.Delete(legacy_color_file);
                 }
-            })).Start();
+            });
 
 #if false
             foreach (string file in Directory.GetFiles(plugin_dir, "*.cwlwnplg"))
@@ -224,7 +229,7 @@ namespace CWishlist_win
 
         public void update_ui()
         {
-            //no GC for [up to]15MiB of small object heap and 127MiB for big object heap
+            //no GC for [up to] 15MiB of small object heap and 127MiB of big object heap
             try
             {
                 TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
@@ -247,37 +252,15 @@ namespace CWishlist_win
                     recentToolStripMenuItem.DropDownItems.Add(itm);
                 }
             else
-                recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("N/A"));
-            List<Thread> t = new List<Thread>();
+                recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(NA));
             foreach (Item i in wl)
-                if (!i.url.StartsWith("http://tinyurl.com/") && i.url.Length > 27 && valid_url(i.url))
-                    t.Add(start(() => { i.url = tinyurl_create(i.url); }));
-            start(() =>
-            {
-                try
-                {
-                    lock(backup_mutex)
-                    {
-                        backup_save(wl, backup_file);
-                    }
-                }
-                catch { }
-            });
-            start(() =>
-            {
-                try
-                {
-                    lock(rbackup_mutex)
-                    {
-                        File.WriteAllBytes(restore_backup, new byte[] { 1 });
-                    }
-                }
-                catch { }
-            });
+                if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
+                    start(() => { i.url = tinyurl_create(i.url); });
+            start(() => { try { lock (backup_mutex) { backup_save(wl, backup_file); } } catch { } });
+            start(() => { try { lock(rbackup_mutex) { writesbf(restore_backup, 1); } } catch { } });
             int index = listBox1.SelectedIndex;
+            thread_manager.finishall();
             listBox1.Items.Clear();
-            foreach (Thread tt in t)
-                tt.Join();
             foreach (Item i in wl.items)
                 listBox1.Items.Add(i.ToString());
             textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = button5.Visible = button6.Visible = false;
@@ -285,7 +268,7 @@ namespace CWishlist_win
             Invalidate();
             Update();
             EndNoGCRegion();
-            Collect(2, GCCollectionMode.Forced, false, false);
+            Collect(2, GCCollectionMode.Forced, false, true);
         }
 
         void lstbx_index_change(object sender, EventArgs e)
@@ -299,7 +282,7 @@ namespace CWishlist_win
 			}
         }
 
-        void btn3_click(object sender, EventArgs e)
+        void add_item(object sender, EventArgs e)
         {
             Item[] old = wl.items;
             wl.items = new Item[old.Length + 1];
@@ -326,13 +309,17 @@ namespace CWishlist_win
         void btn4_click(object sender, EventArgs e)
         {
             if (ContainsText())
-                for (uint i = 0; i < uint.MaxValue; i++)
-                    try
-                    {
-                        textBox1.Text = GetText();
-                        break;
-                    }
-                    catch { }
+                start(() =>
+                {
+                    //sometimes pasting fails randomly so we're repeating until it pastes
+                    for (int i = 0; i < int.MaxValue; i++)
+                        try
+                        {
+                            textBox1.Text = GetText();
+                            break;
+                        }
+                        catch { }
+                });
         }
 
         void btn5_click(object sender, EventArgs e)
@@ -340,7 +327,8 @@ namespace CWishlist_win
             if (ContainsText())
                 start(() =>
                 {
-                    for (uint i = 0; i < uint.MaxValue; i++)
+                    //sometimes pasting fails randomly so we're repeating until it pastes
+                    for (int i = 0; i < int.MaxValue; i++)
                         try
                         {
                             textBox2.Text = GetText();
@@ -355,7 +343,7 @@ namespace CWishlist_win
             if (listBox1.SelectedIndex == -1)
                 return;
             string url = wl.items[listBox1.SelectedIndex].url;
-            Start(url.StartsWith("http") ? url : "http://" + url);
+            Start(valid_url(url) ? url : http + url);
         }
 
         void remove_click(object sender, EventArgs e)
@@ -421,6 +409,7 @@ namespace CWishlist_win
                 Color c = BackColor;
                 File.WriteAllBytes(color_file, new byte[] { c.R, c.G, c.B });
             });
+            thread_manager.shutdown();
         }
 
         public void add_recent_item(string file)
