@@ -154,24 +154,21 @@ namespace CWishlist_win
                     load_lang_xml(f);
 
                 if (File.Exists(lang_file))
-                    selected = get_lang(ascii(File.ReadAllBytes(lang_file)));
+                    select_lang(ascii(File.ReadAllBytes(lang_file)));
                 else if (File.Exists(legacy_lang_file))
                 {
                     byte[] c = File.ReadAllBytes(legacy_lang_file);
                     if (c.Length == 1)
-                        selected = get_lang(c[0] == 0 ? "en" : "de");
+                        select_lang(c[0] == 0 ? "en" : "de");
                     else
-                        selected = get_lang(ascii(c));
+                        select_lang(ascii(c));
                 }
 
                 if (!File.Exists(restore_backup))
                     File.WriteAllBytes(restore_backup, new byte[] { 0 });
                 else if (File.ReadAllBytes(restore_backup)[0] != 0 &&
                     MessageBox.Show(get_translated("prompt.restore_backup"), get_translated("caption.restore_backup"), YesNo) == Yes)
-                    lock (backup_mutex)
-                    {
-                        wl = backup_load(backup_file);
-                    }
+                    lock (backup_mutex) { wl = backup_load(backup_file); }
             });
 
             start(() =>
@@ -600,13 +597,21 @@ namespace CWishlist_win
             new LanguageSelectionDialog(get_translated("title.switch_lang")).ShowDialog();
         }
 
-        void txtbx3_change(object sender, EventArgs e)
+        void search_change(object sender, EventArgs e)
         {
-            int i = wl.GetFirstIndex((it) => it.name.ToLower().Contains(textBox3.Text.ToLower()));
-            if (i != -1)
-                listBox1.SelectedIndex = i;
+            string s = textBox3.Text.ToLower();
+            int[] i = wl.GetIndices((it) => it.name.ToLower().Contains(s));
+            if (i.Length > 0)
+            {
+                listBox1.SelectedIndex = i[0];
+                foreach (int j in i)
+                    listBox1.Items[j] = "* " + listBox1.Items[j];
+            }
         }
 
+        /// <summary>
+        /// Invoked on click on the search box, selects all the text in the search box.
+        /// </summary>
         void search_click(object sender, EventArgs e)
         {
             textBox3.Focus();

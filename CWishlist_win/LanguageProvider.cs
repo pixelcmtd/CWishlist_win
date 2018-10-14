@@ -5,13 +5,16 @@ namespace CWishlist_win
 {
     class LanguageProvider
     {
-        public static lang selected { get; set; } = new lang("en", "english");
+        public static lang selected = new lang("en", "english");
 
         public static Dictionary<lang, Dictionary<string, dynamic>> langs = new Dictionary<lang, Dictionary<string, dynamic>>();
 
         public static dynamic get_translated(string name) => langs[selected][name];
 
-        public static lang get_lang(string code) => langs.Keys.where((l) => l.code == code);
+        public static void select_lang(string code)
+        {
+            selected = langs.Keys.where((l) => l.code == code);
+        }
 
         public static void load_lang_xml(string file)
         {

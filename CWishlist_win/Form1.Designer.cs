@@ -345,7 +345,7 @@ namespace CWishlist_win
             this.textBox3.TabIndex = 17;
             this.textBox3.Text = "search...";
             this.textBox3.Click += new System.EventHandler(this.search_click);
-            this.textBox3.TextChanged += new System.EventHandler(this.txtbx3_change);
+            this.textBox3.TextChanged += new System.EventHandler(this.search_change);
             // 
             // debugToolsToolStripMenuItem
             // 

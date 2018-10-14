@@ -99,5 +99,14 @@ namespace CWishlist_win
         public Item[] SearchItems(Predicate<Item> predicate) => FindAll(items, predicate);
 
         public int GetFirstIndex(Predicate<Item> predicate) => FindIndex(items, predicate);
+
+        public int[] GetIndices(Predicate<Item> predicate)
+        {
+            List<int> i = new List<int>();
+            for (int j = 0; j < items.Length; j++)
+                if (predicate(items[j]))
+                    i.Add(j);
+            return i.ToArray();
+        }
     }
 }
