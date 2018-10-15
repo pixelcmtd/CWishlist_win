@@ -2,77 +2,48 @@
 
 namespace CWishlist_win
 {
-    class Sorting
+    public static class Sorting
     {
-        public static Item[] merge_sort_items(Item[] u)
+        public static void quicksort(int left, int right, ref Item[] data)
         {
-            TryStartNoGCRegion(148897792, 133169152, true);
-            Item[] i = s(u);
-            EndNoGCRegion();
-            return i;
-        }
-
-        static Item[] s(Item[] u)
-        {
-            if (u.Length < 2)
-                return u;
-
-            long m = u.LongLength / 2;
-            Item[] l = new Item[m];
-            Item[] r = new Item[u.Length % 2 == 1 ? m + 1 : m];
-
-            for (long i = 0; i < m; i++)
-                l[i] = u[i];
-
-            for (long i = m; i < u.Length; i++)
-                r[i - m] = u[i];
-
-            l = s(l);
-            r = s(r);
-            return s(l, r);
-        }
-
-        static Item[] s(Item[] l, Item[] r)
-        {
-            Item[] a = new Item[l.LongLength + r.LongLength];
-            long ai = 0;
-            long li = 0;
-            long ri = 0;
-            long ll = l.LongLength;
-            long rl = r.LongLength;
-            bool ld;
-            bool rd;
-
-            while ((ld = ll - li > 0) || rl - ri > 0)
+            if (left < right)
             {
-                rd = rl - ri > 0;
-                if (ld && rd)
-                    if (l[li] >= r[ri])
-                    {
-                        a[ai] = l[li];
-                        ai++;
-                        li++;
-                    }
-                    else
-                    {
-                        a[ai] = r[ri];
-                        ai++;
-                        ri++;
-                    }
-                else if (ld)
+                int i = pivot(left, right, ref data);
+                quicksort(left, i - 1, ref data);
+                quicksort(i + 1, right, ref data);
+            }
+        }
+
+        static int pivot(int left, int right, ref Item[] data)
+        {
+            int i = left;
+            int j = right - 1;
+            int pivot = data[right];
+
+            while (i < j)
+            {
+                while (data[i] <= pivot && i < right)
+                    i += 1;
+
+                while (data[j] >= pivot && j > left)
+                    j -= 1;
+
+                if (i < j)
                 {
-                    a[ai] = l[li];
-                    ai++;
-                    li++;
-                }
-                else if (rd)
-                {
-                    a[ai] = r[ri];
-                    ai++;
-                    ri++;
+                    Item z = data[i];
+                    data[i] = data[j];
+                    data[j] = z;
                 }
             }
-            return a;
+
+            if (data[i] > pivot)
+            {
+                Item z = data[i];
+                data[i] = data[right];
+                data[right] = z;
+            }
+
+            return i;
         }
     }
 }

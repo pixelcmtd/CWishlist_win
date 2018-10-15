@@ -7,6 +7,8 @@ namespace CWishlist_win
 {
     public class Item
     {
+        public static Item[] EMPTY { get; } = { };
+
         public Item()
         {
             name = url = null;
