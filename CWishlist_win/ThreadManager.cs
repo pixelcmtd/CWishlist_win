@@ -9,8 +9,8 @@ namespace CWishlist_win
     public class ThreadManager
     {
         readonly int proc_count = Environment.ProcessorCount;
-        readonly Thread[] threads;
-        readonly List<task> tasks = new List<task>();
+        Thread[] threads;
+        List<task> tasks = new List<task>();
         public readonly object task_mutex = new object();
 
         public ThreadManager()
@@ -40,7 +40,12 @@ namespace CWishlist_win
                     }
                 }
             }
-            catch { }
+            catch
+            {
+#if DEBUG
+                Console.WriteLine("[ThreadManager]Thread shutdown.");
+#endif
+            }
         }
 
         task next()
@@ -72,10 +77,16 @@ namespace CWishlist_win
 
         public void shutdown()
         {
-            foreach (task t in tasks)
-                t.join();
-            foreach (Thread t in threads)
-                t.Abort();
+            lock (task_mutex)
+            {
+                foreach (task t in tasks)
+                    t.join();
+                foreach (Thread t in threads)
+                    t.Abort();
+                //ensures we won't be able to use this manager anymore
+                threads = null;
+                tasks = null;
+            }
         }
 
         public void join(int taskid)
@@ -88,9 +99,7 @@ namespace CWishlist_win
             foreach (task t in tasks)
                 t.join();
             lock (task_mutex)
-            {
                 tasks.Clear();
-            }
         }
     }
 
@@ -109,6 +118,11 @@ namespace CWishlist_win
 
         public void join()
         {
+#if DEBUG
+            Console.WriteLine("[ThreadManager]Joining func @ "
+                    + func.Method.MethodHandle.GetFunctionPointer().ToInt64().ToString("x16")
+                    + " (" + func.Method.Name + ")");
+#endif
             while (!executed) ;
         }
     }

@@ -271,20 +271,38 @@ namespace CWishlist_win
         /// Write func for the CWLS-format<para />
         /// For information on the format check the load/read func
         /// </summary>
-        public static void write_recent(string file, string[] recents)
+        public static void write_recents(string file, IEnumerable<string> recents)
         {
+#if DEBUG
+            Console.WriteLine("[CWLS]Writing file...");
+#endif
             Stream fs = File.Open(file, Create, FileAccess.Write);
             fs.write(cwls_header);
             fs.WriteByte(6);
+#if DEBUG
+            Console.WriteLine("[CWLS]Wrote header.");
+#endif
             MemoryStream ms = new MemoryStream();
             foreach (string r in recents)
             {
                 ms.write(utf8(r));
                 ms.WriteByte(11);
+#if DEBUG
+                Console.WriteLine("[CWLS]Wrote \"" + r + "\".");
+#endif
             }
             ms.Position = 0;
+#if DEBUG
+            Console.WriteLine("[CWLS]Compressing to file...");
+#endif
             Compress(ms, fs);
+#if DEBUG
+            Console.WriteLine("[CWLS]Compressed to file.");
+#endif
             fs.Close();
+#if DEBUG
+            Console.WriteLine("[CWLS]Finished.");
+#endif
         }
 
         /// <summary>
@@ -293,7 +311,7 @@ namespace CWishlist_win
         /// File version 1 (since v2 more or less saved (magic string CWLS))<para />
         /// Format versions: 1, 2, 3, 4, 5, 6 (saved, checked)
         /// </summary>
-        public static string[] load_recent(string file)
+        public static List<string> load_recents(string file)
         {
             int v = get_cwls_version(file);
             if (v > 6)
@@ -315,7 +333,7 @@ namespace CWishlist_win
                     r.Add(utf16(bfr, len));
                 }
                 s.Close();
-                return r.ToArray();
+                return r;
             }
             else if (v == 5)
             {
@@ -338,7 +356,7 @@ namespace CWishlist_win
                             b.Append(utf16(i, ms.ReadByte()));
                     r.Add(b.ToString());
                 }
-                return r.ToArray();
+                return r;
             }
             else
             {
@@ -362,7 +380,7 @@ namespace CWishlist_win
                     }
                 }
                 ms.Dispose();
-                return r.ToArray();
+                return r;
             }
         }
 

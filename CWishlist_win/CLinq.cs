@@ -56,10 +56,11 @@ namespace CWishlist_win
 
         public static string ToHexString(this byte[] bytes)
         {
-            string s = "";
+            StringBuilder s = new StringBuilder();
             foreach (byte b in bytes)
-                s += b.ToString("x2") + ", ";
-            return s.Substring(0, s.Length - 2);
+                s.Append(b.ToString("x2") + " ");
+            s.Remove(s.Length - 1, 1);
+            return s.ToString();
         }
 
         public static string xml_esc(this string s)
@@ -375,15 +376,15 @@ namespace CWishlist_win
             return Encoding.UTF32.GetString(b, 0, len);
         }
 
-        public static void memcpy<T>(T[] arr1, T[] arr2, long len)
+        public static void arrcpy<T>(T[] arr1, T[] arr2, long len)
         {
             for (long i = 0; i < len; i++)
                 arr2[i] = arr1[i];
         }
 
-        public static byte hex(string hex)
+        public static byte hex(string s)
         {
-            return Convert.ToByte(hex, 16);
+            return Convert.ToByte(s, 16);
         }
 
         public static bool fcmp(FileStream stream1, FileStream stream2)
@@ -414,25 +415,31 @@ namespace CWishlist_win
             fs.WriteByte(b);
             fs.Close();
         }
+
+        public static void farrcpy(Item[] src, Item[] dest)
+        {
+            for (long i = 0; i < src.LongLength; i++)
+                dest[i] = new Item(src[i].name, src[i].url);
+        }
     }
 
     class Enumerable<T> : IEnumerable<T>
     {
-        readonly IEnumerator<T> ie;
+        readonly IEnumerator<T> e;
 
         public Enumerable(IEnumerator<T> ie)
         {
-            this.ie = ie;
+            e = ie;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return ie;
+            return e;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ie;
+            return e;
         }
     }
 }

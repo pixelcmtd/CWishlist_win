@@ -19,6 +19,8 @@ using static CWishlist_win.Sorting;
 using static System.Windows.Forms.Keys;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace CWishlist_win
 {
@@ -29,7 +31,7 @@ namespace CWishlist_win
         public WL wl;
         public string current_file = "";
         public Item[] loaded_wl = EMPTY;
-        public string[] recents = { };
+        public List<string> recents = new List<string>();
         public readonly string appdir = appdata + "\\CWishlist";
         public readonly string plugin_dir = appdata + "\\CWishlist\\plugins";
 		public readonly string lang_dir = appdata + "\\CWishlist\\langs";
@@ -77,11 +79,13 @@ namespace CWishlist_win
                 load_wl(args[0]);
             else
                 lock (blist_mutex) { wl = NEW; }
-
+            
             int i = start(() =>
             {
                 if (!Directory.Exists(appdir))
+                {
                     Directory.CreateDirectory(appdir);
+                }
             });
 
             int j = start(() =>
@@ -117,25 +121,31 @@ namespace CWishlist_win
                     if (File.Exists(recents_file))
                         try
                         {
-                            lock (recents_mutex)
-                                recents = load_recent(recents_file);
+                            recents = load_recents(recents_file);
                         }
                         catch (Exception e)
                         {
                             MessageBox.Show("Corrupted recents:\n\n" + e);
                             try
                             {
-                                lock (recents_mutex)
-                                    write_recent(recents_file, recents);
+                                write_recents(recents_file, recents);
                             }
                             catch (Exception e1)
                             {
                                 MessageBox.Show("Unable to write new recents:\n\n" + e1);
+                                try
+                                {
+                                    File.Delete(recents_file);
+                                }
+                                catch (Exception e2)
+                                {
+                                    MessageBox.Show("Can't even delete the old recents:\n\n" + e2);
+                                    MessageBox.Show("I guess you really blew up your PC...");
+                                }
                             }
                         }
                     else
-                        lock (recents_mutex)
-                            write_recent(recents_file, recents);
+                        write_recents(recents_file, recents);
             });
 
             start(() =>
@@ -236,7 +246,7 @@ namespace CWishlist_win
             }
             
             recentToolStripMenuItem.DropDownItems.Clear();
-            if (recents.Length > 0)
+            if (recents.Count > 0)
                 foreach (string r in recents)
                 {
                     ToolStripMenuItem itm = new ToolStripMenuItem(r);
@@ -249,7 +259,7 @@ namespace CWishlist_win
                 }
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(NA));
-            asynctinyflush(false);
+            asynctinyflush();
             start(() => { try { lock (backup_mutex) { backup_save(wl, backup_file); } } catch { } });
             start(() => { try { lock (rbackup_mutex) { writesbf(restore_backup, 1); } } catch { } });
             int index = listBox1.SelectedIndex;
@@ -265,13 +275,19 @@ namespace CWishlist_win
             Collect(2, GCCollectionMode.Forced, false, true);
         }
 
-        public void asynctinyflush(bool finishall)
+        public void asynctinyflush()
         {
             foreach (Item i in wl)
                 if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
                     start(() => { i.url = tinyurl_create(i.url); });
-            if (finishall)
-                thread_manager.finishall();
+        }
+
+        public void asynctinyflush_f()
+        {
+            foreach (Item i in wl)
+                if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
+                    start(() => { i.url = tinyurl_create(i.url); });
+            thread_manager.finishall();
         }
 
         public void try_update_ui()
@@ -364,7 +380,7 @@ namespace CWishlist_win
                 return;
             Item[] old = wl.items;
             wl.items = new Item[old.Length - 1];
-            memcpy(old, wl.items, listBox1.SelectedIndex);
+            arrcpy(old, wl.items, listBox1.SelectedIndex);
             for (int i = listBox1.SelectedIndex + 1; i < old.Length; i++)
                 wl.items[i - 1] = old[i];
             try
@@ -410,47 +426,74 @@ namespace CWishlist_win
                     return;
             }
             if (current_file != "")
-                start(() => { lock (recents_mutex) add_recent_item(current_file); });
-            start(() => { lock (recents_mutex) write_recent(recents_file, recents); });
-            start(() => writesbf(restore_backup, 0));
-            start(() => File.WriteAllBytes(lang_file, ascii(selected.code)));
-            start(() => File.WriteAllBytes(width_file, bytes(Width)));
-            start(() => File.WriteAllBytes(height_file, bytes(Height)));
-            start(() =>
-            {
-                Color c = BackColor;
-                File.WriteAllBytes(color_file, new byte[] { c.R, c.G, c.B });
-            });
+                start(add_current_file_to_recent_items);
+            start(write_recents_mutexed_close);
+            start(disable_restore_backup_close);
+            start(write_lang_file_close);
+            start(write_wid_file_close);
+            start(write_hei_file_close);
+            start(write_color_file_close);
+            Hide();
             thread_manager.shutdown();
         }
 
-        public void add_recent_item(string file)
+        void write_color_file_close()
         {
+            Color c = BackColor;
+            File.WriteAllBytes(color_file, new byte[] { c.R, c.G, c.B });
+        }
+
+        void write_hei_file_close()
+        {
+            File.WriteAllBytes(height_file, bytes(Height));
+        }
+
+        void write_wid_file_close()
+        {
+            File.WriteAllBytes(width_file, bytes(Width));
+        }
+
+        void write_lang_file_close()
+        {
+            File.WriteAllBytes(lang_file, ascii(selected.code));
+        }
+
+        void disable_restore_backup_close()
+        {
+            lock (rbackup_mutex)
+                writesbf(restore_backup, 0);
+        }
+
+        void write_recents_mutexed_close()
+        {
+            lock (recents_mutex)
+                write_recents(recents_file, recents);
+        }
+
+        public void add_current_file_to_recent_items()
+        {
+            string s = current_file;
             start(() =>
             {
                 lock (recents_mutex)
                 {
-                    if (recents.Length != 0 && recents[0] == file)
+                    if (recents.Count > 0 && recents[0] == s)
                         return;
-                    string[] old = recents;
-                    recents = new string[old.Length + 1];
-                    recents[0] = file;
-                    for (int i = 0; i < old.Length; i++)
-                        recents[i + 1] = old[i];
+                    recents.Insert(0, s);
                 }
             });
         }
 
         void new_click(object _, EventArgs e)
         {
-            if ((wl != 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl))
+            if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl))
                 && MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), YesNo) == No)
                     return;
             lock (blist_mutex)
             {
                 if (current_file != "")
                 {
-                    add_recent_item(current_file);
+                    add_current_file_to_recent_items();
                     current_file = "";
                 }
                 wl = NEW;
@@ -477,7 +520,7 @@ namespace CWishlist_win
             if (res == Yes || res == DialogResult.OK)
             {
                 if (current_file != "")
-                    add_recent_item(current_file);
+                    add_current_file_to_recent_items();
                 load_wl(ofd.FileName);
             }
         }
@@ -517,8 +560,8 @@ namespace CWishlist_win
             var res = sfd.ShowDialog();
             if (res == Yes || res == DialogResult.OK)
             {
-                add_recent_item(sfd.FileName);
                 current_file = sfd.FileName;
+                add_current_file_to_recent_items();
                 cwld_save(wl, current_file);
             }
         }
@@ -597,7 +640,7 @@ namespace CWishlist_win
 
         void sort_click(object _, EventArgs e)
         {
-            asynctinyflush(true);
+            asynctinyflush_f();
             lock (blist_mutex)
                 quicksort(0, wl.Length - 1, ref wl.items);
             update_ui();
@@ -700,13 +743,10 @@ namespace CWishlist_win
             {
                 wl = load(file);
                 current_file = file;
-                loaded_wl = wl.items;
+                loaded_wl = new Item[wl];
+                farrcpy(wl, loaded_wl);
             }
-            try
-            {
-                update_ui();
-            }
-            catch { }
+            try_update_ui();
         }
 
         /// <summary>

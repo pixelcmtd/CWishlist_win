@@ -76,6 +76,11 @@ namespace CWishlist_win
             return wl.items.LongLength;
         }
 
+        public static implicit operator Item[](WL wl)
+        {
+            return wl.items;
+        }
+
         public override bool Equals(object obj) => (obj is WL) ? ((WL)obj) == this : false;
 		
 		public bool Equals(WL wl) => wl == this;
