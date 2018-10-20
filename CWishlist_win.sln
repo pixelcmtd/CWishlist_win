@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_plugin", "test_plugin\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyCode", "LegacyFormats\LegacyCode.csproj", "{4F00DBAE-27B1-4BF6-B5F9-5F1CB07DEB05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cwla_benchmarks", "cwla_benchmarks\cwla_benchmarks.csproj", "{74986553-05C8-4BBC-880A-F2491FBC0242}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{4F00DBAE-27B1-4BF6-B5F9-5F1CB07DEB05}.Release|x64.Build.0 = Release|Any CPU
 		{4F00DBAE-27B1-4BF6-B5F9-5F1CB07DEB05}.Release|x86.ActiveCfg = Release|Any CPU
 		{4F00DBAE-27B1-4BF6-B5F9-5F1CB07DEB05}.Release|x86.Build.0 = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|x64.ActiveCfg = Debug|x64
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|x64.Build.0 = Debug|x64
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Debug|x86.Build.0 = Debug|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x64.ActiveCfg = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x64.Build.0 = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x86.ActiveCfg = Release|Any CPU
+		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
