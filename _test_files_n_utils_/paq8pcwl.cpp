@@ -45,7 +45,6 @@ is even faster than MinGW).
 #include <time.h>
 #include <math.h>
 #include <ctype.h>
-#define NDEBUG  // remove for debugging (turns on Array bound checks)
 #include <assert.h>
 
 #include <windows.h>
@@ -54,7 +53,6 @@ is even faster than MinGW).
 #define DEFAULT_OPTION 7
 #endif
 
-// 8, 16, 32 bit unsigned types (adjust as appropriate)
 typedef unsigned char  U8;
 typedef unsigned short U16;
 typedef unsigned int   U32;
@@ -93,11 +91,6 @@ public:
   }
   ProgramChecker(): memused(0), maxmem(0) {
     start_time=clock();
-    assert(sizeof(U8)==1);
-    assert(sizeof(U16)==2);
-    assert(sizeof(U32)==4);
-    assert(sizeof(short)==2);
-    assert(sizeof(int)==4);
   }
   void print() {}
 } programChecker;
@@ -105,7 +98,6 @@ public:
 //////////////////////////// Array ////////////////////////////
 
 template <class T, int ALIGN=0> class Array {
-private:
   int n;     // user size
   int reserved;  // actual size
   char *ptr; // allocated memory, zeroed
@@ -115,15 +107,9 @@ public:
   explicit Array(int i=0) {create(i);}
   ~Array();
   T& operator[](int i) {
-#ifndef NDEBUG
-    if (i<0 || i>=n) fprintf(stderr, "%d out of bounds %d\n", i, n), quit();
-#endif
     return data[i];
   }
   const T& operator[](int i) const {
-#ifndef NDEBUG
-    if (i<0 || i>=n) fprintf(stderr, "%d out of bounds %d\n", i, n), quit();
-#endif
     return data[i];
   }
   int size() const {return n;}
@@ -165,7 +151,6 @@ template<class T, int ALIGN> void Array<T, ALIGN>::create(int i) {
   ptr = (char*)calloc(sz, 1);
   if (!ptr) quit("Out of memory!");
   data = (ALIGN ? (T*)(ptr + ALIGN - (((long)ptr)&(ALIGN - 1))) : (T*)ptr);
-  assert((char*)data >= ptr && (char*)data <= ptr + ALIGN);
 }
 
 template<class T, int ALIGN> Array<T, ALIGN>::~Array() {
@@ -174,12 +159,12 @@ template<class T, int ALIGN> Array<T, ALIGN>::~Array() {
 }
 
 template<class T, int ALIGN> void Array<T, ALIGN>::push_back(const T& x) {
-  if (n==reserved) {
-    int saven=n;
+  if (n == reserved) {
+    int saven = n;
     resize(max(1, n*2));
-    n=saven;
+    n = saven;
   }
-  data[n++]=x;
+  data[n++] = x;
 }
 
 /////////////////////////// String /////////////////////////////
@@ -189,9 +174,11 @@ template<class T, int ALIGN> void Array<T, ALIGN>::push_back(const T& x) {
 
 class String: public Array<char> {
 public:
-  const char* c_str() const {return &(*this)[0];}
+  const char* c_str() const {
+	  return &(*this)[0];
+  }
   void operator=(const char* s) {
-    resize(strlen(s)+1);
+    resize(strlen(s) + 1);
     strcpy(&(*this)[0], s);
   }
   void operator+=(const char* s) {
@@ -209,7 +196,7 @@ public:
 //////////////////////////// rnd ///////////////////////////////
 
 // 32-bit pseudo random number generator
-class Random{
+class Random {
   Array<U32> table;
   int i;
 public:
@@ -231,7 +218,7 @@ int pos;  // Number of input bytes in buf (not wrapped)
 class Buf {
   Array<U8> b;
 public:
-  Buf(int i=0): b(i) {}
+  Buf(int i = 0): b(i) {}
   void setsize(int i) {
     if (!i) return;
     assert(i > 0 && !(i & (i - 1)));
@@ -241,7 +228,6 @@ public:
 	  return b[i&b.size() - 1];
   }
   int operator()(int i) const {
-	  assert(i > 0);
 	  return b[pos - i & b.size() - 1];
   }
   int size() const {
@@ -1524,14 +1510,14 @@ int decode_default(Encoder& en) {
 // Split n bytes into blocks by type.  For each block, output
 // <type> <size> and call encode_X to convert to type X.
 void encode(FILE* in, FILE* out, int n) {
-  Filetype type=DEFAULT;
-  long begin=ftell(in);
-  while (n>0) {
-    Filetype nextType=detect(in, n, type);
-    long end=ftell(in);
+  Filetype type = DEFAULT;
+  long begin = ftell(in);
+  while (n > 0) {
+    Filetype nextType = detect(in, n, type);
+    long end = ftell(in);
     fseek(in, begin, SEEK_SET);
-    int len=int(end-begin);
-    if (len>0) {
+    int len = (int)(end - begin);
+    if (len > 0) {
       fprintf(out, "%c%c%c%c%c", type, len>>24, len>>16, len>>8, len);
 	  encode_default(in, out, len);
     }
@@ -1563,19 +1549,18 @@ int decode(Encoder& en) {
 void compress(const char* filename, long filesize, Encoder& en) {
   assert(en.getMode()==COMPRESS);
   assert(filename && filename[0]);
-  FILE *f=fopen(filename, "rb");
+  FILE *f = fopen(filename, "rb");
   if (!f) perror(filename), quit();
   long start=en.size();
-  printf("%s %ld -> ", filename, filesize);
 
   // Transform and test in blocks
-  const int BLOCK=MEM*64;
-  for (int i=0; filesize>0; i+=BLOCK) {
-    int size=BLOCK;
-    if (size>filesize) size=filesize;
-    FILE* tmp=tmpfile();
+  constexpr int BLOCK = MEM * 64;
+  for (int i = 0; filesize > 0; i += BLOCK) {
+    int size = BLOCK;
+    if (size > filesize) size = filesize;
+    FILE* tmp = tmpfile();
     if (!tmp) perror("tmpfile"), quit();
-    long savepos=ftell(f);
+    long savepos = ftell(f);
     encode(f, tmp, size);
 
     // Test transform
@@ -1583,13 +1568,12 @@ void compress(const char* filename, long filesize, Encoder& en) {
     en.setFile(tmp);
     fseek(f, savepos, SEEK_SET);
     long j;
-    int c1=0, c2=0;
-    for (j=0; j<size; ++j)
-      if ((c1=decode(en))!=(c2=getc(f))) break;
+    int c1 = 0, c2 = 0;
+    for (j = 0; j < size; ++j)
+      if ((c1 = decode(en)) != (c2 = getc(f))) break;
 
     // Test fails, compress without transform
     if (j!=size || getc(tmp)!=EOF) {
-      printf("Transform fails at %ld, input=%d decoded=%d, skipping...\n", i+j, c2, c1);
       en.compress(0);
       en.compress(size>>24);
       en.compress(size>>16);
@@ -1612,7 +1596,6 @@ void compress(const char* filename, long filesize, Encoder& en) {
     fclose(tmp);  // deletes
   }
   if (f) fclose(f);
-  printf("%-12ld\n", en.size()-start);
 }
 
 // Try to make a directory, return true if successful
@@ -1628,51 +1611,44 @@ void decompress(const char* filename, long filesize, Encoder& en) {
   // Test if output file exists.  If so, then compare.
   FILE* f=fopen(filename, "rb");
   if (f) {
-    printf("Comparing %s %ld -> ", filename, filesize);
     bool found=false;  // mismatch?
     for (int i=0; i<filesize; ++i) {
       printStatus(i);
       int c1=found?EOF:getc(f);
       int c2=decode(en);
       if (c1!=c2 && !found) {
-        printf("differ at %d: file=%d archive=%d\n", i, c1, c2);
         found=true;
       }
     }
-    if (!found && getc(f)!=EOF)
-      printf("file is longer\n");
-    else if (!found)
-      printf("identical   \n");
     fclose(f);
   }
 
   // Create file
   else {
-    f=fopen(filename, "wb");
+    f = fopen(filename, "wb");
     if (!f) {  // Try creating directories in path and try again
       String path(filename);
-      for (int i=0; path[i]; ++i) {
-        if (path[i]=='/' || path[i]=='\\') {
+      for (int i = 0; path[i]; ++i) {
+        if (path[i] == '/' || path[i] == '\\') {
           char savechar=path[i];
-          path[i]=0;
-          if (makedir(path.c_str()))
-            printf("Created directory %s\n", path.c_str());
-          path[i]=savechar;
+          path[i] = 0;
+		  makedir(path.c_str());
+          path[i] = savechar;
         }
       }
-      f=fopen(filename, "wb");
+      f = fopen(filename, "wb");
     }
 
     // Decompress
     if (f) {
-      for (int i=0; i<filesize; ++i)
+      for (int i = 0; i < filesize; ++i)
         putc(decode(en), f);
       fclose(f);
     }
     // Can't create, discard data
     else {
       perror(filename);
-      for (int i=0; i<filesize; ++i)
+      for (int i = 0; i < filesize; ++i)
         decode(en);
     }
   }
@@ -1720,7 +1696,7 @@ int putsize(String& archive, String& s, const char* fname, int base) {
 int expand(String& archive, String& s, const char* fname, int base) {
   int result = 0;
   DWORD attr = GetFileAttributes(fname);
-  if ((attr != 0xFFFFFFFF) && (attr & FILE_ATTRIBUTE_DIRECTORY)) {
+  if ((attr != MAXDWORD) && (attr & FILE_ATTRIBUTE_DIRECTORY)) {
     WIN32_FIND_DATA ffd;
     String fdir(fname);
     fdir += "/*";
@@ -1755,11 +1731,11 @@ int main(int argc, char **argv) {
 		quit("Invalid call: argv[1] is longer than 2!");
   try {
 	  char arg11 = arg1[1];
-	Mode mode;
+	int mode;
 	if (arg11 == 'd')
-		mode = DECOMPRESS;
+		mode = 1;
 	else if (arg11 == 'c')
-		mode = COMPRESS;
+		mode = 0;
 	else
 		quit("Invalid call: mode is neither 'd' nor 'c'.");
 
@@ -1769,9 +1745,9 @@ int main(int argc, char **argv) {
     Array<long> fsize(1);   // file lengths (resized to files)
 
     String archiveName(arg2);
-   
+    
     String filenames;
-    if (mode == COMPRESS) {
+    if (!mode) {
       String header_string;
       int i;
       for (i = 1; i < argc; ++i) {
@@ -1806,49 +1782,43 @@ int main(int argc, char **argv) {
       fseek(archive, 0, SEEK_END);
     }
 
-    if (mode == DECOMPRESS) {
+    if (mode) {
       archive = fopen(archiveName.c_str(), "rb+");
       if (!archive) perror(archiveName.c_str()), quit();
 	  getline(archive);
-	  while (getline(archive)) ++files;  // count files
-      long header_size=ftell(archive);
-      filenames.resize(header_size+4);  // copy of header
+	  while (getline(archive)) ++files; //count files
+      long header_size = ftell(archive);
+      filenames.resize(header_size + 4); //copy of header
       rewind(archive);
       fread(&filenames[0], 1, header_size, archive);
       fname.resize(files);
       fsize.resize(files);
-      char* p=&filenames[0];
-      while (*p && *p!='\r') ++p;  // skip first line
-      ++p;
-      for (int i=0; i<files; ++i) {
-        fsize[i]=atol(p+1);
-        while (*p && *p!='\t') ++p;
-        fname[i]=p+1;
-        while (*p && *p!='\r') ++p;
-        if (!*p) printf("%s: header corrupted at %d\n", archiveName.c_str(),
-          p-&filenames[0]), quit();
-        assert(p-&filenames[0]<header_size);
-        *p++=0;
+      char* p = &filenames[0];
+      while (*p && *p != '\r') ++p; //skip first line
+	  ++p;
+      for (int i = 0; i < files; ++i) {
+        fsize[i] = atol(p + 1);
+        while (*p && *p != '\t') ++p;
+        fname[i] = p + 1;
+        while (*p && *p != '\r') ++p;
+        *p++ = 0;
       }
     }
     buf.setsize(MEM * 8);
     // Compress or decompress files
-    assert(fname.size() == files && fsize.size() == files);
     long total_size = 0;  // sum of file sizes
     for (int i = 0; i < files; ++i) total_size+=fsize[i];
     Encoder en(mode, archive);
-    if (mode==COMPRESS) {
-      for (int i=0; i<files; ++i)
+    if (!mode) {
+      for (int i = 0; i < files; ++i)
         compress(fname[i], fsize[i], en);
       en.flush();
-      printf("%ld -> %ld\n", total_size, en.size());
     }
 
     // Decompress files to dir2: paq8p -d dir1/archive.paq8p dir2
     // If there is no dir2, then extract to dir1
     // If there is no dir1, then extract to .
     else {
-      assert(argc >= 2);
       String dir(argc > 2 ? argv[2] : argv[1]);
       if (argc==2) {  // chop "/archive.paq8p"
         int i;
@@ -1862,7 +1832,7 @@ int main(int argc, char **argv) {
             break;
           }
         }
-        if (i==-1) dir=".";  // "/" not found
+        if (i == -1) dir=".";  // "/" not found
       }
       dir=dir.c_str();
       if (dir[0] && (dir.size()!=3 || dir[1]!=':')) dir+="/";
@@ -1875,7 +1845,7 @@ int main(int argc, char **argv) {
     fclose(archive);
   }
   catch(const char* s) {
-    if (s) printf("%s\n", s);
+    if (s) puts(s);
   }
   return 0;
 }
