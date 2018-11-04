@@ -62,7 +62,7 @@ namespace CWishlist_win
             fs.write(1);
             MemoryStream ms = new MemoryStream();
             foreach (Item i in wl)
-                i.write_bytes(ms, "L1");
+                i.write_bytes(ms, L1);
             Compress(ms, fs);
             ms.Close();
             fs.Close();
@@ -138,7 +138,7 @@ namespace CWishlist_win
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
 
             foreach (Item i in wl)
-                i.write_bytes(d, "D2");
+                i.write_bytes(d, D2);
 
             d.Close();
         }
@@ -151,6 +151,9 @@ namespace CWishlist_win
         /// </summary>
         public static WL cwld_load(string file)
         {
+#if DEBUG
+            Console.WriteLine("[CWLD]Reading file...");
+#endif
             Stream raw = File.Open(file, Open, FileAccess.Read);
 
             byte[] h = new byte[8]; //header
@@ -168,11 +171,15 @@ namespace CWishlist_win
                 throw new Exception("This CWLD file is invalid.");
             }
 
-            if(v == 1)
+            DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
+            List<Item> itms = new List<Item>();
+            StringBuilder s = new StringBuilder();
+
+            if (v == 1)
             {
-                DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
-                List<Item> items = new List<Item>();
-                StringBuilder s = new StringBuilder();
+#if DEBUG
+                Console.WriteLine("[CWLD]Initialized, checked header, continueing with v1.");
+#endif
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
                 char chr;
@@ -184,7 +191,7 @@ namespace CWishlist_win
                         if (nus)
                         {
                             i.url = s.ToString();
-                            items.Add(i);
+                            itms.Add(i);
                             i = new Item();
                         }
                         else
@@ -197,13 +204,10 @@ namespace CWishlist_win
 
                 d.Close();
 
-                return new WL(items);
+                return new WL(itms);
             }
             else
             {
-                DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
-                List<Item> itms = new List<Item>();
-                StringBuilder s = new StringBuilder();
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
@@ -254,17 +258,33 @@ namespace CWishlist_win
         /// </summary>
         static WL cwlu_load(string file)
         {
+#if DEBUG
+            Console.WriteLine("[CWLU]Reading file...");
+#endif
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
             if (zip.read_entry_byte("F") != 3 || zip.read_entry_byte("V") != 1)
                 throw new Exception("Invalid CWLU file.");
             XmlReader xml = XmlReader.Create(new StreamReader(zip.GetEntry("W").Open(), Unicode));
+#if DEBUG
+            Console.WriteLine("[CWLU]Initialized ZIP, XML.");
+#endif
             List<Item> items = new List<Item>();
             while (xml.Read())
                 if (xml.Name == "i")
-                    items.Add(new Item(xml.GetAttribute("n"), xml.GetAttribute("u")));
+                {
+                    Item i = new Item(xml.GetAttribute("n"), xml.GetAttribute("u"));
+                    items.Add(i);
+#if DEBUG
+                    Console.WriteLine($"[CWLU]Read {i.dbgfmt()}");
+#endif
+                }
             xml.Close();
             zip.Dispose();
-            return new WL(items);
+            WL wl = new WL(items);
+#if DEBUG
+            Console.WriteLine("[CWLU]Finished.");
+#endif
+            return wl;
         }
 
         /// <summary>
@@ -313,17 +333,38 @@ namespace CWishlist_win
         /// </summary>
         public static List<string> load_recents(string file)
         {
-            int v = get_cwls_version(file);
+#if DEBUG
+            Console.WriteLine("");
+#endif
+            int v;
+            Stream s = File.Open(file, Open, FileAccess.Read);
+            if (s.ReadByte() == 80 && s.ReadByte() == 75)
+            {
+                s.Close();
+                using (ZipArchive z = ZipFile.Open(file, ZipArchiveMode.Read, ASCII))
+                    v = z.read_entry_byte("V");
+            }
+            else if (readequals(s, 8, cwls4_header))
+            {
+                s.Close();
+                v = 4;
+            }
+            else
+            {
+                s.Seek(4, SeekOrigin.Begin);
+                v = s.ReadByte();
+                s.Close();
+            }
             if (v > 6)
                 throw new TooNewRecentsFileException();
-            else if (v < 4)
+            if (v < 4)
                 throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
             else if (v == 4)
             {
                 List<string> r = new List<string>();
                 Stream rawfs = File.Open(file, Open, FileAccess.Read);
                 rawfs.Seek(10, SeekOrigin.Begin);
-                Stream s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
+                s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
                 int i;
                 byte[] bfr = new byte[131070]; //ushort.MaxValue * 2 (128KiB)
                 while ((i = s.ReadByte()) != -1)
@@ -384,29 +425,6 @@ namespace CWishlist_win
             }
         }
 
-        static int get_cwls_version(string f)
-        {
-            Stream s = File.Open(f, Open, FileAccess.Read);
-            if (s.ReadByte() == 80 && s.ReadByte() == 75)
-            {
-                s.Close();
-                using (ZipArchive z = ZipFile.Open(f, ZipArchiveMode.Read, ASCII))
-                    return z.read_entry_byte("V");
-            }
-            else if (readequals(s, 8, cwls4_header))
-            {
-                s.Close();
-                return 4;
-            }
-            else
-            {
-                s.Seek(4, SeekOrigin.Begin);
-                int v = s.ReadByte();
-                s.Close();
-                return v;
-            }
-        }
-
         static bool readequals(Stream stream, int len, byte[] arr)
         {
             if (len != arr.Length)
@@ -422,7 +440,7 @@ namespace CWishlist_win
     class InvalidHeaderException : Exception
     {
         public InvalidHeaderException(string format, byte[] expected, byte[] invalid) :
-            this(format, expected.ToHexString(), invalid.ToString()) { }
+            this(format, expected.hex(), invalid.ToString()) { }
 
         public InvalidHeaderException(string format, string expected, string invalid) :
             base($"This {format}-File's header is not correct, it's expected to be {expected} by the standard, but it's {invalid}.") { }

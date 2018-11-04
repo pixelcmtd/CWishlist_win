@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
+using static CWishlist_win.Consts;
 
 namespace CWishlist_win
 {
@@ -37,7 +38,7 @@ namespace CWishlist_win
         {
             FileStream fs = File.Open("test.uncompressed_cwll", FileMode.Create, FileAccess.Write);
             foreach (Item i in src_form.wl)
-                i.write_bytes(fs, "L1");
+                i.write_bytes(fs, L1);
             fs.Close();
         }
 
@@ -48,7 +49,7 @@ namespace CWishlist_win
             fs.write(255);
             DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (Item i in src_form.wl)
-                i.write_bytes(ds, "L1");
+                i.write_bytes(ds, L1);
             ds.Close();
         }
 
@@ -56,7 +57,7 @@ namespace CWishlist_win
         {
             FileStream fs = File.Open("test.uncompressed_cwld", FileMode.Create, FileAccess.Write);
             foreach (Item i in src_form.wl)
-                i.write_bytes(fs, "D2");
+                i.write_bytes(fs, D2);
             fs.Close();
         }
     }

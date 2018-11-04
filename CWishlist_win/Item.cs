@@ -62,29 +62,23 @@ namespace CWishlist_win
             get => (long)url.Length + (long)name.Length;
         }
 
-        public long MemoryLength
+#if DEBUG
+        public string dbgfmt()
         {
-            get => LongLength * 2;
+            return "{\"" + name + "\",\"" + url + "\"}";
         }
+#endif
 
-        public byte[] bytes(string format)
+        public void write_bytes(Stream s, int format)
         {
-            MemoryStream ms = new MemoryStream();
-            write_bytes(ms, format);
-            ms.Close();
-            return ms.ToArray();
-        }
-
-        public void write_bytes(Stream s, string format)
-        {
-            if (format == "D1")
+            if (format == D1)
             {
                 s.write(utf16(name));
                 s.write(10, 13);
                 s.write(utf16(url));
                 s.write(10, 13);
             }
-            else if (format == "D2")
+            else if (format == D2)
             {
                 s.write(utf16(name));
                 s.write(11);
@@ -100,19 +94,19 @@ namespace CWishlist_win
                 }
                 s.write(11);
             }
-            else if (format.StartsWith("L1"))
+            else if (format == L1)
             {
                 s.write(utf8(name));
-                if (url.StartsWith("http://tinyurl.com/"))
+                if (url.StartsWith(tinyurl))
                 {
-                    s.WriteByte(11);
-                    s.write(b64(url.Substring(19)));
+                    s.WriteByte(L1_TU);
+                    s.write(b64(url.Substring(tinyurl_length)));
                 }
                 else
                 {
-                    s.WriteByte(8);
+                    s.WriteByte(L1_NOTU);
                     s.write(utf8(url));
-                    s.WriteByte(11);
+                    s.WriteByte(L1_ENDSTR);
                 }
             }
         }

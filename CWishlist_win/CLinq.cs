@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading;
 
 namespace CWishlist_win
 {
@@ -54,7 +53,7 @@ namespace CWishlist_win
             return true;
         }
 
-        public static string ToHexString(this byte[] bytes)
+        public static string hex(this byte[] bytes)
         {
             StringBuilder s = new StringBuilder();
             foreach (byte b in bytes)
@@ -62,12 +61,7 @@ namespace CWishlist_win
             s.Remove(s.Length - 1, 1);
             return s.ToString();
         }
-
-        public static string xml_esc(this string s)
-        {
-            return s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
-        }
-
+        
         public static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
         {
             Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();

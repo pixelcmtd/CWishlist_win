@@ -18,7 +18,7 @@ namespace CWishlist_win
                 Application.SetCompatibleTextRenderingDefault(false);
 #if DEBUG
                 AllocConsole();
-                Console.WriteLine("IT'S WÖRKING! ÄÜß♥²³´`");
+                Console.WriteLine("IT'S WÖRKING! ÄÜß♥²³´`§€");
                 SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
 #endif
                 form = new Form1();
