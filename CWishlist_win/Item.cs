@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using System.Text;
 using static CWishlist_win.CLinq;
 using static CWishlist_win.Consts;
+using static CWishlist_win.Encodings;
 
 namespace CWishlist_win
 {

@@ -21,8 +21,13 @@
         public static readonly int D2 = 1;
         public static readonly int L1 = 2;
 
+        //CWLLv1 strings
+
+        //is a tinyurl
         public static readonly byte L1_TU = 11;
+        //is no tinyurl
         public static readonly byte L1_NOTU = 8;
+        //end string
         public static readonly byte L1_ENDSTR = 11;
     }
 }

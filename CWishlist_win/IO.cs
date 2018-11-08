@@ -10,6 +10,7 @@ using static CWishlist_win.Consts;
 using static SevenZip.SevenZipHelper;
 using static System.IO.FileMode;
 using static System.Text.Encoding;
+using static CWishlist_win.Encodings;
 
 namespace CWishlist_win
 {
@@ -20,19 +21,13 @@ namespace CWishlist_win
             return new WebClient().DownloadString(tinyurl_api + url);
         }
 
-        //fastcharactercontains
-        static bool fccontains(string s, char c)
-        {
-            foreach (char d in s)
-                if (c == d)
-                    return true;
-            return false;
-        }
+        
 
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
-            return s.StartsWith(http) || s.StartsWith(https) || s.StartsWith(ftp) && fccontains(s, '.');
+            return s.StartsWith(http) || s.StartsWith(https) ||
+                s.StartsWith(ftp) && fccontains(s, '.');
         }
 
         public static WL load(string f)
@@ -334,7 +329,7 @@ namespace CWishlist_win
         public static List<string> load_recents(string file)
         {
 #if DEBUG
-            Console.WriteLine("");
+            Console.WriteLine("[CWLS]Reading file...");
 #endif
             int v;
             Stream s = File.Open(file, Open, FileAccess.Read);
@@ -355,12 +350,18 @@ namespace CWishlist_win
                 v = s.ReadByte();
                 s.Close();
             }
+#if DEBUG
+            Console.WriteLine($"[CWLS]Got version {v}.");
+#endif
             if (v > 6)
                 throw new TooNewRecentsFileException();
             if (v < 4)
                 throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
             else if (v == 4)
             {
+#if DEBUG
+                Console.WriteLine("[CWLS]Starting reading with version 4.");
+#endif
                 List<string> r = new List<string>();
                 Stream rawfs = File.Open(file, Open, FileAccess.Read);
                 rawfs.Seek(10, SeekOrigin.Begin);
@@ -378,6 +379,9 @@ namespace CWishlist_win
             }
             else if (v == 5)
             {
+#if DEBUG
+                Console.WriteLine("[CWLS]Starting reading with version 5.");
+#endif
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Seek(5, SeekOrigin.Begin);
@@ -401,6 +405,9 @@ namespace CWishlist_win
             }
             else
             {
+#if DEBUG
+                Console.WriteLine("[CWLS]Starting reading with version 6.");
+#endif
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Seek(5, SeekOrigin.Begin);
@@ -440,7 +447,7 @@ namespace CWishlist_win
     class InvalidHeaderException : Exception
     {
         public InvalidHeaderException(string format, byte[] expected, byte[] invalid) :
-            this(format, expected.hex(), invalid.ToString()) { }
+            this(format, hex(expected), invalid.ToString()) { }
 
         public InvalidHeaderException(string format, string expected, string invalid) :
             base($"This {format}-File's header is not correct, it's expected to be {expected} by the standard, but it's {invalid}.") { }

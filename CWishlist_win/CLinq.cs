@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using static CWishlist_win.Encodings;
 
 namespace CWishlist_win
 {
@@ -53,13 +54,24 @@ namespace CWishlist_win
             return true;
         }
 
-        public static string hex(this byte[] bytes)
+        public static string hex(byte[] bytes)
         {
             StringBuilder s = new StringBuilder();
             foreach (byte b in bytes)
-                s.Append(b.ToString("x2") + " ");
-            s.Remove(s.Length - 1, 1);
+                s.Append(b.ToString("x2"));
             return s.ToString();
+        }
+
+        public static byte[] hex(string s)
+        {
+            int _len_div_2 = s.Length / 2; //saves idivs
+            byte[] b = new byte[_len_div_2];
+            for (int i = 0; i < _len_div_2; i++)
+                //                             imul is less
+                //                              expensive
+                //                              than idiv
+                b[i] = Convert.ToByte(s.Substring(i * 2, 2), 16);
+            return b;
         }
         
         public static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
@@ -250,137 +262,13 @@ namespace CWishlist_win
             (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i};
         }
 
-        public static char ascii(int i)
-        {
-            return Encoding.ASCII.GetChars(new byte[] { (byte)i })[0];
-        }
-
-        public static char ascii(byte b)
-        {
-            return Encoding.ASCII.GetChars(new byte[] { b })[0];
-        }
-
-        public static char utf8(int i)
-        {
-            return Encoding.UTF8.GetChars(new byte[] { (byte)i })[0];
-        }
-
-        public static char utf8(byte b)
-        {
-            return Encoding.UTF8.GetChars(new byte[] { b })[0];
-        }
-
-        public static char utf16(int i, int j)
-        {
-            return Encoding.Unicode.GetChars(new byte[] { (byte)i, (byte)j })[0];
-        }
-
-        public static char utf16(byte b, byte c)
-        {
-            return Encoding.Unicode.GetChars(new byte[] { b, c })[0];
-        }
-
-        public static char utf32(int i, int j, int k, int l)
-        {
-            return Encoding.UTF32.GetChars(new byte[] { (byte)i, (byte)j, (byte)k, (byte)l })[0];
-        }
-
-        public static char utf32(byte b, byte c, byte d, byte e)
-        {
-            return Encoding.UTF32.GetChars(new byte[] { b, c, d, e })[0];
-        }
-
-        public static string ascii(byte[] b)
-        {
-            return Encoding.ASCII.GetString(b);
-        }
-
-        public static string utf8(byte[] b)
-        {
-            return Encoding.UTF8.GetString(b);
-        }
-
-        public static string utf16(byte[] b)
-        {
-            return Encoding.Unicode.GetString(b);
-        }
-
-        public static string utf32(byte[] b)
-        {
-            return Encoding.UTF32.GetString(b);
-        }
-
-        public static byte[] ascii(string s)
-        {
-            return Encoding.ASCII.GetBytes(s);
-        }
-
-        public static byte[] utf8(string s)
-        {
-            return Encoding.UTF8.GetBytes(s);
-        }
-
-        public static byte[] utf16(string s)
-        {
-            return Encoding.Unicode.GetBytes(s);
-        }
-
-        public static byte[] utf32(string s)
-        {
-            return Encoding.UTF32.GetBytes(s);
-        }
-
-        public static byte ascii(char c)
-        {
-            return Encoding.ASCII.GetBytes(new char[] { c })[0];
-        }
-
-        public static byte utf8(char c)
-        {
-            return Encoding.UTF8.GetBytes(new char[] { c })[0];
-        }
-
-        public static byte[] utf16(char c)
-        {
-            return Encoding.Unicode.GetBytes(new char[] { c });
-        }
-
-        public static byte[] utf32(char c)
-        {
-            return Encoding.UTF32.GetBytes(new char[] { c });
-        }
-
-        public static string ascii(byte[] b, int len)
-        {
-            return Encoding.ASCII.GetString(b, 0, len);
-        }
-
-        public static string utf8(byte[] b, int len)
-        {
-            return Encoding.UTF8.GetString(b, 0, len);
-        }
-
-        public static string utf16(byte[] b, int len)
-        {
-            return Encoding.Unicode.GetString(b, 0, len);
-        }
-
-        public static string utf32(byte[] b, int len)
-        {
-            return Encoding.UTF32.GetString(b, 0, len);
-        }
-
         public static void arrcpy<T>(T[] arr1, T[] arr2, long len)
         {
             for (long i = 0; i < len; i++)
                 arr2[i] = arr1[i];
         }
 
-        public static byte hex(string s)
-        {
-            return Convert.ToByte(s, 16);
-        }
-
+        //file compare
         public static bool fcmp(FileStream stream1, FileStream stream2)
         {
             if (stream1.Length - stream1.Position != stream2.Length - stream2.Position)
@@ -392,6 +280,7 @@ namespace CWishlist_win
             return true;
         }
 
+        //file compare
         public static bool fcmp(string f1, string f2)
         {
             FileStream s1 = File.Open(f1, FileMode.Open, FileAccess.Read);
@@ -410,10 +299,20 @@ namespace CWishlist_win
             fs.Close();
         }
 
+        //fast [unsafe] [and full] array copy for item arrays
         public static void farrcpy(Item[] src, Item[] dest)
         {
             for (long i = 0; i < src.LongLength; i++)
                 dest[i] = new Item(src[i].name, src[i].url);
+        }
+
+        //fastcharactercontains
+        public static bool fccontains(string s, char c)
+        {
+            foreach (char d in s)
+                if (c == d)
+                    return true;
+            return false;
         }
     }
 

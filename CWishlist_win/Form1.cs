@@ -4,23 +4,21 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using static CWishlist_win.CLinq;
+using static CWishlist_win.Encodings;
 using static CWishlist_win.LanguageProvider;
 using static CWishlist_win.Properties.Resources;
 using static CWishlist_win.Program;
 using static CWishlist_win.Consts;
 using static System.Diagnostics.Process;
 using static CWishlist_win.IO;
-using static System.GC;
 using static CWishlist_win.WL;
 using static CWishlist_win.Item;
 using static System.Windows.Forms.Clipboard;
 using static System.Drawing.Color;
 using static CWishlist_win.Sorting;
-using static System.Windows.Forms.Keys;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace CWishlist_win
 {
@@ -238,7 +236,8 @@ namespace CWishlist_win
             //no GC for [up to] 15MiB of small object heap and 127MiB of big object heap
             try
             {
-                TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127, 127 * 1024 * 1024, true);
+                GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127,
+                    127 * 1024 * 1024, true);
             }
             catch (Exception e)
             {
@@ -260,8 +259,8 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(NA));
             asynctinyflush();
-            start(() => { try { lock (backup_mutex) { backup_save(wl, backup_file); } } catch { } });
-            start(() => { try { lock (rbackup_mutex) { writesbf(restore_backup, 1); } } catch { } });
+            start(() => {  });
+            start(() => {  });
             int index = listBox1.SelectedIndex;
             thread_manager.finishall();
             listBox1.Items.Clear();
@@ -271,23 +270,52 @@ namespace CWishlist_win
             listBox1.SelectedIndex = index;
             Invalidate();
             Update();
-            EndNoGCRegion();
-            Collect(2, GCCollectionMode.Forced, false, true);
+            GC.EndNoGCRegion();
+            GC.Collect(2, GCCollectionMode.Forced, false, true);
+        }
+
+        void update_ui_save_backup()
+        {
+            try
+            {
+                lock (backup_mutex)
+                {
+                    backup_save(wl, backup_file);
+                }
+            }
+            catch { }
+        }
+
+        void update_ui_write_restore_backup()
+        {
+            try
+            {
+                lock (rbackup_mutex)
+                {
+                    writesbf(restore_backup, 1);
+                }
+            }
+            catch { }
         }
 
         public void asynctinyflush()
         {
             foreach (Item i in wl)
                 if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
-                    start(() => { i.url = tinyurl_create(i.url); });
+                    start(() => asynctinyflush_worker(i));
         }
 
         public void asynctinyflush_f()
         {
             foreach (Item i in wl)
                 if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
-                    start(() => { i.url = tinyurl_create(i.url); });
+                    start(() => asynctinyflush_worker(i));
             thread_manager.finishall();
+        }
+
+        void asynctinyflush_worker(Item i)
+        {
+            i.url = tinyurl_create(i.url);
         }
 
         public void try_update_ui()
@@ -570,12 +598,12 @@ namespace CWishlist_win
         {
             switch (keyData)
             {
-                case Keys.Control | S: save_click(null, null); break;
-                case Keys.Control | Shift | S: save_as_click(null, null); break;
-                case Keys.Control | O: open_click(null, null); break;
-                case Keys.Control | N: new_click(null, null); break;
-                case Up: if (listBox1.SelectedIndex != -1) listBox1.SelectedIndex--; break;
-                case Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1) listBox1.SelectedIndex++; break;
+                case Keys.Control | Keys.S: save_click(null, null); break;
+                case Keys.Control | Keys.Shift | Keys.S: save_as_click(null, null); break;
+                case Keys.Control | Keys.O: open_click(null, null); break;
+                case Keys.Control | Keys.N: new_click(null, null); break;
+                case Keys.Up: if (listBox1.SelectedIndex != -1) listBox1.SelectedIndex--; break;
+                case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1) listBox1.SelectedIndex++; break;
                 default: return base.ProcessCmdKey(ref msg, keyData);
             }
             update_ui();
@@ -620,7 +648,8 @@ namespace CWishlist_win
         void btn8_click(object _, EventArgs e)
         {
             foreach(Item i in wl)
-                Start(i.url.StartsWith("http") ? i.url : "http://" + i.url);
+                Start(i.url.StartsWith(http) || i.url.StartsWith(ftp) ? i.url
+                    : http + i.url);
         }
 
         void chnglg_click(object _, EventArgs e)
@@ -678,7 +707,8 @@ namespace CWishlist_win
         /// </summary>
         public void set_color(string s)
         {
-            set_color(hex(s.Substring(0, 2)), hex(s.Substring(2, 2)), hex(s.Substring(4, 2)));
+            byte[] b = hex(s);
+            set_color(b[0], b[1], b[2]);
         }
 
         /// <summary>
@@ -696,10 +726,11 @@ namespace CWishlist_win
         /// </summary>
 		public void set_color(Color c)
 		{
-			BackColor = listBox1.BackColor = textBox1.BackColor = c;
-            textBox2.BackColor = textBox3.BackColor = button1.BackColor = button2.BackColor = c;
-            button3.BackColor = button4.BackColor = button5.BackColor = button6.BackColor = c;
-            button7.BackColor = button8.BackColor = button9.BackColor = menuStrip1.BackColor = c;
+			BackColor = listBox1.BackColor = textBox1.BackColor =
+            textBox2.BackColor = textBox3.BackColor = button1.BackColor =
+            button2.BackColor = button3.BackColor = button4.BackColor =
+            button5.BackColor = button6.BackColor = button7.BackColor =
+            button8.BackColor = button9.BackColor = menuStrip1.BackColor = c;
 		}
 
         /// <summary>
@@ -709,7 +740,8 @@ namespace CWishlist_win
         {
             try
             {
-                set_color(Interaction.InputBox("Please enter a hex value:", "background color hex", "FFFFFF"));
+                set_color(Interaction.InputBox("Please enter a hex value:",
+                    "background color hex", "FFFFFF"));
             }
             catch (Exception e1)
             {

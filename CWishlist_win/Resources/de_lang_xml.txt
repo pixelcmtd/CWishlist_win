@@ -60,7 +60,7 @@ Version 2.3.2:\
 \
 Version 2.3.1:\
 -Dieser wundervolle Changelog wurde hinzugefügt!!\
--Ein tödlicher Bug mit der recents-Datei wurde behoben." />
+-Ein tödlicher Bug in Verbindung mit der recents-Datei wurde behoben." />
 	<translation name="prompt.restore_backup" type="str" value="Das Programm wurde letztes mal unerwartet beendet, wollen Sie das Backup wiederherstellen?" />
 	<translation name="caption.restore_backup" type="str" value="Du willschd weagli verliereñ?" />
 	<translation name="prompt.close" type="str" value="Alle ungespeicherten Veränderungen werden verworfen, wollen Sie das Programm wirklich schließen?" />

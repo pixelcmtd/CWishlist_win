@@ -91,6 +91,9 @@
     <Reference Include="Microsoft.VisualBasic">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
@@ -133,6 +136,9 @@
     <Compile Include="7zip\Utils\range\RangeCoderBit.cs" />
     <Compile Include="7zip\Utils\range\RangeCoderBitTree.cs" />
     <Compile Include="7zip\Utils\ICoder.cs" />
+    <Compile Include="bookmark.cs" />
+    <Compile Include="bookmarks.cs" />
+    <Compile Include="Chrome.cs" />
     <Compile Include="CLinq.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="DebugTools.cs">
@@ -141,6 +147,7 @@
     <Compile Include="DebugTools.Designer.cs">
       <DependentUpon>DebugTools.cs</DependentUpon>
     </Compile>
+    <Compile Include="Encodings.cs" />
     <Compile Include="IO.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -183,6 +190,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
