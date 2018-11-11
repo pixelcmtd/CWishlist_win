@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyCode", "LegacyFormats
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cwla_benchmarks", "cwla_benchmarks\cwla_benchmarks.csproj", "{74986553-05C8-4BBC-880A-F2491FBC0242}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "7ZipLib", "7ZipLib\7ZipLib.csproj", "{152880C4-3E38-4F99-8AFD-47565E21789C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x64.Build.0 = Release|Any CPU
 		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x86.ActiveCfg = Release|Any CPU
 		{74986553-05C8-4BBC-880A-F2491FBC0242}.Release|x86.Build.0 = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|x64.ActiveCfg = Debug|x64
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|x64.Build.0 = Debug|x64
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Debug|x86.Build.0 = Debug|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|x64.ActiveCfg = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|x64.Build.0 = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|x86.ActiveCfg = Release|Any CPU
+		{152880C4-3E38-4F99-8AFD-47565E21789C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

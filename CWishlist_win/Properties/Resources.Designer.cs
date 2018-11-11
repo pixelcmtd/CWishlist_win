@@ -65,15 +65,13 @@ namespace CWishlist_win.Properties {
         ///	&lt;lang code=&quot;de&quot; name=&quot;deutsch&quot; /&gt;
         ///	&lt;translation name=&quot;misc.changelog&quot; type=&quot;str_arr&quot; value=&quot; CWishlist von chrissx bei chrissx Media Inc. Changelog:\
         ///\
-        ///Version 6.0.0:\
-        ///-Der CWishlistDeflate v1 Standart wurde hinzugefügt\
-        ///-Das Speichern und Laden der Listen wurde bzgl. Performance und RAM-Verbrauch verbessert\
+        ///Version 6.2.0:\
+        ///-CWLS Standard v3 hinzugefügt, welcher ein kleines Update von CWLS v2 ist\
+        ///-CWLS Standard v4 hinzugefügt, welcher die Größe von recents.cwls bei uns um 59,7% reduziert hat\
         ///\
-        ///Version 5.0.1:\
-        ///-Hotfix für einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
-        ///\
-        ///Version 5.0.0:\
-        ///-Sprachdateien können jetzt erstellt und hinzugefügt we [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///Version 6.1.0:\
+        ///-Der Öffnen-Dialog akzeptiert jetzt auch CWLD-files\
+        ///-CWishlistDeflate v2 wurde hinzugefügt (reduziert die Dateigröße weiter, wir h [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string de_lang_xml {
             get {
@@ -86,16 +84,14 @@ namespace CWishlist_win.Properties {
         ///	&lt;lang code=&quot;en&quot; name=&quot;english&quot; /&gt;
         ///	&lt;translation name=&quot;misc.changelog&quot; type=&quot;str_arr&quot; value=&quot; CWishlist by chrissx @ chrissx Media Inc. Changelog:\
         ///\
-        ///Version 6.0.0:\
-        ///-Added the new CWishlistDeflate v1 standard which reduces your file size by up to 80%\
-        ///-Improved loading and saving of the lists performance- and memorywise\
+        ///Version 6.2.0:\
+        ///-Added CWLS v3, which is just a little improvement of CWLS v2\
+        ///-Added CWLS v4, which reduced the recents.cwls size by 59.7% for us\
         ///\
-        ///Version 5.0.1:\
-        ///-Hotfix for broken and not loaded at all recents-files\
-        ///\
-        ///Version 5.0.0:\
-        ///-Language-files can now be created and put into this program.\
-        ///-A little [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///Version 6.1.0:\
+        ///-Fixed the Open-Dialog not accepting CWLD-files\
+        ///-Introduced CWishlistDeflate v2 which reduces the file size even more (we measured 15.5% and 22%)\
+        ///-Improved the efficiency o [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string en_lang_xml {
             get {

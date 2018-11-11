@@ -63,9 +63,10 @@ namespace CWishlist_win
 
         void button6_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(CLinq.hex(Chrome.parse(
+            bookmarks bms = Chrome.parse(
                 @"C:\Users\chrissicx\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
-            ).checksum));
+            );
+            Console.WriteLine(bms.dbgstr(true, "", "    "));
         }
     }
 }

@@ -123,22 +123,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="7zip\CRC.cs" />
-    <Compile Include="7zip\Utils\lzma\LzmaBase.cs" />
-    <Compile Include="7zip\Utils\lzma\LzmaDecoder.cs" />
-    <Compile Include="7zip\Utils\lzma\LzmaEncoder.cs" />
-    <Compile Include="7zip\SevenZipHelper.cs" />
-    <Compile Include="7zip\Utils\IMatchFinder.cs" />
-    <Compile Include="7zip\Utils\LzBinTree.cs" />
-    <Compile Include="7zip\Utils\LzInWindow.cs" />
-    <Compile Include="7zip\Utils\LzOutWindow.cs" />
-    <Compile Include="7zip\Utils\range\RangeCoder.cs" />
-    <Compile Include="7zip\Utils\range\RangeCoderBit.cs" />
-    <Compile Include="7zip\Utils\range\RangeCoderBitTree.cs" />
-    <Compile Include="7zip\Utils\ICoder.cs" />
-    <Compile Include="bookmark.cs" />
-    <Compile Include="bookmarks.cs" />
-    <Compile Include="Chrome.cs" />
+    <Compile Include="BrowserAPIs\bookmark.cs" />
+    <Compile Include="BrowserAPIs\bookmarks.cs" />
+    <Compile Include="BrowserAPIs\checksum.cs" />
+    <Compile Include="BrowserAPIs\checksum_type.cs" />
+    <Compile Include="BrowserAPIs\Chrome.cs" />
     <Compile Include="CLinq.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="DebugTools.cs">
@@ -208,10 +197,12 @@
     <None Include="example_plugin_update.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\en_lang_xml.txt" />
+    <Content Include="Resources\en_lang.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\de_lang_xml.txt" />
+    <Content Include="Resources\de_lang.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\file_replace_64.exe" />
@@ -219,6 +210,11 @@
   <ItemGroup>
     <None Include="Resources\file_replace_32.exe" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\7ZipLib\7ZipLib.csproj">
+      <Project>{152880c4-3e38-4f99-8afd-47565e21789c}</Project>
+      <Name>7ZipLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
