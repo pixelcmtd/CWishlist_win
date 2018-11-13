@@ -1,7 +1,6 @@
 ﻿using SevenZip.Utils;
 using SevenZip.Utils.lzma;
 using System.IO;
-using static CWishlist_win.CLinq;
 using static SevenZip.Utils.CoderPropID;
 using static System.IO.SeekOrigin;
 
@@ -9,6 +8,12 @@ namespace SevenZip
 {
     public static class SevenZipHelper
     {
+        static byte[] bytes(long i)
+        {
+            return new byte[] { (byte)(i >> 56), (byte)(i >> 48), (byte)(i >> 40), (byte)(i >> 32),
+            (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i};
+        }
+
         public static void Compress(Stream inStream, Stream outStream)
         {
             inStream.Seek(0, Begin);

@@ -43,13 +43,13 @@ namespace CWishlist_win
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bTW3rdPartySoftwareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.bTW3rdPartySoftwareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -220,14 +220,14 @@ namespace CWishlist_win
             // versionToolStripMenuItem
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
-            this.versionToolStripMenuItem.Text = "Version: 6.2.0";
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.versionToolStripMenuItem.Text = "Version: 7.0.0";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
-            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.changelogToolStripMenuItem.Text = "Changelog";
             this.changelogToolStripMenuItem.Click += new System.EventHandler(this.chnglg_click);
             // 
@@ -243,14 +243,14 @@ namespace CWishlist_win
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.lang_click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
-            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
             this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.style_click);
             // 
@@ -277,6 +277,13 @@ namespace CWishlist_win
             this.debugToolsToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.debugToolsToolStripMenuItem.Text = "Debug Tools";
             this.debugToolsToolStripMenuItem.Click += new System.EventHandler(this.debugToolsToolStripMenuItem_Click);
+            // 
+            // bTW3rdPartySoftwareToolStripMenuItem
+            // 
+            this.bTW3rdPartySoftwareToolStripMenuItem.Name = "bTW3rdPartySoftwareToolStripMenuItem";
+            this.bTW3rdPartySoftwareToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.bTW3rdPartySoftwareToolStripMenuItem.Text = "BTW: 3rd Party Software";
+            this.bTW3rdPartySoftwareToolStripMenuItem.Click += new System.EventHandler(this._3rd_party_software);
             // 
             // button1
             // 
@@ -338,13 +345,6 @@ namespace CWishlist_win
             this.textBox3.Text = "search...";
             this.textBox3.Click += new System.EventHandler(this.search_click);
             this.textBox3.TextChanged += new System.EventHandler(this.search_change);
-            // 
-            // bTW3rdPartySoftwareToolStripMenuItem
-            // 
-            this.bTW3rdPartySoftwareToolStripMenuItem.Name = "bTW3rdPartySoftwareToolStripMenuItem";
-            this.bTW3rdPartySoftwareToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
-            this.bTW3rdPartySoftwareToolStripMenuItem.Text = "BTW: 3rd Party Software";
-            this.bTW3rdPartySoftwareToolStripMenuItem.Click += new System.EventHandler(this._3rd_party_software);
             // 
             // Form1
             // 

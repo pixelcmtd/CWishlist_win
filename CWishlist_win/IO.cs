@@ -21,8 +21,6 @@ namespace CWishlist_win
             return new WebClient().DownloadString(tinyurl_api + url);
         }
 
-        
-
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
@@ -32,7 +30,8 @@ namespace CWishlist_win
 
         public static WL load(string f)
         {
-            return f == "" ? WL.NEW : f.le('l') ? cwll_load(f) : f.le('d') ? cwld_load(f) : f.le('u') ? cwlu_load(f)
+            char c = f[f.Length - 1];
+            return f == "" ? WL.NEW : c == 'l' ? cwll_load(f) : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f)
                 : throw new Exception("Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
         }
 
@@ -126,15 +125,11 @@ namespace CWishlist_win
         public static void cwld_save(WL wl, string file)
         {
             Stream s = File.Open(file, Create, FileAccess.Write);
-
             s.write(cwld_header);
             s.write(4, 2);
-
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
-
             foreach (Item i in wl)
                 i.write_bytes(d, D2);
-
             d.Close();
         }
 
@@ -177,11 +172,11 @@ namespace CWishlist_win
 #endif
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
-                char chr;
+                char c;
                 int j = -1;
 
                 while ((j = d.ReadByte()) != -1)
-                    if ((chr = utf16(j, d.ReadByte())) == '\u0d0a')
+                    if ((c = utf16(j, d.ReadByte())) == '\u0d0a')
                     {
                         if (nus)
                         {
@@ -195,7 +190,7 @@ namespace CWishlist_win
                         nus = !nus;
                     }
                     else
-                        s.Append(chr);
+                        s.Append(c);
 
                 d.Close();
 
@@ -203,6 +198,9 @@ namespace CWishlist_win
             }
             else
             {
+#if DEBUG
+                Console.WriteLine("[CWLD]Initialized, checked header, continueing with v2.");
+#endif
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
@@ -440,14 +438,12 @@ namespace CWishlist_win
             stream.Read(bfr, 0, len);
             return arrequ(bfr, arr);
         }
-
-        static bool le(this string s, char c) => s[s.Length - 1] == c;
     }
 
     class InvalidHeaderException : Exception
     {
         public InvalidHeaderException(string format, byte[] expected, byte[] invalid) :
-            this(format, hex(expected), invalid.ToString()) { }
+            this(format, hex(expected), hex(invalid)) { }
 
         public InvalidHeaderException(string format, string expected, string invalid) :
             base($"This {format}-File's header is not correct, it's expected to be {expected} by the standard, but it's {invalid}.") { }

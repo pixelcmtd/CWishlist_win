@@ -52,12 +52,9 @@ namespace CWishlist_win
         public readonly byte[] version = new byte[] { 7, 0, 0, 254 };
         public readonly object recents_mutex = new object();
         public readonly object backup_mutex = new object();
-        //restore backup mutex
-        public readonly object rbackup_mutex = new object();
-        //screen list mutex
-        public readonly object slist_mutex = new object();
-        //backend list[s] mutex
-        public readonly object blist_mutex = new object();
+        public readonly object rbackup_mutex = new object(); //restore backup mutex
+        public readonly object slist_mutex = new object(); //screen list mutex
+        public readonly object blist_mutex = new object(); //backend list[s] mutex
 
         int start(function f)
         {
@@ -76,14 +73,13 @@ namespace CWishlist_win
             if (args.Length > 0)
                 load_wl(args[0]);
             else
-                lock (blist_mutex) { wl = NEW; }
+                lock (blist_mutex)
+                    wl = NEW;
             
             int i = start(() =>
             {
                 if (!Directory.Exists(appdir))
-                {
                     Directory.CreateDirectory(appdir);
-                }
             });
 
             int j = start(() =>
@@ -137,8 +133,8 @@ namespace CWishlist_win
                                 }
                                 catch (Exception e2)
                                 {
-                                    MessageBox.Show("Can't even delete the old recents:\n\n" + e2);
-                                    MessageBox.Show("I guess you really blew up your PC...");
+                                    MessageBox.Show("Can't even delete the old recents:\n\n" + e2,
+                                        "I guess you really blew up your PC...");
                                 }
                             }
                         }
@@ -259,14 +255,15 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(NA));
             asynctinyflush();
-            start(() => {  });
-            start(() => {  });
+            //start(() => {  });
+            //start(() => {  });
             int index = listBox1.SelectedIndex;
             thread_manager.finishall();
             listBox1.Items.Clear();
             foreach (Item i in wl.items)
                 listBox1.Items.Add(i.ToString());
-            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = button5.Visible = button6.Visible = false;
+            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible
+                = button4.Visible = button5.Visible = button6.Visible = false;
             listBox1.SelectedIndex = index;
             Invalidate();
             Update();
@@ -539,7 +536,7 @@ namespace CWishlist_win
             {
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Filter = "CWishlists|*.cwld;*.cwlu;*.cwlb;*.cwl",
+                Filter = "CWishlists|*.cwll;*.cwld;*.cwlu",
                 Title = "Load CWishlist",
                 ValidateNames = true,
                 Multiselect = false
@@ -561,20 +558,18 @@ namespace CWishlist_win
             {
                 int lm1 = current_file.Length - 1;
                 int lm2 = current_file.Length - 2;
-                if (current_file[lm1] == 'l' && current_file[lm2] == 'w')
-                    current_file += 'd';
-                else if (current_file[lm1] != 'd')
+                if (current_file[lm1] != 'l')
                 {
                     char[] c = current_file.ToCharArray();
-                    c[lm1] = 'd';
+                    c[lm1] = 'l';
                     current_file = new string(c);
                 }
                 update_ui();
-                cwld_save(wl, current_file);
+                cwll_save(wl, current_file);
             }
         }
 
-        void save_as_click(object sender, EventArgs e)
+        void save_as_click(object _, EventArgs e)
         {
             update_ui();
             SaveFileDialog sfd = new SaveFileDialog()
@@ -582,7 +577,7 @@ namespace CWishlist_win
                 AddExtension = true,
                 ValidateNames = true,
                 CheckPathExists = true,
-                Filter = "CWishlistDeflate|*.cwld",
+                Filter = "CWishlistLZMA|*.cwll",
                 Title = "Save CWishlist"
             };
             var res = sfd.ShowDialog();
@@ -590,7 +585,7 @@ namespace CWishlist_win
             {
                 current_file = sfd.FileName;
                 add_current_file_to_recent_items();
-                cwld_save(wl, current_file);
+                cwll_save(wl, current_file);
             }
         }
 
@@ -794,7 +789,8 @@ namespace CWishlist_win
             MessageBox.Show(
                 "This software uses the LZMA SDK by Igor Pavlov.\n" +
                 "While it is Public Domain I still wanted to give credit.\n" +
-                "So go to 7-zip.org!",
+                "So go to 7-zip.org!\n\n" +
+                "It also uses PAQ8PCWL, which is a custom version of PAQ8P.",
                 "A little bit of credits...");
         }
     }

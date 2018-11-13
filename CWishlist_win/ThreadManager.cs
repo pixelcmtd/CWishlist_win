@@ -43,7 +43,7 @@ namespace CWishlist_win
             catch
             {
 #if DEBUG
-                Console.WriteLine("[ThreadManager]Thread shutdown.");
+                Console.WriteLine("[ThreadManager-WorkerThread]Thread shutdown.");
 #endif
             }
         }
@@ -79,6 +79,9 @@ namespace CWishlist_win
         {
             lock (task_mutex)
             {
+#if DEBUG
+                Console.WriteLine("[ThreadManager]Shutting down.");
+#endif
                 foreach (task t in tasks)
                     t.join();
                 foreach (Thread t in threads)

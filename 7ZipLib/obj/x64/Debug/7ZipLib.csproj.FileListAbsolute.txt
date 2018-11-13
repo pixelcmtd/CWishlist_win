@@ -1,0 +1,6 @@
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Debug\7ZipLib.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Debug\7ZipLib.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\7ZipLib\bin\x64\Debug\7ZipLib.dll
+D:\workspace_VS\CWishlist_win\7ZipLib\bin\x64\Debug\7ZipLib.pdb
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Debug\7ZipLib.dll
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Debug\7ZipLib.pdb

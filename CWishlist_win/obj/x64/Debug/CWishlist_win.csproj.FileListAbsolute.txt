@@ -22,3 +22,5 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.exe
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\Newtonsoft.Json.dll
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\Newtonsoft.Json.xml
+D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\7ZipLib.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\7ZipLib.pdb
