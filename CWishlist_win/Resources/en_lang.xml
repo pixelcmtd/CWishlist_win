@@ -2,8 +2,16 @@
 	<lang code="en" name="english" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist by chrissx @ chrissx Media Inc. Changelog:\
 \
+Version 7.0.0:\
+-Introduced CWishlistLZMA v1 which is another nice optimization (we measured 12.7% and 35.2%)\
+-Added heavy multi-threading which speeds up startup, refreshes and especially tinyurl creation\
+-Restructured a lot of the code\
+-Added CWLS v5, which is a separator-, UTF8-UTF16-switch- and LZMA-based optimization of CWLS v4\
+-Added CWLS v6, which is a new UTF8- and LZMA-based format\
+-Optimized the AppData setting storage\
+\
 Version 6.2.0:\
--Added CWLS v3, which is just a little improvement of CWLS v2\
+-Added CWLS v3, which does just a little improvement over CWLS v2\
 -Added CWLS v4, which reduced the recents.cwls size by 59.7% for us\
 \
 Version 6.1.0:\
@@ -62,15 +70,15 @@ Version 2.3.1:\
 -Added this wonderful changelog\
 -Fixed deadly bug in the recents-file" />
 	<translation name="prompt.restore_backup" type="str" value="The program was exited unexpectedly the last time, do you want to restore the backup?" />
-	<translation name="caption.restore_backup" type="str" value="Ya really want 2 losé?" />
+	<translation name="caption.restore_backup" type="str" value="Ya really want 2 losÃ©?" />
 	<translation name="prompt.close" type="str" value="All your unsaved changes will be deleted, do you really want to close?" />
-	<translation name="caption.close" type="str" value="Ya really want 2 closé?" />
+	<translation name="caption.close" type="str" value="Ya really want 2 closÃ©?" />
 	<translation name="prompt.new" type="str" value="All your unsaved changes will be deleted, do you really want to create a new file without saving?" />
-	<translation name="caption.new" type="str" value="Ya really want 2 deleté?" />
+	<translation name="caption.new" type="str" value="Ya really want 2 deletÃ©?" />
 	<translation name="prompt.open" type="str" value="All your unsaved changes will be deleted, do you really want to load another file without saving?" />
-	<translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
+	<translation name="caption.open" type="str" value="Ya really want 2 open othr filÃ©?" />
 	<translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
-	<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
+	<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizÃ©?" />
 	<translation name="caption.pluginloadfailed" type="str" value="Loading plugins from {0} failed." />
 	<translation name="title.switch_lang" type="str" value="Please select your language." />
 </cwl_lang>

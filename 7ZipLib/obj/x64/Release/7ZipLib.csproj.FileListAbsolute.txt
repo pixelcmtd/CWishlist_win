@@ -1,0 +1,5 @@
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\7ZipLib.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\7ZipLib.pdb
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Release\7ZipLib.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Release\7ZipLib.dll
+D:\workspace_VS\CWishlist_win\7ZipLib\obj\x64\Release\7ZipLib.pdb

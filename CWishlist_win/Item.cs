@@ -1,7 +1,8 @@
 ﻿using System.IO;
-using static CWishlist_win.CLinq;
 using static CWishlist_win.Consts;
-using static CWishlist_win.Encodings;
+using static binutils.str;
+using static binutils.bin;
+using static binutils.io;
 
 namespace CWishlist_win
 {

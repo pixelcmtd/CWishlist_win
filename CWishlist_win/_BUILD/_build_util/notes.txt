@@ -1,0 +1,3 @@
+The binary "ILMerge.exe" is just hand-compiled from dotnet/ILMerge,
+if you see any of your copyright violated and you care, you can send
+an email to abuse@chrissx.ga and we can solve the case.

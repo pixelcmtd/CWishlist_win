@@ -1,0 +1,7 @@
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x86\cwla_benchmarks.exe.config
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x86\cwla_benchmarks.exe
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x86\cwla_benchmarks.pdb
+D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x86\Release\cwla_benchmarks.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x86\Release\cwla_benchmarks.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x86\Release\cwla_benchmarks.exe
+D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x86\Release\cwla_benchmarks.pdb

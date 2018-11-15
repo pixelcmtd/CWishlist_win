@@ -2,75 +2,83 @@
 	<lang code="de" name="deutsch" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist von chrissx bei chrissx Media Inc. Changelog:\
 \
+Version 7.0.0:\
+-CWishlistLZMA v1 wurde hinzugefÃ¼gt (wir haben 12.7% und 35.2% Verbesserung gemessen)\
+-Sehr viel Multi-Threading, beschleunigt das Starten, Refreshes und vor allem das Erstellen von Tinyurls\
+-GroÃŸe Teile des Codes wurde neu arangiert\
+-CWLS v5, eine Optimierung von CWLS v4, die auf Separatoren, UTF8-UTF16-Switching und LZMA aufbaut, hinzugefÃ¼gt\
+-CWLS v6, ein neues UTF8- und LZMA-basiertes Format, hinzugefÃ¼gt\
+-Wir haben den AppData-Einstellungsspeicher optimiert\
+\
 Version 6.2.0:\
--CWLS Standard v3 hinzugefügt, welcher ein kleines Update von CWLS v2 ist\
--CWLS Standard v4 hinzugefügt, welcher die Größe von recents.cwls bei uns um 59,7% reduziert hat\
+-CWLS v3, ein kleines Update von CWLS v2, hinzugefÃ¼gt\
+-CWLS v4, hat die GrÃ¶ÃŸe von recents.cwls bei uns um 59,7% reduziert, hinzugefÃ¼gt\
 \
 Version 6.1.0:\
--Der Öffnen-Dialog akzeptiert jetzt auch CWLD-files\
--CWishlistDeflate v2 wurde hinzugefügt (reduziert die Dateigröße weiter, wir haben 15,5% and 22% gemessen)\
+-Der Ã–ffnen-Dialog akzeptiert jetzt auch CWLD-files\
+-CWishlistDeflate v2 wurde hinzugefÃ¼gt (reduziert die DateigrÃ¶ÃŸe weiter, wir haben 15,5% und 22% gemessen)\
 -Die Effizienz beim Laden von CWLD v1 Dateien (und damit auch CWLD v2 Dateien) wurde verbessert\
--&quot;Nicht gespeicherte Änderungen&quot; wird jetzt nicht mehr angezeigt, wenn man Dateien, die über Strg+O oder die Toolbar geöffnet wurden, schließt\
+-&quot;Nicht gespeicherte Ã„nderungen&quot; wird jetzt nicht mehr angezeigt, wenn man Dateien, die Ã¼ber Strg+O oder die Toolbar geÃ¶ffnet wurden, schlieÃŸt\
 -Manchmal wurden Dateien nicht in die recents gespeichert\
 \
 Version 6.0.0:\
--Der CWishlistDeflate v1 Standart wurde hinzugefügt\
+-Der CWishlistDeflate v1 Standart wurde hinzugefÃ¼gt\
 -Das Speichern und Laden der Listen wurde bzgl. Performance und RAM-Verbrauch verbessert\
 \
 Version 5.0.1:\
--Hotfix für einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
+-Hotfix fÃ¼r einen Bug, bei dem die recents Datei 1. nicht geladen und 2. kaputt war.\
 \
 Version 5.0.0:\
--Sprachdateien können jetzt erstellt und hinzugefügt werden.\
--Ein kleiner Bug in der Suchfunktion wurde behoben. (Großbuchstaben)\
--Die Version 2 des recent.cwls-Standarts ist da! Heißt: Die zuletzt geöffneten Dateien werden jetzt besser gespeichert.\
+-Sprachdateien kÃ¶nnen jetzt erstellt und hinzugefÃ¼gt werden.\
+-Ein kleiner Bug in der Suchfunktion wurde behoben. (GroÃŸbuchstaben)\
+-Die Version 2 des recent.cwls-Standarts ist da! HeiÃŸt: Die zuletzt geÃ¶ffneten Dateien werden jetzt besser gespeichert.\
 \
 Version 4.1.0:\
 -Sehr viele Under-The-Hood-Verbesserungen\
 -Ein GitHub-repository (https://github.com/chrissxYT/CWishlist_win)\
 \
 Version 4.0.1:\
--Day one patch für einen Dateiendungsbug in 4.0.0\
+-Day one patch fÃ¼r einen Dateiendungsbug in 4.0.0\
 \
 Version 4.0.0:\
--Der neue CWishlistUncde v1 Standart wurde eingeführt\
+-Der neue CWishlistUncde v1 Standart wurde eingefÃ¼hrt\
 \
 Version 3.3.0:\
--Hintergrundfarbeneinstellung hinzugefügt (wird gespeichert)\
+-Hintergrundfarbeneinstellung hinzugefÃ¼gt (wird gespeichert)\
 \
 Version 3.2.1:\
--Die Fenstergröße wird nun gespeichert\
+-Die FenstergrÃ¶ÃŸe wird nun gespeichert\
 \
 Version 3.2.0:\
--StackOverflow-Warnung hinzugefügt\
--Die Pfeiltasten können jetzt benutzt werden, um durch die Liste zu gehen\
+-StackOverflow-Warnung hinzugefÃ¼gt\
+-Die Pfeiltasten kÃ¶nnen jetzt benutzt werden, um durch die Liste zu gehen\
 \
 Version 3.1.0:\
--Suchfunktion für Wunschlisten-Items hinzugefügt\
+-Suchfunktion fÃ¼r Wunschlisten-Items hinzugefÃ¼gt\
 \
 Version 3.0.0:\
--Merge-sorting für Wunschlisten-Items hinzugefügt\
--Der größte Teil der Unterstützung der deutschen Sprache wurde erledigt\
--Tinyurl wird jetzt für URL-Verkürzung verwendet\
+-Merge-sorting fÃ¼r Wunschlisten-Items hinzugefÃ¼gt\
+-Der grÃ¶ÃŸte Teil der UnterstÃ¼tzung der deutschen Sprache wurde erledigt\
+-Tinyurl wird jetzt fÃ¼r URL-VerkÃ¼rzung verwendet\
 \
 Version 2.3.2:\
 -Fehler mit einem out-of-bounds listbox-index\
 -Die Backup-Prompt wurde bei jedem Start angezeigt, sollte jetzt nicht mehr passieren\
--Der &quot;Open all&quot;-Button wurde beim Verändern der Größe nicht richtig platziert\
+-Der &quot;Open all&quot;-Button wurde beim VerÃ¤ndern der GrÃ¶ÃŸe nicht richtig platziert\
 \
 Version 2.3.1:\
--Dieser wundervolle Changelog wurde hinzugefügt!!\
--Ein tödlicher Bug in Verbindung mit der recents-Datei wurde behoben." />
+-Dieser wundervolle Changelog wurde hinzugefÃ¼gt!!\
+-Ein tÃ¶dlicher Bug in Verbindung mit der recents-Datei wurde behoben." />
 	<translation name="prompt.restore_backup" type="str" value="Das Programm wurde letztes mal unerwartet beendet, wollen Sie das Backup wiederherstellen?" />
-	<translation name="caption.restore_backup" type="str" value="Du willschd weagli verliereñ?" />
-	<translation name="prompt.close" type="str" value="Alle ungespeicherten Veränderungen werden verworfen, wollen Sie das Programm wirklich schließen?" />
-	<translation name="caption.close" type="str" value="Du willschd weagli schließeñ?" />
-	<translation name="prompt.new" type="str" value="Alle ungespeicherten Veränderungen werden verworfen, wollen Sie wirklich eine neue Datei erstellen, ohne zu speichern?" />
-	<translation name="caption.new" type="str" value="Du willschd weagli löscheñ?" />
-	<translation name="prompt.open" type="str" value="Alle ungespeicherten Veränderungen werden verworfen, wollen Sie wirklich eine andere Datei öffnen, ohne zu speichern?" />
-	<translation name="caption.open" type="str" value="Du willschd weagli ne andre Dadei öffneñ?" />
-	<translation name="prompt.stackoverflow" type="str" value="Ihre Stack-Größe ist nahe am Limit, bitte versichern Sie sich, Ihre Liste immer zu speichern." />
-	<translation name="caption.stackoverflow" type="str" value="Du willschd weagli nen Schdägg-Ofafloo verursacheñ?" />
+	<translation name="caption.restore_backup" type="str" value="Du willschd weagli verliereÃ±?" />
+	<translation name="prompt.close" type="str" value="Alle ungespeicherten VerÃ¤nderungen werden verworfen, wollen Sie das Programm wirklich schlieÃŸen?" />
+	<translation name="caption.close" type="str" value="Du willschd weagli schlieÃŸeÃ±?" />
+	<translation name="prompt.new" type="str" value="Alle ungespeicherten VerÃ¤nderungen werden verworfen, wollen Sie wirklich eine neue Datei erstellen, ohne zu speichern?" />
+	<translation name="caption.new" type="str" value="Du willschd weagli lÃ¶scheÃ±?" />
+	<translation name="prompt.open" type="str" value="Alle ungespeicherten VerÃ¤nderungen werden verworfen, wollen Sie wirklich eine andere Datei Ã¶ffnen, ohne zu speichern?" />
+	<translation name="caption.open" type="str" value="Du willschd weagli ne andre Dadei Ã¶ffneÃ±?" />
+	<translation name="prompt.stackoverflow" type="str" value="Ihre Stack-GrÃ¶ÃŸe ist nahe am Limit, bitte versichern Sie sich, Ihre Liste immer zu speichern." />
+	<translation name="caption.stackoverflow" type="str" value="Du willschd weagli nen SchdÃ¤gg-Ofafloo verursacheÃ±?" />
 	<translation name="caption.pluginloadfailed" type="str" value="Laden der Plugins aus {0} fehlgeschlagen." />
-	<translation name="title.switch_lang" type="str" value="Bitte wählen Sie die Sprache aus." />
+	<translation name="title.switch_lang" type="str" value="Bitte wÃ¤hlen Sie die Sprache aus." />
 </cwl_lang>

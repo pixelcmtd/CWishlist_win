@@ -1,0 +1,6 @@
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x86\binutils.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x86\binutils.pdb
+D:\workspace_VS\CWishlist_win\binutils\obj\x86\Release\binutils.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\binutils\obj\x86\Release\binutils.dll
+D:\workspace_VS\CWishlist_win\binutils\obj\x86\Release\binutils.pdb
+D:\workspace_VS\CWishlist_win\binutils\obj\x86\Release\binutils.csprojAssemblyReference.cache

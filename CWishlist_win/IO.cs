@@ -10,7 +10,10 @@ using static CWishlist_win.Consts;
 using static SevenZip.SevenZipHelper;
 using static System.IO.FileMode;
 using static System.Text.Encoding;
-using static CWishlist_win.Encodings;
+using static binutils.bin;
+using static binutils.c;
+using static binutils.io;
+using static binutils.str;
 
 namespace CWishlist_win
 {

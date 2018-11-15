@@ -4,7 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using static CWishlist_win.CLinq;
-using static CWishlist_win.Encodings;
+using static binutils.bin;
+using static binutils.c;
+using static binutils.str;
 using static CWishlist_win.LanguageProvider;
 using static CWishlist_win.Properties.Resources;
 using static CWishlist_win.Program;
@@ -46,10 +48,9 @@ namespace CWishlist_win
         public readonly string restore_backup = appdata + "\\CWishlist\\RESTORE_BACKUP";
         public readonly string color_file = appdata + "\\CWishlist\\C";
         public readonly string legacy_color_file = appdata + "\\CWishlist\\COLOR";
-        //this isnt even beta at this point, main features arent done and there are many bugs, so its an alpha
-        public readonly string ver_str = "7.0.0a"; 
-        public readonly uint ver_int = 0x700a;
-        public readonly byte[] version = new byte[] { 7, 0, 0, 254 };
+        public readonly string ver_str = "7.0.0b1"; //7.0.0 beta 1
+        public readonly uint ver_int = 0x00700b01;
+        public readonly byte[] version = new byte[] { 7, 0, 0, 255, 1 };
         public readonly object recents_mutex = new object();
         public readonly object backup_mutex = new object();
         public readonly object rbackup_mutex = new object(); //restore backup mutex

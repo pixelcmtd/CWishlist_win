@@ -136,7 +136,6 @@
     <Compile Include="DebugTools.Designer.cs">
       <DependentUpon>DebugTools.cs</DependentUpon>
     </Compile>
-    <Compile Include="Encodings.cs" />
     <Compile Include="IO.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -214,6 +213,10 @@
     <ProjectReference Include="..\7ZipLib\7ZipLib.csproj">
       <Project>{152880c4-3e38-4f99-8afd-47565e21789c}</Project>
       <Name>7ZipLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\binutils\binutils.csproj">
+      <Project>{69caa4f5-d364-4cbb-bb0b-77913b900d0e}</Project>
+      <Name>binutils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

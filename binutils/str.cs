@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace CWishlist_win
+namespace binutils
 {
-    static class Encodings
+    public static class str
     {
         public static char ascii(int i)
         {

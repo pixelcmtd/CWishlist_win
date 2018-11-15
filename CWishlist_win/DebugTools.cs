@@ -1,9 +1,9 @@
-﻿using SevenZip;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
 using static CWishlist_win.Consts;
+using static binutils.io;
 
 namespace CWishlist_win
 {
@@ -45,7 +45,7 @@ namespace CWishlist_win
         void button5_Click(object sender, EventArgs e)
         {
             FileStream fs = File.Open("test.deflated_cwll", FileMode.Create, FileAccess.Write);
-            fs.Write(Consts.cwll_header, 0, 4);
+            fs.Write(cwll_header, 0, 4);
             fs.write(255);
             DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (Item i in src_form.wl)

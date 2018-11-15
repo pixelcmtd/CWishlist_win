@@ -66,3 +66,7 @@ C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CW
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.pdb
 C:\Users\chrissx\Documents\GitHub\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.DebugTools.resources
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Release\CWishlist_win.DebugTools.resources
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\Newtonsoft.Json.dll
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\7ZipLib.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\binutils.pdb
+D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\x64\Newtonsoft.Json.xml
