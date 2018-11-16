@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using static binutils.bin;
+using static binutils.str;
 
 namespace CWishlist_win
 {
@@ -26,12 +28,27 @@ namespace CWishlist_win
             {
                 while (true)
                 {
-                    task t = next();
+                    task t = next;
                     if (t == null)
                         Thread.Sleep(1);
                     else
                     {
-                        t.func();
+                        try
+                        {
+                            t.func();
+                        }
+                        catch (Exception e)
+                        {
+                            if (e is ThreadAbortException)
+                                throw e;
+                            else
+#if DEBUG
+                                Console.Write("t.func Exception: ");
+                                Console.WriteLine(b64(utf8(e.ToString())));
+#else
+                                ;
+#endif
+                        }
                         //in this order because otherwise the other threads could think:
                         //executed = false, running = false, ill execute this
                         //which would lead to double execution
@@ -48,21 +65,24 @@ namespace CWishlist_win
             }
         }
 
-        task next()
+        task next
         {
-            lock (task_mutex)
+            get
             {
-                foreach (task t in tasks)
+                lock (task_mutex)
                 {
-                    if (!t.running && !t.executed)
+                    foreach (task t in tasks)
                     {
-                        //we must set this here because race condition
-                        t.running = true;
-                        return t;
+                        if (!t.running && !t.executed)
+                        {
+                            //we must set this here because race condition
+                            t.running = true;
+                            return t;
+                        }
                     }
                 }
+                return null;
             }
-            return null;
         }
 
         public int start(function f)
@@ -109,8 +129,8 @@ namespace CWishlist_win
     class task
     {
         public readonly function func;
-        public bool running;
-        public bool executed;
+        public volatile bool running;
+        public volatile bool executed;
 
         public task(function func)
         {

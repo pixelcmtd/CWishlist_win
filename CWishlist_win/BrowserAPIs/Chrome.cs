@@ -8,6 +8,11 @@ namespace CWishlist_win
 {
     static class Chrome
     {
+        public static string bookmark_path_from_appdata_local(string appdata_local)
+        {
+            return appdata_local + @"\Google\Chrome\User Data\Default\Bookmarks";
+        }
+
         public static bookmarks parse(string json_file)
         {
             JsonTextReader r = new JsonTextReader(new StreamReader(json_file));

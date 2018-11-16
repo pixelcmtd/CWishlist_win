@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CWishlist_win
@@ -18,7 +17,6 @@ namespace CWishlist_win
                 Application.SetCompatibleTextRenderingDefault(false);
 #if DEBUG
                 AllocConsole();
-                Console.WriteLine("IT'S WÖRKING! ÄÜß♥²³´`§€");
                 SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
 #endif
                 form = new Form1();
@@ -36,6 +34,7 @@ namespace CWishlist_win
 
         public static readonly string appdata = Registry.
             CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
+
 #if DEBUG
         [DllImport("kernel32")]
         static extern bool AllocConsole();

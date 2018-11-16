@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace test_plugin
 {
-    public class TestPlugin : IPlugin, IFormConstructListener, IPaintListener
+    public class TestPlugin : IPlugin
     {
         string IPlugin.name => "Test plugin";
 
@@ -18,8 +18,8 @@ namespace test_plugin
 
         public void construct(PluginManager plugin_manager)
         {
-            plugin_manager.register_form_construct_listener(this);
-            plugin_manager.register_paint_listener(this);
+            plugin_manager.register_form_construct_listener(form_construct);
+            plugin_manager.register_paint_listener(paint);
         }
 
         public void form_construct(Form1 form)

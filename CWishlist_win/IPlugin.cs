@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace CWishlist_win
+﻿namespace CWishlist_win
 {
     public interface IPlugin
     {
@@ -26,7 +24,7 @@ namespace CWishlist_win
         string update_url { get; }
 
         /// <summary>
-        /// Called directly after constructing the object.
+        /// Basically a replacement for a constructor.
         /// </summary>
         void construct(PluginManager plugin_manager);
 
@@ -35,21 +33,5 @@ namespace CWishlist_win
         /// </summary>
         /// <returns>true wheater this plugin-version is compatible with this version of CWishlist_win or not</returns>
         bool is_compatible(string vs, byte[] vb, uint vi);
-    }
-
-    public interface IFormConstructListener
-    {
-        /// <summary>
-        /// Called at the end of the constructor of the Form1
-        /// </summary>
-        void form_construct(Form1 form);
-    }
-
-    public interface IPaintListener
-    {
-        /// <summary>
-        /// Called in Form1's Paint-event
-        /// </summary>
-        void paint(PaintEventArgs e, Form1 form);
     }
 }

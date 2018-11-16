@@ -9,14 +9,14 @@ namespace LegacyFormats
 {
     public class LegacyCwlFormats
     {
-        //this piece of code is just to beautiful to delete xd
+        //this piece of code is just too beautiful to delete xd
         public static unsafe byte[] bytes(short i)
         {
             short[] s = new short[] { i };
             byte[] b = new byte[2];
-            fixed (short* t = s)
+            fixed (short *t = s)
             {
-                fixed (byte* c = b)
+                fixed (byte *c = b)
                 {
                     Buffer.MemoryCopy(t, c, 2, 2);
                 }

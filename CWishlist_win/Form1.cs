@@ -21,6 +21,7 @@ using static CWishlist_win.Sorting;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CWishlist_win
 {
@@ -48,9 +49,6 @@ namespace CWishlist_win
         public readonly string restore_backup = appdata + "\\CWishlist\\RESTORE_BACKUP";
         public readonly string color_file = appdata + "\\CWishlist\\C";
         public readonly string legacy_color_file = appdata + "\\CWishlist\\COLOR";
-        public readonly string ver_str = "7.0.0b1"; //7.0.0 beta 1
-        public readonly uint ver_int = 0x00700b01;
-        public readonly byte[] version = new byte[] { 7, 0, 0, 255, 1 };
         public readonly object recents_mutex = new object();
         public readonly object backup_mutex = new object();
         public readonly object rbackup_mutex = new object(); //restore backup mutex
@@ -69,6 +67,9 @@ namespace CWishlist_win
 
         public Form1()
         {
+#if DEBUG
+            Console.WriteLine("[Form1()]Form1 constructor is called...");
+#endif
             InitializeComponent();
 
             if (args.Length > 0)
@@ -188,8 +189,11 @@ namespace CWishlist_win
 
                 plugin_manager.call_form_construct_listeners(this);
 #endif
-
             update_ui();
+            label3.Visible = false;
+#if DEBUG
+            Console.WriteLine("[Form1()]Constructed Form1.");
+#endif
         }
 
         void load_width()
@@ -230,17 +234,18 @@ namespace CWishlist_win
 
         public void update_ui()
         {
-            //no GC for [up to] 15MiB of small object heap and 127MiB of big object heap
             try
             {
+                //no GC for [up to] 15MiB of small object heap and 127MiB of big object heap
                 GC.TryStartNoGCRegion(15 * 1024 * 1024 + 1024 * 1024 * 127,
                     127 * 1024 * 1024, true);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Can't start no GC area:\n" + e);
+#if DEBUG
+                Console.WriteLine("Can't start no GC area: " + b64(utf8(e.ToString())));
+#endif
             }
-            
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Count > 0)
                 foreach (string r in recents)
@@ -256,8 +261,6 @@ namespace CWishlist_win
             else
                 recentToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(NA));
             asynctinyflush();
-            //start(() => {  });
-            //start(() => {  });
             int index = listBox1.SelectedIndex;
             thread_manager.finishall();
             listBox1.Items.Clear();
@@ -753,9 +756,6 @@ namespace CWishlist_win
             Start("explorer", plugin_dir);
         }
 
-        /// <summary>
-        /// "Hook" to invoke the paint listeners in the plugin manager.
-        /// </summary>
         void paint(object sender, PaintEventArgs e)
         {
             plugin_manager.call_paint_listeners(e, this);

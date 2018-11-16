@@ -64,8 +64,7 @@ namespace CWishlist_win
         void button6_Click(object sender, EventArgs e)
         {
             bookmarks bms = Chrome.parse(
-                @"C:\Users\chrissicx\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
-            );
+                Chrome.bookmark_path_from_appdata_local(@"C:\Users\chrissicx\AppData\Local"));
             Console.WriteLine(bms.dbgstr(true, "", "    "));
         }
     }

@@ -50,6 +50,7 @@ namespace CWishlist_win
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -221,7 +222,7 @@ namespace CWishlist_win
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.versionToolStripMenuItem.Text = "Version: 7.0.0";
+            this.versionToolStripMenuItem.Text = "Version: 7.0.0b1";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
@@ -346,11 +347,21 @@ namespace CWishlist_win
             this.textBox3.Click += new System.EventHandler(this.search_click);
             this.textBox3.TextChanged += new System.EventHandler(this.search_change);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(122, 447);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(277, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Still loading, some functionality might not work right now...";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 469);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
@@ -412,6 +423,7 @@ namespace CWishlist_win
         private ToolStripMenuItem openPluginDirToolStripMenuItem;
         private ToolStripMenuItem debugToolsToolStripMenuItem;
         private ToolStripMenuItem bTW3rdPartySoftwareToolStripMenuItem;
+        private Label label3;
     }
 }
 
