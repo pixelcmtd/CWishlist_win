@@ -55,7 +55,7 @@ namespace CWishlist_win
         {
             if (ctrlType == CtrlType.CTRL_C_EVENT)
                 Environment.Exit(0);
-
+            
             if (ctrlType == CtrlType.CTRL_CLOSE_EVENT || ctrlType == CtrlType.CTRL_BREAK_EVENT)
             {
                 form.Close();

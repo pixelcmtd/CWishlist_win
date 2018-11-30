@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using static binutils.str;
 
@@ -48,6 +49,13 @@ namespace binutils
         public static void write_utf16(this Stream s, string t)
         {
             s.write(utf16(t));
+        }
+
+        public static void dbg(string fmt, params object[] arg)
+        {
+#if DEBUG
+            Console.WriteLine(fmt, arg);
+#endif
         }
     }
 }

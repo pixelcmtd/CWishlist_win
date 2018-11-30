@@ -1,4 +1,4 @@
-﻿using static System.GC;
+﻿using static binutils.io;
 
 namespace CWishlist_win
 {
@@ -6,6 +6,7 @@ namespace CWishlist_win
     {
         public static void quicksort(int left, int right, ref Item[] data)
         {
+            dbg("");
             if (left < right)
             {
                 int i = pivot(left, right, ref data);

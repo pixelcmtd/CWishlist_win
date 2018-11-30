@@ -1,6 +1,6 @@
 <cwl_lang>
 	<lang code="en" name="english" />
-	<translation name="misc.changelog" type="str_arr" value=" CWishlist by chrissx @ chrissx Media Inc. Changelog:\
+	<translation name="misc.changelog" type="str_arr" value=" CWishlist Windows by chrissx (chrissx Media Inc.) Changelog:\
 \
 Version 7.0.0:\
 -Introduced CWishlistLZMA v1 which is another nice optimization (we measured 12.7% and 35.2%)\
@@ -9,6 +9,7 @@ Version 7.0.0:\
 -Added CWLS v5, which is a separator-, UTF8-UTF16-switch- and LZMA-based optimization of CWLS v4\
 -Added CWLS v6, which is a new UTF8- and LZMA-based format\
 -Optimized the AppData setting storage\
+-Changed the sorting algorithm from mergesort to quicksort, which is usually faster and uses less memory\
 \
 Version 6.2.0:\
 -Added CWLS v3, which does just a little improvement over CWLS v2\

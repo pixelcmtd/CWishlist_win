@@ -7,6 +7,7 @@ using static CWishlist_win.CLinq;
 using static binutils.bin;
 using static binutils.c;
 using static binutils.str;
+using static binutils.io;
 using static CWishlist_win.LanguageProvider;
 using static CWishlist_win.Properties.Resources;
 using static CWishlist_win.Program;
@@ -67,9 +68,8 @@ namespace CWishlist_win
 
         public Form1()
         {
-#if DEBUG
-            Console.WriteLine("[Form1()]Form1 constructor is called...");
-#endif
+            dbg("[Form1()]Form1 constructor is called...");
+
             InitializeComponent();
 
             if (args.Length > 0)
@@ -191,9 +191,7 @@ namespace CWishlist_win
 #endif
             update_ui();
             label3.Visible = false;
-#if DEBUG
-            Console.WriteLine("[Form1()]Constructed Form1.");
-#endif
+            dbg("[Form1()]Constructed Form1.");
         }
 
         void load_width()
@@ -242,9 +240,7 @@ namespace CWishlist_win
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine("Can't start no GC area: " + b64(utf8(e.ToString())));
-#endif
+                dbg("Can't start no GC area: " + b64(utf8(e.ToString())));
             }
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Count > 0)
@@ -308,9 +304,7 @@ namespace CWishlist_win
 
         public void asynctinyflush_f()
         {
-            foreach (Item i in wl)
-                if (!i.url.StartsWith(tinyurl) && valid_url(i.url))
-                    start(() => asynctinyflush_worker(i));
+            asynctinyflush();
             thread_manager.finishall();
         }
 
@@ -331,7 +325,8 @@ namespace CWishlist_win
         void lstbx_index_change(object sender, EventArgs e)
         {
 			bool f = listBox1.SelectedIndex != -1;
-            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible = button4.Visible = button5.Visible = button6.Visible = f;
+            textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible
+                = button4.Visible = button5.Visible = button6.Visible = f;
 			if (f)
 			{
 				textBox1.Text = wl.items[listBox1.SelectedIndex].name;
@@ -375,7 +370,15 @@ namespace CWishlist_win
                             textBox1.Text = GetText();
                             break;
                         }
-                        catch { }
+                        catch
+#if DEBUG
+                        (Exception e1)
+#endif
+                        {
+#if DEBUG
+                            dbg(e1.ToString());
+#endif
+                        }
                 });
         }
 
@@ -391,7 +394,15 @@ namespace CWishlist_win
                             textBox2.Text = GetText();
                             break;
                         }
-                        catch { }
+                        catch
+#if DEBUG
+                        (Exception e1)
+#endif
+                        {
+#if DEBUG
+                            dbg(e1.ToString());
+#endif
+                        }
                 });
         }
 
