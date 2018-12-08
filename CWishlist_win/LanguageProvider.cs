@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
+using binutils.io;
+using static CWishlist_win.Consts;
 
 namespace CWishlist_win
 {
-    class LanguageProvider
+    static class LanguageProvider
     {
-        public static lang selected = new lang("en", "english");
+        public static lang selected = nulllang;
 
         public static Dictionary<lang, Dictionary<string, dynamic>> langs = new Dictionary<lang, Dictionary<string, dynamic>>();
 
@@ -18,7 +20,7 @@ namespace CWishlist_win
 
         public static void load_lang_xml(string file)
         {
-            lang l = new lang("na-lang", "Language not available.");
+            lang l = nulllang;
             Dictionary<string, dynamic> translations = new Dictionary<string, dynamic>();
             XmlReader xml = XmlReader.Create(file);
             while (xml.Read())

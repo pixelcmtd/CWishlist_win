@@ -27,6 +27,8 @@
 
         public const string nullstr = "";
 
+        public const lang nulllang = new lang(null, null);
+
         //CWLLv1 strings
 
         //is a tinyurl

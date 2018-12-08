@@ -145,7 +145,7 @@ namespace CWishlist_win
         public static WL cwld_load(string file)
         {
 #if DEBUG
-            Console.WriteLine("[CWLD]Reading file...");
+            dbg("[CWLD]Reading file...");
 #endif
             Stream raw = File.Open(file, Open, FileAccess.Read);
 
@@ -170,9 +170,7 @@ namespace CWishlist_win
 
             if (v == 1)
             {
-#if DEBUG
-                Console.WriteLine("[CWLD]Initialized, checked header, continueing with v1.");
-#endif
+                dbg("[CWLD]Initialized, checked header, continueing with v1.");
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
                 char c;
@@ -201,9 +199,7 @@ namespace CWishlist_win
             }
             else
             {
-#if DEBUG
-                Console.WriteLine("[CWLD]Initialized, checked header, continueing with v2.");
-#endif
+                dbg("[CWLD]Initialized, checked header, continueing with v2.");
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
@@ -254,32 +250,24 @@ namespace CWishlist_win
         /// </summary>
         static WL cwlu_load(string file)
         {
-#if DEBUG
-            Console.WriteLine("[CWLU]Reading file...");
-#endif
+            dbg("[CWLU]Reading file...");
             ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
             if (zip.read_entry_byte("F") != 3 || zip.read_entry_byte("V") != 1)
                 throw new Exception("Invalid CWLU file.");
             XmlReader xml = XmlReader.Create(new StreamReader(zip.GetEntry("W").Open(), Unicode));
-#if DEBUG
-            Console.WriteLine("[CWLU]Initialized ZIP, XML.");
-#endif
+            dbg("[CWLU]Initialized ZIP, XML.");
             List<Item> items = new List<Item>();
             while (xml.Read())
                 if (xml.Name == "i")
                 {
                     Item i = new Item(xml.GetAttribute("n"), xml.GetAttribute("u"));
                     items.Add(i);
-#if DEBUG
-                    Console.WriteLine($"[CWLU]Read {i.dbgfmt()}");
-#endif
+                    dbg($"[CWLU]Read {i.dbgfmt()}");
                 }
             xml.Close();
             zip.Dispose();
             WL wl = new WL(items);
-#if DEBUG
-            Console.WriteLine("[CWLU]Finished.");
-#endif
+            dbg("[CWLU]Finished.");
             return wl;
         }
 
@@ -289,35 +277,29 @@ namespace CWishlist_win
         /// </summary>
         public static void write_recents(string file, IEnumerable<string> recents)
         {
-#if DEBUG
-            Console.WriteLine("[CWLS]Writing file...");
-#endif
+            dbg("[CWLS]Writing file...");
             Stream fs = File.Open(file, Create, FileAccess.Write);
             fs.write(cwls_header);
             fs.WriteByte(6);
-#if DEBUG
-            Console.WriteLine("[CWLS]Wrote header.");
-#endif
+            dbg("[CWLS]Wrote header.");
             MemoryStream ms = new MemoryStream();
             foreach (string r in recents)
             {
                 ms.write(utf8(r));
                 ms.WriteByte(11);
-#if DEBUG
-                Console.WriteLine("[CWLS]Wrote \"" + r + "\".");
-#endif
+                dbg("[CWLS]Wrote \"" + r + "\".");
             }
             ms.Position = 0;
 #if DEBUG
-            Console.WriteLine("[CWLS]Compressing to file...");
+            dbg("[CWLS]Compressing to file...");
 #endif
             Compress(ms, fs);
 #if DEBUG
-            Console.WriteLine("[CWLS]Compressed to file.");
+            dbg("[CWLS]Compressed to file.");
 #endif
             fs.Close();
 #if DEBUG
-            Console.WriteLine("[CWLS]Finished.");
+            dbg("[CWLS]Finished.");
 #endif
         }
 
@@ -330,7 +312,7 @@ namespace CWishlist_win
         public static List<string> load_recents(string file)
         {
 #if DEBUG
-            Console.WriteLine("[CWLS]Reading file...");
+            dbg("[CWLS]Reading file...");
 #endif
             int v;
             Stream s = File.Open(file, Open, FileAccess.Read);
@@ -351,18 +333,14 @@ namespace CWishlist_win
                 v = s.ReadByte();
                 s.Close();
             }
-#if DEBUG
-            Console.WriteLine($"[CWLS]Got version {v}.");
-#endif
+            dbg($"[CWLS]Got version {v}.");
             if (v > 6)
                 throw new TooNewRecentsFileException();
             if (v < 4)
                 throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
             else if (v == 4)
             {
-#if DEBUG
-                Console.WriteLine("[CWLS]Starting reading with version 4.");
-#endif
+                dbg("[CWLS]Starting reading with version 4.");
                 List<string> r = new List<string>();
                 Stream rawfs = File.Open(file, Open, FileAccess.Read);
                 rawfs.Seek(10, SeekOrigin.Begin);
@@ -380,9 +358,7 @@ namespace CWishlist_win
             }
             else if (v == 5)
             {
-#if DEBUG
-                Console.WriteLine("[CWLS]Starting reading with version 5.");
-#endif
+                dbg("[CWLS]Starting reading with version 5.");
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Seek(5, SeekOrigin.Begin);
@@ -406,9 +382,7 @@ namespace CWishlist_win
             }
             else
             {
-#if DEBUG
-                Console.WriteLine("[CWLS]Starting reading with version 6.");
-#endif
+                dbg("[CWLS]Starting reading with version 6.");
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Seek(5, SeekOrigin.Begin);
