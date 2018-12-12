@@ -152,7 +152,6 @@
     <Compile Include="LanguageSelectionDialog.Designer.cs">
       <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Parsing.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
