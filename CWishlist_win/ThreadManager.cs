@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using static binutils.bin;
 using static binutils.str;
+using static binutils.io;
 
 namespace CWishlist_win
 {
@@ -12,14 +13,44 @@ namespace CWishlist_win
     {
         readonly int proc_count = Environment.ProcessorCount;
         Thread[] threads;
-        List<task> tasks = new List<task>();
+        Thread update;
+        public List<task> tasks = new List<task>();
         public readonly object task_mutex = new object();
+        public readonly object wtask_mutex = new object(); //write task(s) mutex
 
         public ThreadManager()
         {
-            threads = new Thread[proc_count];
-            for (int j = 0; j < proc_count; j++)
-                (threads[j] = new Thread(worker_thread)).Start();
+            lock(task_mutex)
+            {
+                lock (wtask_mutex)
+                {
+                    threads = new Thread[proc_count];
+                    for (int j = 0; j < proc_count; j++)
+                        (threads[j] = new Thread(worker_thread)).Start();
+                    (update = new Thread(update_thread)).Start();
+                }
+            }
+        }
+
+        void update_thread()
+        {
+            try
+            {
+                while (true)
+                {
+                    try
+                    {
+                        finishall();
+                        Thread.Sleep(1);
+                    }
+                    catch (Exception e)
+                    {
+                        dbg("[ThreadManager-UpdateThread]Loop Exception: {0}",
+                            b64(utf8(e.ToString())));
+                    }
+                }
+            }
+            catch { }
         }
 
         void worker_thread()
@@ -42,12 +73,8 @@ namespace CWishlist_win
                             if (e is ThreadAbortException)
                                 throw e;
                             else
-#if DEBUG
-                                Console.Write("t.func Exception: ");
-                                Console.WriteLine(b64(utf8(e.ToString())));
-#else
-                                ;
-#endif
+                                dbg("[ThreadManager-WorkerThread]t.func Exception: {0}",
+                                    b64(utf8(e.ToString())));
                         }
                         //in this order because otherwise the other threads could think:
                         //executed = false, running = false, ill execute this
@@ -59,9 +86,7 @@ namespace CWishlist_win
             }
             catch
             {
-#if DEBUG
-                Console.WriteLine("[ThreadManager-WorkerThread]Thread shutdown.");
-#endif
+                dbg("[ThreadManager-WorkerThread]Thread shutdown.");
             }
         }
 
@@ -89,26 +114,29 @@ namespace CWishlist_win
         {
             lock (task_mutex)
             {
-                int i = tasks.Count;
-                tasks.Add(new task(f));
-                return i;
+                lock(wtask_mutex)
+                {
+                    int i = tasks.Count;
+                    tasks.Add(new task(f));
+                    return i;
+                }
             }
         }
 
         public void shutdown()
         {
-            lock (task_mutex)
+            lock(wtask_mutex)
             {
-#if DEBUG
-                Console.WriteLine("[ThreadManager]Shutting down.");
-#endif
+                dbg("[ThreadManager]Shutting down.");
                 foreach (task t in tasks)
                     t.join();
                 foreach (Thread t in threads)
                     t.Abort();
+                update.Abort();
                 //ensures we won't be able to use this manager anymore
                 threads = null;
                 tasks = null;
+                update = null;
             }
         }
 
@@ -119,14 +147,23 @@ namespace CWishlist_win
 
         public void finishall()
         {
-            foreach (task t in tasks)
-                t.join();
+            lock(wtask_mutex)
+                foreach (task t in tasks)
+                    t.join();
+            //after joining before clearing you could generate a
+            //race condition by inserting a task, also it can crash
+            //while iterating if you insert then, but we basically
+            //have no other coice...except another length check...
             lock (task_mutex)
-                tasks.Clear();
+                if (tasks.Count == 0)
+                    lock (wtask_mutex)
+                        tasks.Clear();
+                else
+                    start(finishall);
         }
     }
 
-    class task
+    public class task
     {
         public readonly function func;
         public volatile bool running;
@@ -139,13 +176,25 @@ namespace CWishlist_win
             executed = false;
         }
 
+        long func_ptr()
+        {
+            return func.Method.MethodHandle.GetFunctionPointer().ToInt64();
+        }
+
+        public override string ToString()
+        {
+            return $"{func.Method.Name} @ {func_ptr().ToString("x16")}";
+        }
+
+        public string task_mgr_fmt()
+        {
+            return $"{this} ({(running ? "Running" : "Not running")}, " +
+                (executed ? "done executing" : "not executed yet");
+        }
+
         public void join()
         {
-#if DEBUG
-            Console.WriteLine("[ThreadManager]Joining func @ "
-                    + func.Method.MethodHandle.GetFunctionPointer().ToInt64().ToString("x16")
-                    + " (" + func.Method.Name + ")");
-#endif
+            dbg("[ThreadManager]Joining func {0}", this);
             while (!executed) ;
         }
     }

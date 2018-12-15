@@ -63,12 +63,10 @@ namespace CWishlist_win
             get => (long)url.Length + (long)name.Length;
         }
 
-#if DEBUG
         public string dbgfmt()
         {
             return "{\"" + name + "\",\"" + url + "\"}";
         }
-#endif
 
         public void write_bytes(Stream s, int format)
         {

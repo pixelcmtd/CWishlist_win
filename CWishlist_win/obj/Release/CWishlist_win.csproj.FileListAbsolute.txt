@@ -36,3 +36,4 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\Newtonsoft.Json.dll
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\7ZipLib.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\binutils.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\Newtonsoft.Json.xml
+D:\workspace_VS\CWishlist_win\CWishlist_win\obj\Release\CWishlist_win.TaskManager.resources

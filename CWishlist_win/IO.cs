@@ -31,11 +31,15 @@ namespace CWishlist_win
                 s.StartsWith(ftp) && fccontains(s, '.');
         }
 
+        /// <summary>
+        /// Loads the given file with the format recognized from the extention.
+        /// </summary>
         public static WL load(string f)
         {
             char c = f[f.Length - 1];
-            return f == "" ? WL.NEW : c == 'l' ? cwll_load(f) : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f)
-                : throw new Exception("Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
+            return f == "" ? WL.NEW : c == 'l' ? cwll_load(f) : c == 'd' ? cwld_load(f) :
+                c == 'u' ? cwlu_load(f) : throw new Exception(
+                    "Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
         }
 
         public static WL backup_load(string f)
@@ -144,9 +148,7 @@ namespace CWishlist_win
         /// </summary>
         public static WL cwld_load(string file)
         {
-#if DEBUG
             dbg("[CWLD]Reading file...");
-#endif
             Stream raw = File.Open(file, Open, FileAccess.Read);
 
             byte[] h = new byte[8]; //header
@@ -290,17 +292,11 @@ namespace CWishlist_win
                 dbg("[CWLS]Wrote \"" + r + "\".");
             }
             ms.Position = 0;
-#if DEBUG
             dbg("[CWLS]Compressing to file...");
-#endif
             Compress(ms, fs);
-#if DEBUG
             dbg("[CWLS]Compressed to file.");
-#endif
             fs.Close();
-#if DEBUG
             dbg("[CWLS]Finished.");
-#endif
         }
 
         /// <summary>
@@ -311,9 +307,7 @@ namespace CWishlist_win
         /// </summary>
         public static List<string> load_recents(string file)
         {
-#if DEBUG
             dbg("[CWLS]Reading file...");
-#endif
             int v;
             Stream s = File.Open(file, Open, FileAccess.Read);
             if (s.ReadByte() == 80 && s.ReadByte() == 75)

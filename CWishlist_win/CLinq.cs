@@ -6,22 +6,6 @@ namespace CWishlist_win
 {
     static class CLinq
     {
-        public static K where<K, V>(this Dictionary<K, V>.KeyCollection keys, Predicate<K> predicate)
-        {
-            foreach (K key in keys)
-                if (predicate(key))
-                    return key;
-            return default;
-        }
-
-        public static V where<K, V>(this Dictionary<K, V>.ValueCollection vals, Predicate<V> predicate)
-        {
-            foreach (V val in vals)
-                if (predicate(val))
-                    return val;
-            return default;
-        }
-
         public static T where<T>(this IEnumerable<T> ie, Predicate<T> p)
         {
             foreach (T t in ie)
@@ -61,7 +45,7 @@ namespace CWishlist_win
         }
 
         //fast [unsafe] [and full] array copy for item arrays
-        public static void farrcpy(Item[] src, Item[] dest)
+        public static void farrcpyitm(Item[] src, Item[] dest)
         {
             for (long i = 0; i < src.LongLength; i++)
                 dest[i] = new Item(src[i].name, src[i].url);

@@ -22,7 +22,6 @@ using static CWishlist_win.Sorting;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace CWishlist_win
 {
@@ -458,6 +457,7 @@ namespace CWishlist_win
 
         void closing(object _, FormClosingEventArgs e)
         {
+            Hide();
             if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl)))
             {
                 bool flag = MessageBox.Show(get_translated("prompt.close"), get_translated("caption.close"), YesNo) == No;
@@ -473,7 +473,6 @@ namespace CWishlist_win
             start(write_wid_file_close);
             start(write_hei_file_close);
             start(write_color_file_close);
-            Hide();
             thread_manager.shutdown();
         }
 
@@ -783,7 +782,7 @@ namespace CWishlist_win
                 wl = load(file);
                 current_file = file;
                 loaded_wl = new Item[wl];
-                farrcpy(wl, loaded_wl);
+                farrcpyitm(wl, loaded_wl);
             }
             try_update_ui();
         }
@@ -804,6 +803,11 @@ namespace CWishlist_win
                 "So go to 7-zip.org!\n\n" +
                 "It also uses PAQ8PCWL, which is a custom version of PAQ8P.",
                 "A little bit of credits...");
+        }
+
+        void taskManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new TaskManager(this).Show();
         }
     }
 }

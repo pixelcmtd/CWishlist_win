@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using binutils.io;
+using binutils;
 using static CWishlist_win.Consts;
 
 namespace CWishlist_win
@@ -67,7 +67,7 @@ namespace CWishlist_win
         }
     }
 
-    struct lang
+    public struct lang
     {
         public lang(string code, string name)
         {

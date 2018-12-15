@@ -51,6 +51,7 @@ namespace CWishlist_win
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.taskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -222,13 +223,13 @@ namespace CWishlist_win
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.versionToolStripMenuItem.Text = "Version: 7.0.0b1";
+            this.versionToolStripMenuItem.Text = "Version: 7.0.0b2";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
-            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.changelogToolStripMenuItem.Text = "Changelog";
             this.changelogToolStripMenuItem.Click += new System.EventHandler(this.chnglg_click);
             // 
@@ -244,14 +245,14 @@ namespace CWishlist_win
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.lang_click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
-            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
             this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.style_click);
             // 
@@ -260,7 +261,8 @@ namespace CWishlist_win
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPluginDirToolStripMenuItem,
             this.debugToolsToolStripMenuItem,
-            this.bTW3rdPartySoftwareToolStripMenuItem});
+            this.bTW3rdPartySoftwareToolStripMenuItem,
+            this.taskManagerToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.extraToolStripMenuItem.Text = "Extra";
@@ -356,6 +358,13 @@ namespace CWishlist_win
             this.label3.TabIndex = 18;
             this.label3.Text = "Still loading, some functionality might not work right now...";
             // 
+            // taskManagerToolStripMenuItem
+            // 
+            this.taskManagerToolStripMenuItem.Name = "taskManagerToolStripMenuItem";
+            this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.taskManagerToolStripMenuItem.Text = "Task Manager";
+            this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskManagerToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -424,6 +433,7 @@ namespace CWishlist_win
         private ToolStripMenuItem debugToolsToolStripMenuItem;
         private ToolStripMenuItem bTW3rdPartySoftwareToolStripMenuItem;
         private Label label3;
+        private ToolStripMenuItem taskManagerToolStripMenuItem;
     }
 }
 
