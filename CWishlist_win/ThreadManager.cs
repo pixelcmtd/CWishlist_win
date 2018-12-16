@@ -129,7 +129,8 @@ namespace CWishlist_win
             {
                 dbg("[ThreadManager]Shutting down.");
                 foreach (task t in tasks)
-                    t.join();
+                    if(t.func != finishall)
+                        t.join();
                 foreach (Thread t in threads)
                     t.Abort();
                 update.Abort();
@@ -150,12 +151,8 @@ namespace CWishlist_win
             lock(wtask_mutex)
                 foreach (task t in tasks)
                     t.join();
-            //after joining before clearing you could generate a
-            //race condition by inserting a task, also it can crash
-            //while iterating if you insert then, but we basically
-            //have no other coice...except another length check...
             lock (task_mutex)
-                if (tasks.Count == 0)
+                if (tasks.where((t) => !t.executed) != default(task))
                     lock (wtask_mutex)
                         tasks.Clear();
                 else
