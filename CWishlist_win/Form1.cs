@@ -457,14 +457,12 @@ namespace CWishlist_win
 
         void closing(object _, FormClosingEventArgs e)
         {
-            Hide();
             if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl)))
             {
-                bool flag = MessageBox.Show(get_translated("prompt.close"), get_translated("caption.close"), YesNo) == No;
-                e.Cancel = flag;
-                if (flag)
-                    return;
+                if(MessageBox.Show(get_translated("prompt.close"), get_translated("caption.close"), YesNoCancel) == No)
+                    save_click(_, e);
             }
+            Hide();
             if (current_file != "")
                 start(add_current_file_to_recent_items);
             start(write_recents_mutexed_close);
