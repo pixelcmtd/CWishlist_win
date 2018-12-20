@@ -150,9 +150,10 @@ namespace CWishlist_win
         {
             lock(wtask_mutex)
                 foreach (task t in tasks)
-                    t.join();
+                    if(t.func != finishall)
+                        t.join();
             lock (task_mutex)
-                if (tasks.where((t) => !t.executed) != default(task))
+                if (tasks.where((t) => !t.executed) != default)
                     lock (wtask_mutex)
                         tasks.Clear();
                 else
@@ -171,6 +172,32 @@ namespace CWishlist_win
             this.func = func;
             running = false;
             executed = false;
+        }
+
+        public static bool operator ==(task t1, task t2)
+        {
+            return (!(t1 is null || t2 is null) && t1.Equals(t2))
+                || (t1 is null && t2 is null);
+        }
+
+        public static bool operator !=(task t1, task t2)
+        {
+            return !(t1 == t2);
+        }
+
+        public bool Equals(task t)
+        {
+            return running == t.running && executed == t.executed && func == t.func;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is task ? Equals((task)obj) : false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)func_ptr();
         }
 
         long func_ptr()

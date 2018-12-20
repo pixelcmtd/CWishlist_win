@@ -71,12 +71,19 @@ namespace CWishlist_win
 
             InitializeComponent();
 
+            dbg("[Form1()]Constructed Form1.");
+        }
+
+        public void init()
+        {
+            dbg("[Form1.init()]Form1 initializing...");
+
             if (args.Length > 0)
                 load_wl(args[0]);
             else
                 lock (blist_mutex)
                     wl = NEW;
-            
+
             int i = start(() =>
             {
                 if (!Directory.Exists(appdir))
@@ -173,7 +180,7 @@ namespace CWishlist_win
 
             start(load_width);
             start(load_height);
-            start(load_color);
+            load_color();
 
 #if false
             foreach (string file in Directory.GetFiles(plugin_dir, "*.cwlwnplg"))
@@ -190,7 +197,8 @@ namespace CWishlist_win
 #endif
             update_ui();
             label3.Visible = false;
-            dbg("[Form1()]Constructed Form1.");
+
+            dbg("[Form1.init()]Form1 initialized.");
         }
 
         void load_width()
@@ -228,7 +236,7 @@ namespace CWishlist_win
                 File.Delete(legacy_color_file);
             }
         }
-
+        
         public void update_ui()
         {
             try
@@ -272,26 +280,12 @@ namespace CWishlist_win
 
         void update_ui_save_backup()
         {
-            try
-            {
-                lock (backup_mutex)
-                {
-                    backup_save(wl, backup_file);
-                }
-            }
-            catch { }
+            try { lock (backup_mutex) backup_save(wl, backup_file); } catch { }
         }
 
         void update_ui_write_restore_backup()
         {
-            try
-            {
-                lock (rbackup_mutex)
-                {
-                    writesbf(restore_backup, 1);
-                }
-            }
-            catch { }
+            try { lock (rbackup_mutex) { writesbf(restore_backup, 1); } } catch { }
         }
 
         public void asynctinyflush()
@@ -312,14 +306,7 @@ namespace CWishlist_win
             i.url = tinyurl_create(i.url);
         }
 
-        public void try_update_ui()
-        {
-            try
-            {
-                update_ui();
-            }
-            catch { }
-        }
+        public void try_update_ui() { try { update_ui(); } catch { } }
 
         void lstbx_index_change(object sender, EventArgs e)
         {
@@ -363,20 +350,16 @@ namespace CWishlist_win
                 start(() =>
                 {
                     //sometimes pasting fails randomly so we're repeating until it pastes
+                    //(but we also try not to crash the program, but lag at most a few seconds)
                     for (int i = 0; i < int.MaxValue; i++)
                         try
                         {
                             textBox1.Text = GetText();
                             break;
                         }
-                        catch
-#if DEBUG
-                        (Exception e1)
-#endif
+                        catch (Exception e1)
                         {
-#if DEBUG
                             dbg(e1.ToString());
-#endif
                         }
                 });
         }
@@ -387,20 +370,16 @@ namespace CWishlist_win
                 start(() =>
                 {
                     //sometimes pasting fails randomly so we're repeating until it pastes
+                    //(but we also try not to crash the program, but lag at most a few seconds)
                     for (int i = 0; i < int.MaxValue; i++)
                         try
                         {
                             textBox2.Text = GetText();
                             break;
                         }
-                        catch
-#if DEBUG
-                        (Exception e1)
-#endif
+                        catch (Exception e1)
                         {
-#if DEBUG
                             dbg(e1.ToString());
-#endif
                         }
                 });
         }
@@ -422,14 +401,8 @@ namespace CWishlist_win
             arrcpy(old, wl.items, listBox1.SelectedIndex);
             for (int i = listBox1.SelectedIndex + 1; i < old.Length; i++)
                 wl.items[i - 1] = old[i];
-            try
-            {
-                update_ui();
-            }
-            catch
-            {
-                listBox1.SelectedIndex = wl.Length - 1;
-            }
+            try { update_ui(); }
+            catch { listBox1.SelectedIndex = wl.Length - 1; }
         }
 
         void size_change(object _, EventArgs e)
@@ -497,14 +470,12 @@ namespace CWishlist_win
 
         void disable_restore_backup_close()
         {
-            lock (rbackup_mutex)
-                writesbf(restore_backup, 0);
+            lock (rbackup_mutex) writesbf(restore_backup, 0);
         }
 
         void write_recents_mutexed_close()
         {
-            lock (recents_mutex)
-                write_recents(recents_file, recents);
+            lock (recents_mutex) write_recents(recents_file, recents);
         }
 
         public void add_current_file_to_recent_items()
@@ -514,8 +485,7 @@ namespace CWishlist_win
             {
                 lock (recents_mutex)
                 {
-                    if (recents.Count > 0 && recents[0] == s)
-                        return;
+                    if (recents.Count > 0 && recents[0] == s) return;
                     recents.Insert(0, s);
                 }
             });
@@ -569,7 +539,6 @@ namespace CWishlist_win
             else
             {
                 int lm1 = current_file.Length - 1;
-                int lm2 = current_file.Length - 2;
                 if (current_file[lm1] != 'l')
                 {
                     char[] c = current_file.ToCharArray();
@@ -619,8 +588,7 @@ namespace CWishlist_win
 
         void move_up_click(object _, EventArgs e)
         {
-            if (listBox1.SelectedIndex == -1 || listBox1.SelectedIndex == 0)
-                return;
+            if (listBox1.SelectedIndex < 1) return;
             Item[] old = wl.items;
             wl.items = new Item[old.Length];
             int index = listBox1.SelectedIndex;
@@ -655,8 +623,8 @@ namespace CWishlist_win
         void btn8_click(object _, EventArgs e)
         {
             foreach(Item i in wl)
-                Start(i.url.StartsWith(http) || i.url.StartsWith(ftp) ? i.url
-                    : http + i.url);
+                Start(i.url.StartsWith(https) || i.url.StartsWith(http) || i.url.StartsWith(ftp)
+                    ? i.url : http + i.url);
         }
 
         void chnglg_click(object _, EventArgs e)
@@ -677,8 +645,7 @@ namespace CWishlist_win
         void sort_click(object _, EventArgs e)
         {
             asynctinyflush_f();
-            lock (blist_mutex)
-                quicksort(0, wl.Length - 1, ref wl.items);
+            lock (blist_mutex) quicksort(0, wl.Length - 1, ref wl.items);
             update_ui();
         }
 
@@ -770,7 +737,7 @@ namespace CWishlist_win
         }
 
         /// <summary>
-        /// Loads the CWL from the given file to loaded_wl, wl and current_file.
+        /// Loads the WL from the given file to loaded_wl, wl and current_file.
         /// </summary>
         /// <param name="file">The file to load the CWL from.</param>
         public void load_wl(string file)

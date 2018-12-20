@@ -20,6 +20,8 @@ namespace CWishlist_win
                 SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
 #endif
                 form = new Form1();
+                form.Show();
+                form.init();
                 Application.Run(form);
             }
             catch (Exception e)
