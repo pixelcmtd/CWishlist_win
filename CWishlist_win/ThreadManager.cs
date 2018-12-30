@@ -45,12 +45,18 @@ namespace CWishlist_win
                     }
                     catch (Exception e)
                     {
-                        dbg("[ThreadManager-UpdateThread]Loop Exception: {0}",
-                            b64(utf8(e.ToString())));
+                        if (e is ThreadAbortException)
+                            throw e;
+                        else
+                            dbg("[ThreadManager-UpdateThread]Loop Exception: {0}",
+                                b64(utf8(e.ToString())));
                     }
                 }
             }
-            catch { }
+            catch
+            {
+                dbg("[ThreadManager-UpdateThread]Thread shutdown.");
+            }
         }
 
         void worker_thread()
@@ -129,7 +135,7 @@ namespace CWishlist_win
             {
                 dbg("[ThreadManager]Shutting down.");
                 foreach (task t in tasks)
-                    if(t.func != finishall)
+                    if (t.func != finishall)
                         t.join();
                 foreach (Thread t in threads)
                     t.Abort();
@@ -148,9 +154,9 @@ namespace CWishlist_win
 
         public void finishall()
         {
-            lock(wtask_mutex)
+            lock (wtask_mutex)
                 foreach (task t in tasks)
-                    if(t.func != finishall)
+                    if (t.func != finishall)
                         t.join();
             lock (task_mutex)
                 if (tasks.where((t) => !t.executed) != default)
