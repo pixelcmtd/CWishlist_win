@@ -21,14 +21,14 @@ namespace CWishlist_win
     {
         public static string tinyurl_create(string url)
         {
-            return new WebClient().DownloadString(tinyurl_api + url);
+            return new WebClient().DownloadString(tinyurl_api + Uri.EscapeDataString(url));
         }
 
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
             return s.StartsWith(http) || s.StartsWith(https) ||
-                s.StartsWith(ftp) && fccontains(s, '.');
+                s.StartsWith(ftp) || s.StartsWith(lbry) && fccontains(s, '.');
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace CWishlist_win
         public static WL load(string f)
         {
             char c = f[f.Length - 1];
-            return f == "" ? WL.NEW : c == 'l' ? cwll_load(f) : c == 'd' ? cwld_load(f) :
-                c == 'u' ? cwlu_load(f) : throw new Exception(
+            return f == "" ? WL.NEW : (c == 'l' && f[f.Length - 2] == 'l') ? cwll_load(f)
+                : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f) : throw new Exception(
                     "Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
         }
 

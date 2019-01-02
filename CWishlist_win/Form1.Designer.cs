@@ -44,6 +44,7 @@ namespace CWishlist_win
             this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bTW3rdPartySoftwareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.taskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -51,7 +52,6 @@ namespace CWishlist_win
             this.button9 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.taskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -223,13 +223,13 @@ namespace CWishlist_win
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.versionToolStripMenuItem.Text = "Version: 7.0.0b2";
+            this.versionToolStripMenuItem.Text = "Version: 7.0.0b4";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
             // 
             this.changelogToolStripMenuItem.Name = "changelogToolStripMenuItem";
-            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.changelogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.changelogToolStripMenuItem.Text = "Changelog";
             this.changelogToolStripMenuItem.Click += new System.EventHandler(this.chnglg_click);
             // 
@@ -287,6 +287,13 @@ namespace CWishlist_win
             this.bTW3rdPartySoftwareToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.bTW3rdPartySoftwareToolStripMenuItem.Text = "BTW: 3rd Party Software";
             this.bTW3rdPartySoftwareToolStripMenuItem.Click += new System.EventHandler(this._3rd_party_software);
+            // 
+            // taskManagerToolStripMenuItem
+            // 
+            this.taskManagerToolStripMenuItem.Name = "taskManagerToolStripMenuItem";
+            this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.taskManagerToolStripMenuItem.Text = "Task Manager";
+            this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskManagerToolStripMenuItem_Click);
             // 
             // button1
             // 
@@ -357,13 +364,6 @@ namespace CWishlist_win
             this.label3.Size = new System.Drawing.Size(277, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Still loading, some functionality might not work right now...";
-            // 
-            // taskManagerToolStripMenuItem
-            // 
-            this.taskManagerToolStripMenuItem.Name = "taskManagerToolStripMenuItem";
-            this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
-            this.taskManagerToolStripMenuItem.Text = "Task Manager";
-            this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskManagerToolStripMenuItem_Click);
             // 
             // Form1
             // 

@@ -18,6 +18,12 @@ namespace CWishlist_win
         List<form_construct_listener> form_construct_listeners = new List<form_construct_listener>();
         List<paint_listener> paint_listeners = new List<paint_listener>();
         Dictionary<IPlugin, string> plugins = new Dictionary<IPlugin, string>();
+        Form1 form;
+
+        public PluginManager(Form1 form)
+        {
+            this.form = form;
+        }
 
         public void register_plugin(IPlugin plugin, string file)
         {
@@ -29,13 +35,13 @@ namespace CWishlist_win
 
         public void register_paint_listener(paint_listener listener) => paint_listeners.Add(listener);
 
-        public void call_form_construct_listeners(Form1 form)
+        public void call_form_construct_listeners()
         {
             foreach (form_construct_listener l in form_construct_listeners)
                 l(form);
         }
 
-        public void call_paint_listeners(PaintEventArgs e, Form1 form)
+        public void call_paint_listeners(PaintEventArgs e)
         {
             foreach (paint_listener l in paint_listeners)
                 l(e, form);
@@ -67,12 +73,11 @@ namespace CWishlist_win
                 if(s_ver > c_ver)
                 {
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
-                    File.WriteAllBytes(tmp, Environment.GetEnvironmentVariable(
-                        "PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine) == "AMD64" ?
-                        Resources.file_replace_64 : Resources.file_replace_32);
+                    File.WriteAllBytes(tmp, Resources.file_replace);
                     Process.Start(tmp,
                         $"{dll_dl_url} \"{plugins[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
-                    Program.form.Close();
+                    form.thread_manager.start(() => File.Delete(tmp));
+                    form.Close();
                     Environment.Exit(0);
                 }
 			}

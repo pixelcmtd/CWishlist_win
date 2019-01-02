@@ -5,7 +5,7 @@ using static CWishlist_win.Consts;
 
 namespace CWishlist_win
 {
-    static class LanguageProvider
+    public static class LanguageProvider
     {
         public static lang selected = nulllang;
 
@@ -24,7 +24,7 @@ namespace CWishlist_win
             Dictionary<string, dynamic> translations = new Dictionary<string, dynamic>();
             XmlReader xml = XmlReader.Create(file);
             while (xml.Read())
-                if(xml.NodeType == XmlNodeType.Element)
+                if (xml.NodeType == XmlNodeType.Element)
                     if (xml.Name == "lang")
                         l = new lang(xml.GetAttribute("code"), xml.GetAttribute("name"));
                     else if (xml.Name == "translation")

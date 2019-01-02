@@ -20,6 +20,7 @@
         public const string http = "http://";
         public const string https = "https://";
         public const string ftp = "ftp://";
+        public const string lbry = "lbry://";
 
         public const int D1 = 0;
         public const int D2 = 1;

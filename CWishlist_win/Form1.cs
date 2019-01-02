@@ -27,7 +27,7 @@ namespace CWishlist_win
 {
     public partial class Form1 : Form
     {
-        public readonly PluginManager plugin_manager = new PluginManager();
+        public readonly PluginManager plugin_manager;
         public readonly ThreadManager thread_manager = new ThreadManager();
         public WL wl;
         public string current_file = "";
@@ -69,6 +69,7 @@ namespace CWishlist_win
         {
             dbg("[Form1()]Form1 constructor is called...");
 
+            plugin_manager = new PluginManager(this);
             InitializeComponent();
 
             dbg("[Form1()]Constructed Form1.");
@@ -193,7 +194,7 @@ namespace CWishlist_win
                         MessageBox.Show(e.ToString(), string.Format(get_translated("caption.pluginloadfailed"), file));
                     }
 
-                plugin_manager.call_form_construct_listeners(this);
+                plugin_manager.call_form_construct_listeners();
 #endif
             update_ui();
             label3.Visible = false;
@@ -733,7 +734,7 @@ namespace CWishlist_win
 
         void paint(object sender, PaintEventArgs e)
         {
-            plugin_manager.call_paint_listeners(e, this);
+            plugin_manager.call_paint_listeners(e);
         }
 
         /// <summary>
@@ -766,7 +767,7 @@ namespace CWishlist_win
                 "This software uses the LZMA SDK by Igor Pavlov.\n" +
                 "While it is Public Domain I still wanted to give credit.\n" +
                 "So go to 7-zip.org!\n\n" +
-                "It also uses PAQ8PCWL, which is a custom version of PAQ8P.",
+                "It will also use PAQ8PCWL, which is a custom version of PAQ8P.",
                 "A little bit of credits...");
         }
 

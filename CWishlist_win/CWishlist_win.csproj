@@ -155,6 +155,11 @@
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Sorting.cs" />
     <Compile Include="TaskManager.cs">
       <SubType>Form</SubType>
@@ -175,14 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="TaskManager.resx">
       <DependentUpon>TaskManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,17 +205,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\en_lang.xml" />
+    <None Include="Resources\file_replace.exe" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\de_lang.xml">
       <SubType>Designer</SubType>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\file_replace_64.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\file_replace_32.exe" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\7ZipLib\7ZipLib.csproj">

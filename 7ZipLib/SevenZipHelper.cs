@@ -21,8 +21,8 @@ namespace SevenZip
             Encoder encoder = new Encoder();
             encoder.SetCoderProperties(new CoderPropID[] { DictionarySize,
                 PosStateBits, LitContextBits, LitPosBits, Algorithm, NumFastBytes,
-                MatchFinder, EndMarker }, new object[] { 1 << 16, 2, 3, 0, 2, 128,
-                    "bt4", false });
+                MatchFinder, EndMarker },
+                new object[] { 1 << 16, 2, 3, 0, 2, 128, "bt4", false });
             encoder.WriteCoderProperties(outStream);
             outStream.Write(bytes(inStream.Length), 0, 8);
             encoder.Code(inStream, outStream, -1, -1, null);

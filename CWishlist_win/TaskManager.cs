@@ -15,8 +15,11 @@ namespace CWishlist_win
         void TaskManager_Paint(object sender, PaintEventArgs e)
         {
             listBox1.Items.Clear();
-            foreach(task t in src_form.thread_manager.tasks.ToArray())
-                listBox1.Items.Add(t.task_mgr_fmt());
+            task[] t;
+            lock (src_form.thread_manager.wtask_mutex)
+                t = src_form.thread_manager.tasks.ToArray();
+            foreach(task u in t)
+                listBox1.Items.Add(u.task_mgr_fmt());
         }
     }
 }
