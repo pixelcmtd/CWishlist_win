@@ -1,0 +1,10 @@
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\bin\Debug\BetterWindows.Tests.exe.config
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\bin\Debug\BetterWindows.Tests.exe
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\bin\Debug\BetterWindows.Tests.pdb
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\bin\Debug\BetterWindows.dll
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\bin\Debug\BetterWindows.pdb
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\Debug\BetterWindows.Tests.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\Debug\BetterWindows.Tests.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\Debug\BetterWindows.Tests.csproj.CopyComplete
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\Debug\BetterWindows.Tests.exe
+D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\Debug\BetterWindows.Tests.pdb

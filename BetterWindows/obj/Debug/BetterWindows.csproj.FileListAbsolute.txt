@@ -1,0 +1,6 @@
+D:\workspace_VS\CWishlist_win\BetterWindows\bin\Debug\BetterWindows.dll
+D:\workspace_VS\CWishlist_win\BetterWindows\bin\Debug\BetterWindows.pdb
+D:\workspace_VS\CWishlist_win\BetterWindows\obj\Debug\BetterWindows.csprojAssemblyReference.cache
+D:\workspace_VS\CWishlist_win\BetterWindows\obj\Debug\BetterWindows.csproj.CoreCompileInputs.cache
+D:\workspace_VS\CWishlist_win\BetterWindows\obj\Debug\BetterWindows.dll
+D:\workspace_VS\CWishlist_win\BetterWindows\obj\Debug\BetterWindows.pdb
