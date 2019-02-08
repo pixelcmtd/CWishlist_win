@@ -646,6 +646,7 @@ namespace CWishlist_win
         void sort_click(object _, EventArgs e)
         {
             asynctinyflush_f();
+            //some multi-threading might be possible here
             lock (blist_mutex) quicksort(0, wl.Length - 1, ref wl.items);
             update_ui();
         }

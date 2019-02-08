@@ -2,7 +2,6 @@
 using SevenZip.Utils.lzma;
 using System.IO;
 using static SevenZip.Utils.CoderPropID;
-using static System.IO.SeekOrigin;
 
 namespace SevenZip
 {
@@ -17,7 +16,6 @@ namespace SevenZip
 
         public static void Compress(Stream inStream, Stream outStream)
         {
-            inStream.Seek(0, Begin);
             Encoder encoder = new Encoder();
             encoder.SetCoderProperties(new CoderPropID[] { DictionarySize,
                 PosStateBits, LitContextBits, LitPosBits, Algorithm, NumFastBytes,

@@ -1,11 +1,8 @@
-﻿using BetterWindows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using static BetterWindows.PInvoke;
 using static BetterWindows.WM;
+using static BetterWindows.WindowStyles;
+using static BetterWindows.WindowStylesEx;
 
 namespace BetterWindows.Tests
 {
@@ -25,8 +22,8 @@ namespace BetterWindows.Tests
         static void Main(string[] args)
         {
             Window w = new Window(
-                WindowStyles.WS_BORDER,
-                WindowStylesEx.WS_EX_CLIENTEDGE,
+                WS_BORDER,
+                WS_EX_CLIENTEDGE,
                 0,
                 WndProc,
                 "awesomeWindow",

@@ -58,15 +58,23 @@ namespace CWishlist_win
         /// </summary>
         public static void cwll_save(WL wl, string file)
         {
+            dbg("[CWLL]Saving file...");
             FileStream fs = File.Open(file, Create, FileAccess.Write);
-            fs.Write(cwll_header, 0, 4);
+            fs.write(cwll_header);
             fs.write(1);
+            dbg("[CWLL]Wrote header...");
             MemoryStream ms = new MemoryStream();
             foreach (Item i in wl)
+            {
                 i.write_bytes(ms, L1);
+                dbg("[CWLL]Wrote {0}...", i.dbgfmt());
+            }
+            ms.Seek(0, SeekOrigin.Begin);
+            dbg("[CWLL]Compressing {0} bytes: {1}", ms.Length, hex(ms.ToArray()));
             Compress(ms, fs);
             ms.Close();
             fs.Close();
+            dbg("[CWLL]Wrote file.");
         }
 
         /// <summary>
@@ -77,6 +85,7 @@ namespace CWishlist_win
         /// </summary>
         public static WL cwll_load(string file)
         {
+            dbg("[CWLL]Loading file...");
             FileStream fs = File.Open(file, Open, FileAccess.Read);
             byte[] hdr = new byte[4];
             fs.Read(hdr, 0, 4);
@@ -90,12 +99,15 @@ namespace CWishlist_win
                 fs.Close();
                 throw new Exception("This CWL version only supports v1 of the CWLL standard.");
             }
+            dbg("[CWLL]Read header...");
             MemoryStream ms = new MemoryStream();
             Decompress(fs, ms);
             fs.Close();
             List<Item> items = new List<Item>();
             int j;
             List<byte> bfr = new List<byte>();
+            ms.Seek(0, SeekOrigin.Begin);
+            dbg("[CWLL]Decompressed data is {0} bytes: {1}", ms.Length, hex(ms.ToArray()));
             while ((j = ms.ReadByte()) != -1)
             {
                 while (j != 11 && j != 8)
@@ -120,8 +132,11 @@ namespace CWishlist_win
                 }
                 else
                     throw new Exception("CWLL reading seems to be broken.");
-                items.Add(new Item(name, url));
+                Item itm = new Item(name, url);
+                dbg("[CWLL]Read {0}...", itm.dbgfmt());
+                items.Add(itm);
             }
+            dbg("[CWLL]Read file.");
             return new WL(items);
         }
 
@@ -131,13 +146,16 @@ namespace CWishlist_win
         /// </summary>
         public static void cwld_save(WL wl, string file)
         {
+            dbg("[CWLD]Saving file...");
             Stream s = File.Open(file, Create, FileAccess.Write);
             s.write(cwld_header);
             s.write(4, 2);
+            dbg("[CWLD]Wrote header...");
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
             foreach (Item i in wl)
                 i.write_bytes(d, D2);
             d.Close();
+            dbg("[CWLD]Saved file.");
         }
 
         /// <summary>
@@ -172,7 +190,7 @@ namespace CWishlist_win
 
             if (v == 1)
             {
-                dbg("[CWLD]Initialized, checked header, continueing with v1.");
+                dbg("[CWLD]Initialized, checked header, continuing with v1.");
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
                 char c;
@@ -201,7 +219,7 @@ namespace CWishlist_win
             }
             else
             {
-                dbg("[CWLD]Initialized, checked header, continueing with v2.");
+                dbg("[CWLD]Initialized, checked header, continuing with v2.");
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
