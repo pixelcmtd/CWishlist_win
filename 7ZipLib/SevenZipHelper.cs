@@ -1,7 +1,7 @@
 ﻿using SevenZip.Utils;
 using SevenZip.Utils.lzma;
 using System.IO;
-using static SevenZip.Utils.CoderPropID;
+using static binutils.io;
 
 namespace SevenZip
 {
@@ -14,13 +14,18 @@ namespace SevenZip
                 (byte)i};
         }
 
+        static long i64(byte[] b)
+        {
+            return (b[0] << 56) | (b[1] << 48) | (b[2] << 40) | (b[3] << 32) |
+                   (b[4] << 24) | (b[5] << 16) | (b[6] << 8)  |  b[7];
+        }
+
+        const uint dicSize = 1 << 16;
+
         public static void Compress(Stream inStream, Stream outStream)
         {
             Encoder encoder = new Encoder();
-            encoder.SetCoderProperties(new CoderPropID[] { DictionarySize,
-                PosStateBits, LitContextBits, LitPosBits, Algorithm, NumFastBytes,
-                MatchFinder, EndMarker },
-                new object[] { 1 << 16, 2, 3, 0, 2, 128, "bt4", false });
+            encoder.SetCoderProperties(dicSize, 2, 3, 0, 128, false);
             encoder.WriteCoderProperties(outStream);
             outStream.Write(bytes(inStream.Length), 0, 8);
             encoder.Code(inStream, outStream, -1, -1, null);
@@ -29,14 +34,14 @@ namespace SevenZip
         public static void Decompress(Stream inStream, Stream outStream)
         {
             Decoder decoder = new Decoder();
-            byte[] props = new byte[5];
-            inStream.Read(props, 0, 5);
-            long outSize = 0;
-            for (int i = 0; i < 8; i++)
-                outSize |= (long)(byte)inStream.ReadByte() << (8 * i);
-            decoder.SetDecoderProperties(props);
+            decoder.SetDecoderProperties(inStream, dicSize);
+            byte[] ros = new byte[8]; //raw outSize
+            inStream.Read(ros, 0, 8);
+            long outSize = i64(ros);
             long compressedSize = inStream.Length - inStream.Position;
+            dbg("[LZMA]Decompressing {0} bytes to {1} bytes.", compressedSize, outSize);
             decoder.Code(inStream, outStream, compressedSize, outSize, null);
+            dbg("[LZMA]Decompressed {0} bytes.", outStream.Length);
         }
     }
 }

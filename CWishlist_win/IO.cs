@@ -153,7 +153,10 @@ namespace CWishlist_win
             dbg("[CWLD]Wrote header...");
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
             foreach (Item i in wl)
+            {
                 i.write_bytes(d, D2);
+                dbg("[CWLD]Wrote {0}...", i.dbgfmt());
+            }
             d.Close();
             dbg("[CWLD]Saved file.");
         }
@@ -190,7 +193,7 @@ namespace CWishlist_win
 
             if (v == 1)
             {
-                dbg("[CWLD]Initialized, checked header, continuing with v1.");
+                dbg("[CWLD]Initialized, checked header, continuing with v1...");
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
                 char c;
@@ -203,6 +206,7 @@ namespace CWishlist_win
                         {
                             i.url = s.ToString();
                             itms.Add(i);
+                            dbg("[CWLD]Read {0}...", i.dbgfmt());
                             i = new Item();
                         }
                         else
@@ -212,14 +216,13 @@ namespace CWishlist_win
                     }
                     else
                         s.Append(c);
-
                 d.Close();
-
+                dbg("[CWLD]Read file.");
                 return new WL(itms);
             }
             else
             {
-                dbg("[CWLD]Initialized, checked header, continuing with v2.");
+                dbg("[CWLD]Initialized, checked header, continuing with v2...");
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
@@ -241,6 +244,7 @@ namespace CWishlist_win
                         {
                             i.url = s.ToString();
                             itms.Add(i);
+                            dbg("[CWLD]Read {0}...", i.dbgfmt());
                             i = new Item();
                             nus = false;
                         }
@@ -334,16 +338,20 @@ namespace CWishlist_win
                 using (ZipArchive z = ZipFile.Open(file, ZipArchiveMode.Read, ASCII))
                     v = z.read_entry_byte("V");
             }
-            else if (readequals(s, 8, cwls4_header))
-            {
-                s.Close();
-                v = 4;
-            }
             else
             {
-                s.Seek(4, SeekOrigin.Begin);
-                v = s.ReadByte();
-                s.Close();
+                s.Seek(0, SeekOrigin.Begin);
+                if (readequals(s, 8, cwls4_header))
+                {
+                    s.Close();
+                    v = 4;
+                }
+                else
+                {
+                    s.Seek(4, SeekOrigin.Begin);
+                    v = s.ReadByte();
+                    s.Close();
+                }
             }
             dbg($"[CWLS]Got version {v}.");
             if (v > 6)
@@ -376,6 +384,7 @@ namespace CWishlist_win
                 fs.Seek(5, SeekOrigin.Begin);
                 MemoryStream ms = new MemoryStream();
                 Decompress(fs, ms);
+                fs.Close();
                 int i;
                 StringBuilder b = new StringBuilder();
                 while ((i = ms.ReadByte()) != -1)
@@ -397,7 +406,7 @@ namespace CWishlist_win
                 dbg("[CWLS]Starting reading with version 6.");
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
-                fs.Seek(5, SeekOrigin.Begin);
+                fs.Position = 5;
                 MemoryStream ms = new MemoryStream();
                 Decompress(fs, ms);
                 fs.Close();
@@ -405,15 +414,12 @@ namespace CWishlist_win
                 int i;
                 List<byte> bfr = new List<byte>();
                 while ((i = ms.ReadByte()) != -1)
-                {
-                    if (i != 11)
-                        bfr.Add((byte)i);
+                    if (i != 11) bfr.Add((byte)i);
                     else
                     {
                         r.Add(utf8(bfr.ToArray()));
                         bfr.Clear();
                     }
-                }
                 ms.Dispose();
                 return r;
             }

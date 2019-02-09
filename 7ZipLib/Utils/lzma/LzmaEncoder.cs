@@ -4,17 +4,11 @@ using System.IO;
 
 namespace SevenZip.Utils.lzma
 {
-    public class Encoder : ICoder, ISetCoderProperties, IWriteCoderProperties
+    public class Encoder : ICoder, IWriteCoderProperties
 	{
-		enum EMatchFinderType
-		{
-			BT2,
-			BT4,
-		};
-
 		const uint kIfinityPrice = 0xFFFFFFF;
 
-		static byte[] g_FastPos = new byte[1 << 11];
+		static readonly byte[] g_FastPos = new byte[1 << 11];
 
 		static Encoder()
 		{
@@ -49,7 +43,7 @@ namespace SevenZip.Utils.lzma
 
 		Base.State _state = new Base.State();
 		byte _previousbyte;
-		uint[] _repDistances = new uint[Base.kNumRepDistances];
+        readonly uint[] _repDistances = new uint[Base.kNumRepDistances];
 
 		void BaseInit()
 		{
@@ -94,8 +88,8 @@ namespace SevenZip.Utils.lzma
 						if (same)
 						{
 							uint matchBit = (uint)((matchbyte >> i) & 1);
-							state += ((1 + matchBit) << 8);
-							same = (matchBit == bit);
+							state += (1 + matchBit) << 8;
+							same = matchBit == bit;
 						}
 						m_Encoders[state].Encode(rangeEncoder, bit);
 						context = (context << 1) | bit;
@@ -158,15 +152,16 @@ namespace SevenZip.Utils.lzma
 			}
 
 			public Encoder2 GetSubCoder(uint pos, byte prevbyte)
-			{ return m_Coders[((pos & m_PosMask) << m_NumPrevBits) + (uint)(prevbyte >> (8 - m_NumPrevBits))]; }
+			{ return m_Coders[((pos & m_PosMask) << m_NumPrevBits)
+                + (uint)(prevbyte >> (8 - m_NumPrevBits))]; }
 		}
 
 		class LenEncoder
 		{
 			BitEncoder _choice = new BitEncoder();
 			BitEncoder _choice2 = new BitEncoder();
-			BitTreeEncoder[] _lowCoder = new BitTreeEncoder[Base.kNumPosStatesEncodingMax];
-			BitTreeEncoder[] _midCoder = new BitTreeEncoder[Base.kNumPosStatesEncodingMax];
+            readonly BitTreeEncoder[] _lowCoder = new BitTreeEncoder[Base.kNumPosStatesEncodingMax];
+            readonly BitTreeEncoder[] _midCoder = new BitTreeEncoder[Base.kNumPosStatesEncodingMax];
 			BitTreeEncoder _highCoder = new BitTreeEncoder(Base.kNumHighLenBits);
 
 			public LenEncoder()
@@ -242,9 +237,9 @@ namespace SevenZip.Utils.lzma
 
 		class LenPriceTableEncoder : LenEncoder
 		{
-			uint[] _prices = new uint[Base.kNumLenSymbols << Base.kNumPosStatesBitsEncodingMax];
+            readonly uint[] _prices = new uint[Base.kNumLenSymbols << Base.kNumPosStatesBitsEncodingMax];
 			uint _tableSize;
-			uint[] _counters = new uint[Base.kNumPosStatesEncodingMax];
+            readonly uint[] _counters = new uint[Base.kNumPosStatesEncodingMax];
 
 			public void SetTableSize(uint tableSize) { _tableSize = tableSize; }
 
@@ -274,6 +269,7 @@ namespace SevenZip.Utils.lzma
 		}
 
 		const uint kNumOpts = 1 << 12;
+
 		class Optimal
 		{
 			public Base.State State;
@@ -295,30 +291,27 @@ namespace SevenZip.Utils.lzma
 
 			public void MakeAsChar() { BackPrev = 0xFFFFFFFF; Prev1IsChar = false; }
 			public void MakeAsShortRep() { BackPrev = 0; ; Prev1IsChar = false; }
-			public bool IsShortRep() { return (BackPrev == 0); }
-		};
-		Optimal[] _optimum = new Optimal[kNumOpts];
+			public bool IsShortRep() { return BackPrev == 0; }
+		}
+
+        readonly Optimal[] _optimum = new Optimal[kNumOpts];
 		IMatchFinder _matchFinder = null;
 		range.Encoder _rangeEncoder = new range.Encoder();
-
-		BitEncoder[] _isMatch = new BitEncoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
-		BitEncoder[] _isRep = new BitEncoder[Base.kNumStates];
-		BitEncoder[] _isRepG0 = new BitEncoder[Base.kNumStates];
-		BitEncoder[] _isRepG1 = new BitEncoder[Base.kNumStates];
-		BitEncoder[] _isRepG2 = new BitEncoder[Base.kNumStates];
-		BitEncoder[] _isRep0Long = new BitEncoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
-
-		BitTreeEncoder[] _posSlotEncoder = new BitTreeEncoder[Base.kNumLenToPosStates];
-		
-		BitEncoder[] _posEncoders = new BitEncoder[Base.kNumFullDistances - Base.kEndPosModelIndex];
+        readonly BitEncoder[] _isMatch = new BitEncoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
+        readonly BitEncoder[] _isRep = new BitEncoder[Base.kNumStates];
+        readonly BitEncoder[] _isRepG0 = new BitEncoder[Base.kNumStates];
+        readonly BitEncoder[] _isRepG1 = new BitEncoder[Base.kNumStates];
+        readonly BitEncoder[] _isRepG2 = new BitEncoder[Base.kNumStates];
+        readonly BitEncoder[] _isRep0Long = new BitEncoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
+        readonly BitTreeEncoder[] _posSlotEncoder = new BitTreeEncoder[Base.kNumLenToPosStates];
+        readonly BitEncoder[] _posEncoders = new BitEncoder[Base.kNumFullDistances - Base.kEndPosModelIndex];
 		BitTreeEncoder _posAlignEncoder = new BitTreeEncoder(Base.kNumAlignBits);
 
 		LenPriceTableEncoder _lenEncoder = new LenPriceTableEncoder();
 		LenPriceTableEncoder _repMatchLenEncoder = new LenPriceTableEncoder();
 
 		LiteralEncoder _literalEncoder = new LiteralEncoder();
-
-		uint[] _matchDistances = new uint[Base.kMatchMaxLen * 2 + 2];
+        readonly uint[] _matchDistances = new uint[Base.kMatchMaxLen * 2 + 2];
 		
 		uint _numFastbytes = kNumFastbytesDefault;
 		uint _longestMatchLength;
@@ -330,20 +323,19 @@ namespace SevenZip.Utils.lzma
 		uint _optimumCurrentIndex;
 
 		bool _longestMatchWasFound;
-
-		uint[] _posSlotPrices = new uint[1 << (Base.kNumPosSlotBits + Base.kNumLenToPosStatesBits)];
-		uint[] _distancesPrices = new uint[Base.kNumFullDistances << Base.kNumLenToPosStatesBits];
-		uint[] _alignPrices = new uint[Base.kAlignTableSize];
+        readonly uint[] _posSlotPrices = new uint[1 << (Base.kNumPosSlotBits + Base.kNumLenToPosStatesBits)];
+        readonly uint[] _distancesPrices = new uint[Base.kNumFullDistances << Base.kNumLenToPosStatesBits];
+        readonly uint[] _alignPrices = new uint[Base.kAlignTableSize];
 		uint _alignPriceCount;
 
 		uint _distTableSize = (kDefaultDictionaryLogSize * 2);
 
 		int _posStateBits = 2;
-		uint _posStateMask = (4 - 1);
+		uint _posStateMask = 3;
 		int _numLiteralPosStateBits = 0;
 		int _numLiteralContextBits = 3;
 
-		uint _dictionarySize = (1 << kDefaultDictionaryLogSize);
+		uint _dictionarySize = 1 << kDefaultDictionaryLogSize;
 		uint _dictionarySizePrev = uint.MaxValue;
 		uint _numFastbytesPrev = uint.MaxValue;
 
@@ -351,7 +343,6 @@ namespace SevenZip.Utils.lzma
 		bool _finished;
 		Stream _inStream;
 
-		EMatchFinderType _matchFinderType = EMatchFinderType.BT4;
 		bool _writeEndMark = false;
 		
 		bool _needReleaseMFStream;
@@ -362,15 +353,12 @@ namespace SevenZip.Utils.lzma
 			{
 				BinTree bt = new BinTree();
 				int numHashbytes = 4;
-				if (_matchFinderType == EMatchFinderType.BT2)
-					numHashbytes = 2;
 				bt.SetType(numHashbytes);
 				_matchFinder = bt;
 			}
 			_literalEncoder.Create(_numLiteralPosStateBits, _numLiteralContextBits);
 
-			if (_dictionarySize == _dictionarySizePrev && _numFastbytesPrev == _numFastbytes)
-				return;
+			if (_dictionarySize == _dictionarySizePrev && _numFastbytesPrev == _numFastbytes) return;
 			_matchFinder.Create(_dictionarySize, kNumOpts, _numFastbytes, Base.kMatchMaxLen + 1);
 			_dictionarySizePrev = _dictionarySize;
 			_numFastbytesPrev = _numFastbytes;
@@ -378,15 +366,9 @@ namespace SevenZip.Utils.lzma
 
 		public Encoder()
 		{
-			for (int i = 0; i < kNumOpts; i++)
-				_optimum[i] = new Optimal();
+			for (int i = 0; i < kNumOpts; i++) _optimum[i] = new Optimal();
 			for (int i = 0; i < Base.kNumLenToPosStates; i++)
-				_posSlotEncoder[i] = new range.BitTreeEncoder(Base.kNumPosSlotBits);
-		}
-
-		void SetWriteEndMarkerMode(bool writeEndMarker)
-		{
-			_writeEndMark = writeEndMarker;
+				_posSlotEncoder[i] = new BitTreeEncoder(Base.kNumPosSlotBits);
 		}
 
 		void Init()
@@ -409,10 +391,9 @@ namespace SevenZip.Utils.lzma
 				_isRepG2[i].Init();
 			}
 			_literalEncoder.Init();
-			for (i = 0; i < Base.kNumLenToPosStates; i++)
-				_posSlotEncoder[i].Init();
+			for (i = 0; i < Base.kNumLenToPosStates; i++) _posSlotEncoder[i].Init();
 			for (i = 0; i < Base.kNumFullDistances - Base.kEndPosModelIndex; i++)
-				_posEncoders[i].Init();
+                _posEncoders[i].Init();
 
 			_lenEncoder.Init((uint)1 << _posStateBits);
 			_repMatchLenEncoder.Init((uint)1 << _posStateBits);
@@ -420,9 +401,7 @@ namespace SevenZip.Utils.lzma
 			_posAlignEncoder.Init();
 
 			_longestMatchWasFound = false;
-			_optimumEndIndex = 0;
-			_optimumCurrentIndex = 0;
-			_additionalOffset = 0;
+			_optimumEndIndex = _optimumCurrentIndex = _additionalOffset = 0;
 		}
 
 		void ReadMatchDistances(out uint lenRes, out uint numDistancePairs)
@@ -450,39 +429,31 @@ namespace SevenZip.Utils.lzma
 		}
 
 		uint GetRepLen1Price(Base.State state, uint posState)
-		{
-			return _isRepG0[state.Index].GetPrice0() +
-					_isRep0Long[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice0();
-		}
+		=> _isRepG0[state.Index].GetPrice0() +
+            _isRep0Long[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice0();
 
 		uint GetPureRepPrice(uint repIndex, Base.State state, uint posState)
 		{
 			uint price;
 			if (repIndex == 0)
-			{
-				price = _isRepG0[state.Index].GetPrice0();
-				price += _isRep0Long[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice1();
-			}
+                price = _isRepG0[state.Index].GetPrice0()
+                    + _isRep0Long[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice1();
 			else
 			{
 				price = _isRepG0[state.Index].GetPrice1();
-				if (repIndex == 1)
-					price += _isRepG1[state.Index].GetPrice0();
-				else
-				{
-					price += _isRepG1[state.Index].GetPrice1();
-					price += _isRepG2[state.Index].GetPrice(repIndex - 2);
-				}
+				if (repIndex == 1) price += _isRepG1[state.Index].GetPrice0();
+				else price += _isRepG1[state.Index].GetPrice1()
+                        + _isRepG2[state.Index].GetPrice(repIndex - 2);
 			}
 			return price;
 		}
 
 		uint GetRepPrice(uint repIndex, uint len, Base.State state, uint posState)
 		{
-			uint price = _repMatchLenEncoder.GetPrice(len - Base.kMatchMinLen, posState);
-			return price + GetPureRepPrice(repIndex, state, posState);
+			return _repMatchLenEncoder.GetPrice(len - Base.kMatchMinLen, posState)
+                + GetPureRepPrice(repIndex, state, posState);
 		}
-	
+
 		uint GetPosLenPrice(uint pos, uint len, uint posState)
 		{
 			uint price;
@@ -529,9 +500,8 @@ namespace SevenZip.Utils.lzma
 			return _optimumCurrentIndex;
 		}
 
-		uint[] reps = new uint[Base.kNumRepDistances];
-		uint[] repLens = new uint[Base.kNumRepDistances];
-
+        readonly uint[] reps = new uint[Base.kNumRepDistances];
+        readonly uint[] repLens = new uint[Base.kNumRepDistances];
 
 		uint GetOptimum(uint position, out uint backRes)
 		{
@@ -545,10 +515,7 @@ namespace SevenZip.Utils.lzma
 			_optimumCurrentIndex = _optimumEndIndex = 0;
 
 			uint lenMain, numDistancePairs;
-			if (!_longestMatchWasFound)
-			{
-				ReadMatchDistances(out lenMain, out numDistancePairs);
-			}
+			if (!_longestMatchWasFound) ReadMatchDistances(out lenMain, out numDistancePairs);
 			else
 			{
 				lenMain = _longestMatchLength;
@@ -562,8 +529,7 @@ namespace SevenZip.Utils.lzma
 				backRes = 0xFFFFFFFF;
 				return 1;
 			}
-			if (numAvailablebytes > Base.kMatchMaxLen)
-				numAvailablebytes = Base.kMatchMaxLen;
+			if (numAvailablebytes > Base.kMatchMaxLen) numAvailablebytes = Base.kMatchMaxLen;
 
 			uint repMaxIndex = 0;
 			uint i;			
@@ -581,7 +547,6 @@ namespace SevenZip.Utils.lzma
 				MovePos(lenRes - 1);
 				return lenRes;
 			}
-
 			if (lenMain >= _numFastbytes)
 			{
 				backRes = _matchDistances[numDistancePairs - 1] + Base.kNumRepDistances;
@@ -589,12 +554,12 @@ namespace SevenZip.Utils.lzma
 				return lenMain;
 			}
 			
-			byte currentbyte = _matchFinder.GetIndexByte(0 - 1);
-			byte matchbyte = _matchFinder.GetIndexByte((int)(0 - _repDistances[0] - 1 - 1));
+			byte currentbyte = _matchFinder.GetIndexByte(-1);
+			byte matchbyte = _matchFinder.GetIndexByte((int)(-2 - _repDistances[0]));
 
 			if (lenMain < 2 && currentbyte != matchbyte && repLens[repMaxIndex] < 2)
 			{
-				backRes = (uint)0xFFFFFFFF;
+				backRes = 0xFFFFFFFF;
 				return 1;
 			}
 
@@ -642,8 +607,7 @@ namespace SevenZip.Utils.lzma
 			for (i = 0; i < Base.kNumRepDistances; i++)
 			{
 				uint repLen = repLens[i];
-				if (repLen < 2)
-					continue;
+				if (repLen < 2) continue;
 				uint price = repMatchPrice + GetPureRepPrice(i, _state, posState);
 				do
 				{
@@ -662,7 +626,7 @@ namespace SevenZip.Utils.lzma
 
 			uint normalMatchPrice = matchPrice + _isRep[_state.Index].GetPrice0();
 			
-			len = ((repLens[0] >= 2) ? repLens[0] + 1 : 2);
+			len = (repLens[0] >= 2) ? repLens[0] + 1 : 2;
 			if (len <= lenMain)
 			{
 				uint offs = 0;
@@ -683,8 +647,7 @@ namespace SevenZip.Utils.lzma
 					if (len == _matchDistances[offs])
 					{
 						offs += 2;
-						if (offs == numDistancePairs)
-							break;
+						if (offs == numDistancePairs) break;
 					}
 				}
 			}
@@ -694,11 +657,9 @@ namespace SevenZip.Utils.lzma
 			while (true)
 			{
 				cur++;
-				if (cur == lenEnd)
-					return Backward(out backRes, cur);
-				uint newLen;
-				ReadMatchDistances(out newLen, out numDistancePairs);
-				if (newLen >= _numFastbytes)
+				if (cur == lenEnd) return Backward(out backRes, cur);
+                ReadMatchDistances(out uint newLen, out numDistancePairs);
+                if (newLen >= _numFastbytes)
 				{
 					_numDistancePairs = numDistancePairs;
 					_longestMatchLength = newLen;
@@ -714,23 +675,17 @@ namespace SevenZip.Utils.lzma
 					if (_optimum[cur].Prev2)
 					{
 						state = _optimum[_optimum[cur].PosPrev2].State;
-						if (_optimum[cur].BackPrev2 < Base.kNumRepDistances)
-							state.UpdateRep();
-						else
-							state.UpdateMatch();
+						if (_optimum[cur].BackPrev2 < Base.kNumRepDistances) state.UpdateRep();
+						else state.UpdateMatch();
 					}
-					else
-						state = _optimum[posPrev].State;
+					else state = _optimum[posPrev].State;
 					state.UpdateChar();
 				}
-				else
-					state = _optimum[posPrev].State;
+				else state = _optimum[posPrev].State;
 				if (posPrev == cur - 1)
 				{
-					if (_optimum[cur].IsShortRep())
-						state.UpdateShortRep();
-					else
-						state.UpdateChar();
+					if (_optimum[cur].IsShortRep()) state.UpdateShortRep();
+					else state.UpdateChar();
 				}
 				else
 				{
@@ -744,10 +699,8 @@ namespace SevenZip.Utils.lzma
 					else
 					{
 						pos = _optimum[cur].BackPrev;
-						if (pos < Base.kNumRepDistances)
-							state.UpdateRep();
-						else
-							state.UpdateMatch();
+						if (pos < Base.kNumRepDistances) state.UpdateRep();
+						else state.UpdateMatch();
 					}
 					Optimal opt = _optimum[posPrev];
 					if (pos < Base.kNumRepDistances)
@@ -783,7 +736,7 @@ namespace SevenZip.Utils.lzma
 					}
 					else
 					{
-						reps[0] = (pos - Base.kNumRepDistances);
+						reps[0] = pos - Base.kNumRepDistances;
 						reps[1] = opt.Backs0;
 						reps[2] = opt.Backs1;
 						reps[3] = opt.Backs2;
@@ -799,7 +752,7 @@ namespace SevenZip.Utils.lzma
 				currentbyte = _matchFinder.GetIndexByte(0 - 1);
 				matchbyte = _matchFinder.GetIndexByte((int)(0 - reps[0] - 1 - 1));
 
-				posState = (position & _posStateMask);
+				posState = position & _posStateMask;
 
 				uint curAnd1Price = curPrice +
 					_isMatch[(state.Index << Base.kNumPosStatesBitsMax) + posState].GetPrice0() +
@@ -837,10 +790,8 @@ namespace SevenZip.Utils.lzma
 				numAvailablebytesFull = Math.Min(kNumOpts - 1 - cur, numAvailablebytesFull);
 				numAvailablebytes = numAvailablebytesFull;
 
-				if (numAvailablebytes < 2)
-					continue;
-				if (numAvailablebytes > _numFastbytes)
-					numAvailablebytes = _numFastbytes;
+				if (numAvailablebytes < 2) continue;
+				if (numAvailablebytes > _numFastbytes) numAvailablebytes = _numFastbytes;
 				if (!nextIsChar && matchbyte != currentbyte)
 				{
 					// try Literal + rep0
@@ -856,8 +807,7 @@ namespace SevenZip.Utils.lzma
 							_isRep[state2.Index].GetPrice1();
 						{
 							uint offset = cur + 1 + lenTest2;
-							while (lenEnd < offset)
-								_optimum[++lenEnd].Price = kIfinityPrice;
+							while (lenEnd < offset) _optimum[++lenEnd].Price = kIfinityPrice;
 							uint curAndLenPrice = nextRepMatchPrice + GetRepPrice(
 								0, lenTest2, state2, posStateNext);
 							Optimal optimum = _optimum[offset];
@@ -1059,8 +1009,7 @@ namespace SevenZip.Utils.lzma
 
 		public void CodeOneBlock(out long inSize, out long outSize, out bool finished)
 		{
-			inSize = 0;
-			outSize = 0;
+			inSize = outSize = 0;
 			finished = true;
 
 			if (_inStream != null)
@@ -1069,45 +1018,32 @@ namespace SevenZip.Utils.lzma
 				_matchFinder.Init();
 				_needReleaseMFStream = true;
 				_inStream = null;
-				if (_trainSize > 0)
-					_matchFinder.Skip(_trainSize);
+				if (_trainSize > 0) _matchFinder.Skip(_trainSize);
 			}
 
-			if (_finished)
-				return;
-			_finished = true;
-
+			if (_finished) return;
+			else _finished = true;
 
 			long progressPosValuePrev = nowPos64;
 			if (nowPos64 == 0)
 			{
-				if (_matchFinder.GetNumAvailableBytes() == 0)
-				{
-					Flush((uint)nowPos64);
-					return;
-				}
-				uint len, numDistancePairs; // it's not used
-				ReadMatchDistances(out len, out numDistancePairs);
-				uint posState = (uint)(nowPos64) & _posStateMask;
+				if (_matchFinder.GetNumAvailableBytes() == 0) { Flush((uint)nowPos64); return; }
+                ReadMatchDistances(out uint len, out uint numDistancePairs);
+                uint posState = (uint)nowPos64 & _posStateMask;
 				_isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].Encode(_rangeEncoder, 0);
 				_state.UpdateChar();
 				byte curbyte = _matchFinder.GetIndexByte((int)(0 - _additionalOffset));
-				_literalEncoder.GetSubCoder((uint)(nowPos64), _previousbyte).Encode(_rangeEncoder, curbyte);
+				_literalEncoder.GetSubCoder((uint)nowPos64, _previousbyte).Encode(_rangeEncoder, curbyte);
 				_previousbyte = curbyte;
 				_additionalOffset--;
 				nowPos64++;
 			}
-			if (_matchFinder.GetNumAvailableBytes() == 0)
-			{
-				Flush((uint)nowPos64);
-				return;
-			}
+			if (_matchFinder.GetNumAvailableBytes() == 0) { Flush((uint)nowPos64); return; }
 			while (true)
 			{
-				uint pos;
-				uint len = GetOptimum((uint)nowPos64, out pos);
-				
-				uint posState = ((uint)nowPos64) & _posStateMask;
+                uint len = GetOptimum((uint)nowPos64, out uint pos);
+
+                uint posState = ((uint)nowPos64) & _posStateMask;
 				uint complexState = (_state.Index << Base.kNumPosStatesBitsMax) + posState;
 				if (len == 1 && pos == 0xFFFFFFFF)
 				{
@@ -1119,8 +1055,7 @@ namespace SevenZip.Utils.lzma
 						byte matchbyte = _matchFinder.GetIndexByte((int)(0 - _repDistances[0] - 1 - _additionalOffset));
 						subCoder.EncodeMatched(_rangeEncoder, matchbyte, curbyte);
 					}
-					else
-						subCoder.Encode(_rangeEncoder, curbyte);
+					else subCoder.Encode(_rangeEncoder, curbyte);
 					_previousbyte = curbyte;
 					_state.UpdateChar();
 				}
@@ -1133,24 +1068,20 @@ namespace SevenZip.Utils.lzma
 						if (pos == 0)
 						{
 							_isRepG0[_state.Index].Encode(_rangeEncoder, 0);
-							if (len == 1)
-								_isRep0Long[complexState].Encode(_rangeEncoder, 0);
-							else
-								_isRep0Long[complexState].Encode(_rangeEncoder, 1);
+							if (len == 1) _isRep0Long[complexState].Encode(_rangeEncoder, 0);
+							else _isRep0Long[complexState].Encode(_rangeEncoder, 1);
 						}
 						else
 						{
 							_isRepG0[_state.Index].Encode(_rangeEncoder, 1);
-							if (pos == 1)
-								_isRepG1[_state.Index].Encode(_rangeEncoder, 0);
+							if (pos == 1) _isRepG1[_state.Index].Encode(_rangeEncoder, 0);
 							else
 							{
 								_isRepG1[_state.Index].Encode(_rangeEncoder, 1);
 								_isRepG2[_state.Index].Encode(_rangeEncoder, pos - 2);
 							}
 						}
-						if (len == 1)
-							_state.UpdateShortRep();
+						if (len == 1) _state.UpdateShortRep();
 						else
 						{
 							_repMatchLenEncoder.Encode(_rangeEncoder, len - Base.kMatchMinLen, posState);
@@ -1181,7 +1112,7 @@ namespace SevenZip.Utils.lzma
 							uint posReduced = pos - baseVal;
 
 							if (posSlot < Base.kEndPosModelIndex)
-								range.BitTreeEncoder.ReverseEncode(_posEncoders,
+								BitTreeEncoder.ReverseEncode(_posEncoders,
 										baseVal - posSlot - 1, _rangeEncoder, footerBits, posReduced);
 							else
 							{
@@ -1202,11 +1133,8 @@ namespace SevenZip.Utils.lzma
 				nowPos64 += len;
 				if (_additionalOffset == 0)
 				{
-					// if (!_fastMode)
-					if (_matchPriceCount >= (1 << 7))
-						FillDistancesPrices();
-					if (_alignPriceCount >= Base.kAlignTableSize)
-						FillAlignPrices();
+					if (_matchPriceCount >= (1 << 7)) FillDistancesPrices();
+					if (_alignPriceCount >= Base.kAlignTableSize) FillAlignPrices();
 					inSize = nowPos64;
 					outSize = _rangeEncoder.GetProcessedSizeAdd();
 					if (_matchFinder.GetNumAvailableBytes() == 0)
@@ -1217,8 +1145,7 @@ namespace SevenZip.Utils.lzma
 
 					if (nowPos64 - progressPosValuePrev >= (1 << 12))
 					{
-						_finished = false;
-						finished = false;
+						_finished = finished = false;
 						return;
 					}
 				}
@@ -1234,14 +1161,13 @@ namespace SevenZip.Utils.lzma
 			}
 		}
 
-		void SetOutStream(Stream outStream) { _rangeEncoder.SetStream(outStream); }
-		void ReleaseOutStream() { _rangeEncoder.ReleaseStream(); }
+		void SetOutStream(Stream outStream) => _rangeEncoder.SetStream(outStream);
 
 		void ReleaseStreams()
 		{
 			ReleaseMFStream();
-			ReleaseOutStream();
-		}
+            _rangeEncoder.ReleaseStream();
+        }
 
 		void SetStreams(Stream inStream, Stream outStream, long inSize, long outSize)
 		{
@@ -1262,7 +1188,6 @@ namespace SevenZip.Utils.lzma
 			nowPos64 = 0;
 		}
 
-
 		public void Code(Stream inStream, Stream outStream,
 			long inSize, long outSize, ICodeProgress progress)
 		{
@@ -1272,36 +1197,23 @@ namespace SevenZip.Utils.lzma
 				SetStreams(inStream, outStream, inSize, outSize);
 				while (true)
 				{
-					long processedInSize;
-					long processedOutSize;
-					bool finished;
-					CodeOneBlock(out processedInSize, out processedOutSize, out finished);
-					if (finished)
-						return;
-					if (progress != null)
-					{
-						progress.SetProgress(processedInSize, processedOutSize);
-					}
+                    CodeOneBlock(out long processedInSize,
+                                 out long processedOutSize,
+                                 out bool finished);
+                    if (finished) return;
+					if (progress != null) progress.SetProgress(processedInSize, processedOutSize);
 				}
 			}
-			finally
-			{
-				ReleaseStreams();
-			}
+			finally { ReleaseStreams(); }
 		}
-
-		const int kPropSize = 5;
-		byte[] properties = new byte[kPropSize];
 
 		public void WriteCoderProperties(Stream outStream)
 		{
-			properties[0] = (byte)((_posStateBits * 5 + _numLiteralPosStateBits) * 9 + _numLiteralContextBits);
-			for (int i = 0; i < 4; i++)
-				properties[1 + i] = (byte)((_dictionarySize >> (8 * i)) & 0xFF);
-			outStream.Write(properties, 0, kPropSize);
+            outStream.WriteByte((byte)((_posStateBits * 5 + _numLiteralPosStateBits) * 9
+                + _numLiteralContextBits));
 		}
-		
-		uint[] tempPrices = new uint[Base.kNumFullDistances];
+
+        readonly uint[] tempPrices = new uint[Base.kNumFullDistances];
 		uint _matchPriceCount;
 
 		void FillDistancesPrices()
@@ -1318,7 +1230,7 @@ namespace SevenZip.Utils.lzma
 			for (uint lenToPosState = 0; lenToPosState < Base.kNumLenToPosStates; lenToPosState++)
 			{
 				uint posSlot;
-				range.BitTreeEncoder encoder = _posSlotEncoder[lenToPosState];
+				BitTreeEncoder encoder = _posSlotEncoder[lenToPosState];
 			
 				uint st = (lenToPosState << Base.kNumPosSlotBits);
 				for (posSlot = 0; posSlot < _distTableSize; posSlot++)
@@ -1343,81 +1255,32 @@ namespace SevenZip.Utils.lzma
 			_alignPriceCount = 0;
 		}
 
+		public void SetCoderProperties(uint DictionarySize, int PosStateBits,
+            int LitContextBits, int LitPosBits, uint NumFastBytes,
+            bool EndMarker)
+		{
+            //DictionarySize
+            const int kDicLogSizeMaxCompress = 30;
+            _dictionarySize = DictionarySize;
+            int dicLogSize;
+            for (dicLogSize = 0; dicLogSize < (uint)kDicLogSizeMaxCompress; dicLogSize++)
+                if (DictionarySize <= ((uint)1 << dicLogSize)) break;
+            _distTableSize = (uint)dicLogSize * 2;
 
-		static string[] kMatchFinderIDs = 
-		{
-			"BT2",
-			"BT4",
-		};
+            //PosStateBits
+            _posStateBits = PosStateBits;
+            _posStateMask = (((uint)1) << _posStateBits) - 1;
 
-		static int FindMatchFinder(string s)
-		{
-			for (int m = 0; m < kMatchFinderIDs.Length; m++)
-				if (s == kMatchFinderIDs[m])
-					return m;
-			return -1;
-		}
-	
-		public void SetCoderProperties(CoderPropID[] propIDs, object[] properties)
-		{
-			for (uint i = 0; i < properties.Length; i++)
-			{
-				object prop = properties[i];
-				switch (propIDs[i])
-				{
-					case CoderPropID.NumFastBytes:
-					{
-						int numFastbytes = (int)prop;
-						_numFastbytes = (uint)numFastbytes;
-						break;
-					}
-					case CoderPropID.MatchFinder:
-					{
-						EMatchFinderType matchFinderIndexPrev = _matchFinderType;
-						int m = FindMatchFinder(((string)prop).ToUpper());
-						_matchFinderType = (EMatchFinderType)m;
-						if (_matchFinder != null && matchFinderIndexPrev != _matchFinderType)
-							{
-							_dictionarySizePrev = 0xFFFFFFFF;
-							_matchFinder = null;
-							}
-						break;
-					}
-					case CoderPropID.DictionarySize:
-					{
-						const int kDicLogSizeMaxCompress = 30;
-						_dictionarySize = (uint)(int)prop;
-						int dicLogSize;
-						for (dicLogSize = 0; dicLogSize < (uint)kDicLogSizeMaxCompress; dicLogSize++)
-							if ((int)prop <= ((uint)(1) << dicLogSize))
-								break;
-						_distTableSize = (uint)dicLogSize * 2;
-						break;
-					}
-					case CoderPropID.PosStateBits:
-					{
-						_posStateBits = (int)prop;
-						_posStateMask = (((uint)1) << _posStateBits) - 1;
-						break;
-					}
-					case CoderPropID.LitPosBits:
-					{
-						_numLiteralPosStateBits = (int)prop;
-						break;
-					}
-					case CoderPropID.LitContextBits:
-					{
-						_numLiteralContextBits = (int)prop;
-						break;
-					}
-					case CoderPropID.EndMarker:
-					{
-						SetWriteEndMarkerMode((bool)prop);
-						break;
-					}
-				}
-			}
-		}
+            _numLiteralContextBits = LitContextBits;
+            _numLiteralPosStateBits = LitPosBits;
+
+            //Algorithm doesn't seem to do a thing?!
+
+            _numFastbytes = NumFastBytes;
+
+            _writeEndMark = EndMarker;
+        }
+
 		uint _trainSize = 0;
 		public void SetTrainSize(uint trainSize)
 		{
