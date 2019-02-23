@@ -3,11 +3,10 @@
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist Windows von chrissx (chrissx Media Inc.) Changelog:\
 \
 Version 7.0.0:\
--CWishlistLZMA v1 wurde hinzugefügt (wir haben 12.7% und 35.2% Verbesserung gemessen)\
+-CWishlistDeflate v3 wurde hinzugefügt (wir haben zwischen 10% und 40% Verbesserung gemessen)\
 -Sehr viel Multi-Threading, beschleunigt das Starten, Refreshes und vor allem das Erstellen von Tinyurls\
 -Große Teile des Codes wurden neu arangiert\
--CWLS v5, eine Optimierung von CWLS v4, die auf Separatoren, UTF8-UTF16-Switching und LZMA aufbaut, hinzugefügt\
--CWLS v6, ein neues UTF8- und LZMA-basiertes Format, hinzugefügt\
+-CWLS v5\
 -Wir haben den AppData-Einstellungsspeicher optimiert\
 -Der Sortieralgorithmus wurde von Mergesort zu Quicksort geändert, was eine Geschwindigkeitsverbesserung und weniger RAM-Verbrauch zur Folge hat\
 \

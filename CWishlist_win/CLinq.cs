@@ -8,35 +8,29 @@ namespace CWishlist_win
     {
         public static T where<T>(this IEnumerable<T> ie, Predicate<T> p)
         {
-            foreach (T t in ie)
-                if (p(t))
-                    return t;
+            foreach (T t in ie) if (p(t)) return t;
             return default;
         }
 
         public static bool arrequ<T>(T[] left, T[] right)
         {
-            if (left.Length != right.Length)
-                return false;
-            for (int i = 0; i < left.Length; i++)
-                if (!left[i].Equals(right[i]))
-                    return false;
+            if (left.Length != right.Length) return false;
+            for (int i = 0; i < left.Length; i++) if (!left[i].Equals(right[i])) return false;
             return true;
         }
 
         public static string hex(byte[] bytes)
         {
             StringBuilder s = new StringBuilder();
-            foreach (byte b in bytes)
-                s.Append(b.ToString("x2"));
+            foreach (byte b in bytes) s.Append(b.ToString("x2"));
             return s.ToString();
         }
 
         public static byte[] hex(string s)
         {
-            int _len_div_2 = s.Length / 2; //saves idivs in the iterations
-            byte[] b = new byte[_len_div_2];
-            for (int i = 0; i < _len_div_2; i++)
+            int len_d_2 = s.Length / 2; //saves idivs in the iterations
+            byte[] b = new byte[len_d_2];
+            for (int i = 0; i < len_d_2; i++)
                 //                             imul is less
                 //                              expensive
                 //                              than idiv
@@ -47,8 +41,7 @@ namespace CWishlist_win
         //fast [unsafe] [and full] array copy for item arrays
         public static void farrcpyitm(Item[] src, Item[] dest)
         {
-            for (long i = 0; i < src.LongLength; i++)
-                dest[i] = new Item(src[i].name, src[i].url);
+            for (long i = 0; i < src.LongLength; i++) dest[i] = new Item(src[i].name, src[i].url);
         }
     }
 }

@@ -69,12 +69,12 @@ echo $ cp x86\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x86_unmerged.
 cp x86\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x86_unmerged.exe >NUL
 echo $ cp x64\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x64_unmerged.exe
 cp x64\\CWishlist_win.exe binaries\\CWishlist_win_%version%_x64_unmerged.exe >NUL
-echo $ ilmerge x64\\CWishlist_win.exe x64\\Newtonsoft.Json.dll x64\\binutils.dll x64\\7ZipLib.dll -o x64\\Merge.exe
-"_build_util\ILMerge.exe" /out:x64\\Merge.exe x64\\CWishlist_win.exe x64\\Newtonsoft.Json.dll x64\\binutils.dll x64\\7ZipLib.dll
-echo $ ilmerge x86\\CWishlist_win.exe x86\\Newtonsoft.Json.dll x86\\binutils.dll x86\\7ZipLib.dll -o x86\\Merge.exe
-"_build_util\ILMerge.exe" /out:x86\\Merge.exe x86\\CWishlist_win.exe x86\\Newtonsoft.Json.dll x86\\binutils.dll x86\\7ZipLib.dll
-echo $ ilmerge AnyCpu\\CWishlist_win.exe AnyCpu\\Newtonsoft.Json.dll AnyCpu\\binutils.dll AnyCpu\\7ZipLib.dll -o AnyCpu\\Merge.exe
-"_build_util\ILMerge.exe" /out:AnyCpu\\Merge.exe AnyCpu\\CWishlist_win.exe AnyCpu\\Newtonsoft.Json.dll AnyCpu\\binutils.dll AnyCpu\\7ZipLib.dll
+echo $ ilmerge x64\\CWishlist_win.exe x64\\Newtonsoft.Json.dll x64\\binutils.dll -o x64\\Merge.exe
+"_build_util\ILMerge.exe" /out:x64\\Merge.exe x64\\CWishlist_win.exe x64\\Newtonsoft.Json.dll x64\\binutils.dll
+echo $ ilmerge x86\\CWishlist_win.exe x86\\Newtonsoft.Json.dll x86\\binutils.dll -o x86\\Merge.exe
+"_build_util\ILMerge.exe" /out:x86\\Merge.exe x86\\CWishlist_win.exe x86\\Newtonsoft.Json.dll x86\\binutils.dll
+echo $ ilmerge AnyCpu\\CWishlist_win.exe AnyCpu\\Newtonsoft.Json.dll AnyCpu\\binutils.dll -o AnyCpu\\Merge.exe
+"_build_util\ILMerge.exe" /out:AnyCpu\\Merge.exe AnyCpu\\CWishlist_win.exe AnyCpu\\Newtonsoft.Json.dll AnyCpu\\binutils.dll
 echo $ cp AnyCpu\\Merge.exe binaries\\CWishlist_win_%version%_AnyCpu_merged.exe
 cp AnyCpu\\Merge.exe binaries\\CWishlist_win_%version%_AnyCpu_merged.exe >NUL
 echo $ cp x86\\Merge.exe binaries\\CWishlist_win_%version%_x86_merged.exe

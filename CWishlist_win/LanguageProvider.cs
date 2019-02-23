@@ -31,7 +31,7 @@ namespace CWishlist_win
                     {
                         string name = xml.GetAttribute("name");
                         string type = xml.GetAttribute("type");
-                        string val = xml.GetAttribute("value");
+                        string val  = xml.GetAttribute("value");
                         dynamic v = "NOPE...NO TRANSLATION HERE";
                         switch (type)
                         {
@@ -59,7 +59,11 @@ namespace CWishlist_win
                             case "bool": v = bool.Parse(val); break;
                             case "char_arr": v = val.Split('\\').parse_chars(); break;
                             case "char": v = char.Parse(val); break;
-                            default: v = $"Bad language translation. (lang: {l.code}/{l.name}, name: {name}, type: {type}, raw value: {val})"; break;
+                            default: v = $"Bad language translation. " +
+                                    $"(lang: {l.code}/{l.name}, " +
+                                    $"name: {name}, " +
+                                    $"type: {type}, " +
+                                    $"raw value: {val})"; break;
                         }
                         translations.Add(name, v);
                     }

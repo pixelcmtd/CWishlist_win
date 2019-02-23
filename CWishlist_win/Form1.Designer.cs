@@ -293,7 +293,7 @@ namespace CWishlist_win
             this.taskManagerToolStripMenuItem.Name = "taskManagerToolStripMenuItem";
             this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.taskManagerToolStripMenuItem.Text = "Task Manager";
-            this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskManagerToolStripMenuItem_Click);
+            this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskmanager);
             // 
             // button1
             // 

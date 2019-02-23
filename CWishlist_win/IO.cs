@@ -7,7 +7,6 @@ using System;
 using System.Net;
 using static CWishlist_win.CLinq;
 using static CWishlist_win.Consts;
-using static SevenZip.SevenZipHelper;
 using static System.IO.FileMode;
 using static System.Text.Encoding;
 using static binutils.bin;
@@ -37,9 +36,8 @@ namespace CWishlist_win
         public static WL load(string f)
         {
             char c = f[f.Length - 1];
-            return f == "" ? WL.NEW : (c == 'l' && f[f.Length - 2] == 'l') ? cwll_load(f)
-                : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f) : throw new Exception(
-                    "Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
+            return f == "" ? WL.NEW : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f) : throw new
+                Exception("Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
         }
 
         public static WL backup_load(string f)
@@ -53,94 +51,6 @@ namespace CWishlist_win
         }
 
         /// <summary>
-        /// Save func for the CWLL-format<para />
-        /// For information on the format check the load/read func
-        /// </summary>
-        public static void cwll_save(WL wl, string file)
-        {
-            dbg("[CWLL]Saving file...");
-            FileStream fs = File.Open(file, Create, FileAccess.Write);
-            fs.write(cwll_header);
-            fs.write(1);
-            dbg("[CWLL]Wrote header...");
-            MemoryStream ms = new MemoryStream();
-            foreach (Item i in wl)
-            {
-                i.write_bytes(ms, L1);
-                dbg("[CWLL]Wrote {0}...", i.dbgfmt());
-            }
-            ms.Seek(0, SeekOrigin.Begin);
-            dbg("[CWLL]Compressing {0} bytes: {1}", ms.Length, hex(ms.ToArray()));
-            Compress(ms, fs);
-            ms.Close();
-            fs.Close();
-            dbg("[CWLL]Wrote file.");
-        }
-
-        /// <summary>
-        /// Read func for the CWLL-format<para />
-        /// Name: CWishlistLZMA (LZMA compressed binary+UTF8 format)<para />
-        /// File version: 4 (not saved)<para />
-        /// Format versions: 1(saved, checked)
-        /// </summary>
-        public static WL cwll_load(string file)
-        {
-            dbg("[CWLL]Loading file...");
-            FileStream fs = File.Open(file, Open, FileAccess.Read);
-            byte[] hdr = new byte[4];
-            fs.Read(hdr, 0, 4);
-            if (!arrequ(hdr, cwll_header))
-            {
-                fs.Close();
-                throw new InvalidHeaderException("CWLL", cwll_header, hdr);
-            }
-            if (fs.ReadByte() != 1)
-            {
-                fs.Close();
-                throw new Exception("This CWL version only supports v1 of the CWLL standard.");
-            }
-            dbg("[CWLL]Read header...");
-            MemoryStream ms = new MemoryStream();
-            Decompress(fs, ms);
-            fs.Close();
-            List<Item> items = new List<Item>();
-            int j;
-            List<byte> bfr = new List<byte>();
-            ms.Seek(0, SeekOrigin.Begin);
-            dbg("[CWLL]Decompressed data is {0} bytes: {1}", ms.Length, hex(ms.ToArray()));
-            while ((j = ms.ReadByte()) != -1)
-            {
-                while (j != 11 && j != 8)
-                {
-                    bfr.Add((byte)j);
-                    j = ms.ReadByte();
-                }
-                string name = utf8(bfr.ToArray());
-                string url;
-                if (j == 11)
-                {
-                    byte[] b = new byte[6];
-                    ms.Read(b, 0, 6);
-                    url = tinyurl + b64(b);
-                }
-                else if (j == 8)
-                {
-                    bfr.Clear();
-                    while ((j = ms.ReadByte()) != 11)
-                        bfr.Add((byte)j);
-                    url = utf8(bfr.ToArray());
-                }
-                else
-                    throw new Exception("CWLL reading seems to be broken.");
-                Item itm = new Item(name, url);
-                dbg("[CWLL]Read {0}...", itm.dbgfmt());
-                items.Add(itm);
-            }
-            dbg("[CWLL]Read file.");
-            return new WL(items);
-        }
-
-        /// <summary>
         /// Save func for the CWLD-format<para />
         /// For information on the format check the load/read func
         /// </summary>
@@ -149,12 +59,12 @@ namespace CWishlist_win
             dbg("[CWLD]Saving file...");
             Stream s = File.Open(file, Create, FileAccess.Write);
             s.write(cwld_header);
-            s.write(4, 2);
+            s.write(4, 3);
             dbg("[CWLD]Wrote header...");
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
             foreach (Item i in wl)
             {
-                i.write_bytes(d, D2);
+                i.write_bytes(d, L1);
                 dbg("[CWLD]Wrote {0}...", i.dbgfmt());
             }
             d.Close();
@@ -174,17 +84,18 @@ namespace CWishlist_win
 
             byte[] h = new byte[8]; //header
             raw.Read(h, 0, 8);
-            int v = -1;
+            int v = -2;
 
             if (!arrequ(h, cwld_header))
             {
                 raw.Close();
                 throw new InvalidHeaderException("CWLD", cwld_header, h);
             }
-            if (raw.ReadByte() != 4 || (v = raw.ReadByte()) > 2)
+            if (raw.ReadByte() != 4 || (v = raw.ReadByte()) > 3 || v < 1)
             {
                 raw.Close();
-                throw new Exception("This CWLD file is invalid.");
+                throw new Exception(
+                    $"This CWLD file is invalid. (v is {(v == -2 ? "ignored" : v.ToString())})");
             }
 
             DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
@@ -209,18 +120,16 @@ namespace CWishlist_win
                             dbg("[CWLD]Read {0}...", i.dbgfmt());
                             i = new Item();
                         }
-                        else
-                            i.name = s.ToString();
+                        else i.name = s.ToString();
                         s.Clear();
                         nus = !nus;
                     }
-                    else
-                        s.Append(c);
+                    else s.Append(c);
                 d.Close();
                 dbg("[CWLD]Read file.");
                 return new WL(itms);
             }
-            else
+            else if (v == 2)
             {
                 dbg("[CWLD]Initialized, checked header, continuing with v2...");
                 bool cs = false; //char switch
@@ -249,19 +158,50 @@ namespace CWishlist_win
                             nus = false;
                         }
                         s.Clear();
-                        if (tu)
-                            s.Append("http://tinyurl.com/");
+                        if (tu) s.Append("http://tinyurl.com/");
                     }
-                    else if (tu)
-                        s.Append(ascii(j));
+                    else if (tu) s.Append(ascii(j));
                     else
                     {
-                        if (cs)
-                            s.Append(utf16(b, j));
-                        else
-                            b = (byte)j;
+                        if (cs) s.Append(utf16(b, j));
+                        else b = (byte)j;
                         cs = !cs;
                     }
+                return new WL(itms);
+            }
+            else
+            {
+                dbg("[CWLD]Initialized, checked header, continuing with v3...");
+                int j;
+                List<byte> bfr = new List<byte>();
+
+                while ((j = d.ReadByte()) != -1)
+                {
+                    while (j != 11 && j != 8)
+                    {
+                        bfr.Add((byte)j);
+                        j = d.ReadByte();
+                    }
+                    string name = utf8(bfr.ToArray());
+                    bfr.Clear();
+                    string url;
+                    if (j == 11)
+                    {
+                        byte[] b = new byte[6];
+                        d.Read(b, 0, 6);
+                        url = tinyurl + b64(b);
+                    }
+                    else if (j == 8)
+                    {
+                        while ((j = d.ReadByte()) != 11) bfr.Add((byte)j);
+                        url = utf8(bfr.ToArray());
+                    }
+                    else throw new Exception("CWLDv3 reading seems to be broken.");
+                    Item itm = new Item(name, url);
+                    dbg("[CWLD]Read {0}...", itm.dbgfmt());
+                    itms.Add(itm);
+                }
+                dbg("[CWLD]Read file.");
                 return new WL(itms);
             }
         }
@@ -304,20 +244,16 @@ namespace CWishlist_win
             dbg("[CWLS]Writing file...");
             Stream fs = File.Open(file, Create, FileAccess.Write);
             fs.write(cwls_header);
-            fs.WriteByte(6);
+            fs.WriteByte(5);
             dbg("[CWLS]Wrote header.");
-            MemoryStream ms = new MemoryStream();
+            DeflateStream d = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (string r in recents)
             {
-                ms.write(utf8(r));
-                ms.WriteByte(11);
+                d.write(utf8(r));
+                d.WriteByte(11);
                 dbg("[CWLS]Wrote \"" + r + "\".");
             }
-            ms.Position = 0;
-            dbg("[CWLS]Compressing to file...");
-            Compress(ms, fs);
-            dbg("[CWLS]Compressed to file.");
-            fs.Close();
+            d.Close();
             dbg("[CWLS]Finished.");
         }
 
@@ -354,8 +290,7 @@ namespace CWishlist_win
                 }
             }
             dbg($"[CWLS]Got version {v}.");
-            if (v > 6)
-                throw new TooNewRecentsFileException();
+            if (v > 5) throw new TooNewRecentsFileException();
             if (v < 4)
                 throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
             else if (v == 4)
@@ -376,51 +311,25 @@ namespace CWishlist_win
                 s.Close();
                 return r;
             }
-            else if (v == 5)
+            else
             {
                 dbg("[CWLS]Starting reading with version 5.");
                 List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
-                fs.Seek(5, SeekOrigin.Begin);
-                MemoryStream ms = new MemoryStream();
-                Decompress(fs, ms);
-                fs.Close();
-                int i;
-                StringBuilder b = new StringBuilder();
-                while ((i = ms.ReadByte()) != -1)
-                {
-                    b.Clear();
-                    bool u8 = i != 0;
-                    if (u8)
-                        while ((i = ms.ReadByte()) != 8 && i != -1)
-                            b.Append(utf8(i));
-                    else
-                        while ((i = ms.ReadByte()) != 0xe5 && i != -1)
-                            b.Append(utf16(i, ms.ReadByte()));
-                    r.Add(b.ToString());
-                }
-                return r;
-            }
-            else
-            {
-                dbg("[CWLS]Starting reading with version 6.");
-                List<string> r = new List<string>();
-                FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Position = 5;
-                MemoryStream ms = new MemoryStream();
-                Decompress(fs, ms);
-                fs.Close();
-                ms.Position = 0;
+                DeflateStream d = new DeflateStream(fs, CompressionMode.Decompress, false);
                 int i;
                 List<byte> bfr = new List<byte>();
-                while ((i = ms.ReadByte()) != -1)
+                while ((i = d.ReadByte()) != -1)
                     if (i != 11) bfr.Add((byte)i);
                     else
                     {
-                        r.Add(utf8(bfr.ToArray()));
+                        string t = utf8(bfr.ToArray());
+                        dbg("[CWLS]Read {0}.", t);
+                        r.Add(t);
                         bfr.Clear();
                     }
-                ms.Dispose();
+                d.Close();
                 return r;
             }
         }

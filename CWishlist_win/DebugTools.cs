@@ -17,18 +17,6 @@ namespace CWishlist_win
             src_form = src_frm;
         }
 
-        void button1_Click(object sender, EventArgs e)
-        {
-            IO.cwll_save(src_form.wl, "test.cwll");
-        }
-
-        void button2_Click(object sender, EventArgs e)
-        {
-            src_form.wl = IO.cwll_load("test.cwll");
-            src_form.current_file = "test.cwll";
-            src_form.loaded_wl = src_form.wl;
-        }
-
         void button3_Click(object sender, EventArgs e)
         {
             src_form.update_ui();

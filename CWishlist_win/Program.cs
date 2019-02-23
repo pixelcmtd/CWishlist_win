@@ -17,7 +17,7 @@ namespace CWishlist_win
                 Application.SetCompatibleTextRenderingDefault(false);
 #if DEBUG
                 AllocConsole();
-                SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
+                SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 #endif
                 form = new Form1();
                 form.Show();
@@ -31,7 +31,6 @@ namespace CWishlist_win
         }
 
         public static string[] args { get; private set; } = null;
-
         public static Form1 form = null;
 
         public static readonly string appdata = Registry.
@@ -40,10 +39,8 @@ namespace CWishlist_win
 #if DEBUG
         [DllImport("kernel32")]
         static extern bool AllocConsole();
-
         [DllImport("Kernel32")]
         static extern bool SetConsoleCtrlHandler(HandlerRoutine Handler, bool Add);
-
         delegate bool HandlerRoutine(CtrlType CtrlType);
 
         enum CtrlType : uint
@@ -55,16 +52,13 @@ namespace CWishlist_win
 
         static bool ConsoleCtrlCheck(CtrlType ctrlType)
         {
-            if (ctrlType == CtrlType.CTRL_C_EVENT)
-                Environment.Exit(0);
-            
+            if (ctrlType == CtrlType.CTRL_C_EVENT) Environment.Exit(0);
             if (ctrlType == CtrlType.CTRL_CLOSE_EVENT || ctrlType == CtrlType.CTRL_BREAK_EVENT)
             {
                 form.Close();
                 return true;
             }
-            else
-                return false;
+            else return false;
         }
 #endif
     }

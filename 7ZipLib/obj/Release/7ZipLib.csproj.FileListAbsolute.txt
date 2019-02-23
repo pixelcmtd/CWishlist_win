@@ -1,6 +1,0 @@
-D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\7ZipLib.dll
-D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\7ZipLib.pdb
-D:\workspace_VS\CWishlist_win\7ZipLib\obj\Release\7ZipLib.csprojAssemblyReference.cache
-D:\workspace_VS\CWishlist_win\7ZipLib\obj\Release\7ZipLib.csproj.CoreCompileInputs.cache
-D:\workspace_VS\CWishlist_win\7ZipLib\obj\Release\7ZipLib.dll
-D:\workspace_VS\CWishlist_win\7ZipLib\obj\Release\7ZipLib.pdb

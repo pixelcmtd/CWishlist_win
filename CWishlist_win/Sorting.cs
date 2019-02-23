@@ -24,10 +24,8 @@ namespace CWishlist_win
             int pivot = data[right];
             while (i < j)
             {
-                while (data[i] <= pivot && i < right)
-                    i += 1;
-                while (data[j] >= pivot && j > left)
-                    j -= 1;
+                while (data[i] <= pivot && i < right) i += 1;
+                while (data[j] >= pivot && j > left) j -= 1;
                 if (i < j)
                 {
                     Item z = data[i];
