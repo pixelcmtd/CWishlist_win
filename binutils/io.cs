@@ -58,6 +58,17 @@ namespace binutils
 #endif
         }
 
+        // for this to work you have to run the debug build in cmd
+        public static void dbg(string fmt, ConsoleColor fg, params object[] arg)
+        {
+#if DEBUG
+            ConsoleColor c = Console.ForegroundColor;
+            Console.ForegroundColor = fg;
+            dbg(fmt, arg);
+            Console.ForegroundColor = c;
+#endif
+        }
+
         public static int[] parse_ints(this string[] strs)
         {
             int[] i = new int[strs.Length];

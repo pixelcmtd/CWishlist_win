@@ -17,7 +17,7 @@ using static CWishlist_win.IO;
 using static CWishlist_win.WL;
 using static CWishlist_win.Item;
 using static System.Windows.Forms.Clipboard;
-using static System.Drawing.Color;
+using static System.ConsoleColor;
 using static CWishlist_win.Sorting;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
@@ -106,6 +106,7 @@ namespace CWishlist_win
                         try
                         {
                             recents = load_recents(recents_file);
+                            dbg("[Form1-InitThread]Read {0} recent files.", recents.Count);
                         }
                         catch (Exception e)
                         {
@@ -169,6 +170,7 @@ namespace CWishlist_win
 
                 plugin_manager.call_form_construct_listeners();
 #endif
+            thread_manager.finishall();
             update_ui();
             label3.Visible = false;
 
@@ -640,12 +642,12 @@ namespace CWishlist_win
         /// <summary>
         /// Sets all the colors to the given one.
         /// </summary>
-        public void set_color(byte r, byte g, byte b) => set_color(FromArgb(r, g, b));
+        public void set_color(byte r, byte g, byte b) => set_color(Color.FromArgb(r, g, b));
 
         /// <summary>
         /// Sets all the colors to the given one.
         /// </summary>
-        public void set_color(int argb) => set_color(FromArgb(argb));
+        public void set_color(int argb) => set_color(Color.FromArgb(argb));
 		
         /// <summary>
         /// Sets all the colors to the given one.

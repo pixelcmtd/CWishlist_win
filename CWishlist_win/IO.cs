@@ -23,6 +23,14 @@ namespace CWishlist_win
             return new WebClient().DownloadString(tinyurl_api + Uri.EscapeDataString(url));
         }
 
+        public static string tinyurl_resolve(string tinyurl)
+        {
+            WebRequest req = WebRequest.Create(tinyurl);
+            req.Method = WebRequestMethods.Http.Head;
+            WebResponse resp = req.GetResponse();
+            return resp.ResponseUri.ToString();
+        }
+
         public static bool valid_url(string url)
         {
             string s = url.ToLower();

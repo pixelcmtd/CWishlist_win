@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Windows.Forms;
 using static CWishlist_win.Consts;
 using static binutils.io;
+using Microsoft.VisualBasic;
 
 namespace CWishlist_win
 {
@@ -54,6 +55,11 @@ namespace CWishlist_win
             bookmarks bms = Chrome.parse(
                 Chrome.bookmark_path_from_appdata_local(@"C:\Users\chrissicx\AppData\Local"));
             dbg(bms.dbgstr(true, "", "    "));
+        }
+
+        void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(IO.tinyurl_resolve(Interaction.InputBox("tinyurl:")));
         }
     }
 }

@@ -31,7 +31,7 @@
         /// <summary>
         /// Checks if this plugin-version is compatible with this version of CWishlist_win
         /// </summary>
-        /// <returns>true wheater this plugin-version is compatible with this version of CWishlist_win or not</returns>
+        /// <returns>true if this plugin-version is compatible with this version of CWishlist_win, false if not</returns>
         bool is_compatible(string vs, byte[] vb, uint vi);
     }
 }

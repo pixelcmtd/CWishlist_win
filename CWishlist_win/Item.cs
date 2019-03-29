@@ -98,14 +98,14 @@ namespace CWishlist_win
                 s.write(utf8(name));
                 if (url.StartsWith(tinyurl))
                 {
-                    s.WriteByte(L1_TU);
+                    s.write(L1_TU);
                     s.write(b64(url.Substring(tinyurl_length)));
                 }
                 else
                 {
-                    s.WriteByte(L1_NOTU);
-                    s.write(utf8(url));
-                    s.WriteByte(L1_ENDSTR);
+                    s.write(L1_NOTU);
+                    s.write(utf8(url.StartsWith(http) ? url.Substring(7) : url));
+                    s.write(L1_ENDSTR);
                 }
             }
         }
