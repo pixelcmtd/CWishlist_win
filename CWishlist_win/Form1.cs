@@ -457,11 +457,14 @@ namespace CWishlist_win
 
         void open_click(object _, EventArgs e)
         {
+            DialogResult dr = No;
             if (((current_file == "" && wl.Length > 0) || (current_file != "" &&
-                !arrequ(wl.items, loaded_wl))) && MessageBox.Show(get_translated("prompt.open"),
+                !arrequ(wl.items, loaded_wl))) && (dr = MessageBox.Show(get_translated("prompt.open"),
                                                                   get_translated("caption.open"),
-                                                                  YesNo) == No)
+                                                                  YesNoCancel)) == Cancel)
                 return;
+            else if (dr == Yes)
+                save_click(_, e);
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 CheckFileExists = true,
@@ -720,5 +723,7 @@ namespace CWishlist_win
         }
 
         void taskmanager(object sender, EventArgs e) => new TaskManager(this).Show();
+
+        void listBox1_DoubleClick(object _, EventArgs e) => btn6_click(_, e);
     }
 }

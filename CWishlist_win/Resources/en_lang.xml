@@ -3,11 +3,10 @@
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist Windows by chrissx (chrissx Media Inc.) Changelog:\
 \
 Version 7.0.0:\
--Introduced CWishlistLZMA v1 which is another nice optimization (we measured 12.7% and 35.2%)\
+-Introduced CWishlistDeflate v3 which is another nice optimization (we measured 12.7% and 35.2%)\
 -Added heavy multi-threading which speeds up startup, refreshes and especially tinyurl creation\
 -Restructured a lot of the code\
--Added CWLS v5, which is a separator-, UTF8-UTF16-switch- and LZMA-based optimization of CWLS v4\
--Added CWLS v6, which is a new UTF8- and LZMA-based format\
+-CWLS v5
 -Optimized the AppData setting storage\
 -Changed the sorting algorithm from mergesort to quicksort, which is usually faster and uses less memory\
 \
@@ -19,7 +18,7 @@ Version 6.1.0:\
 -Fixed the Open-Dialog not accepting CWLD-files\
 -Introduced CWishlistDeflate v2 which reduces the file size even more (we measured 15.5% and 22%)\
 -Improved the efficiency of loading CWLD v1 files (and with that CWLD v2 files)\
--Fixed &quot;Unsafed changes&quot; when you tried to close wishlists you loaded through Ctrl+O or the toolbar\
+-Fixed &quot;Unsaved changes&quot; when you tried to close wishlists you loaded through Ctrl+O or the toolbar\
 -Fixed files sometimes not being added to recents\
 \
 Version 6.0.0:\
@@ -76,8 +75,8 @@ Version 2.3.1:\
 	<translation name="caption.close" type="str" value="Ya wanna savé?" />
 	<translation name="prompt.new" type="str" value="All your unsaved changes will be deleted, do you really want to create a new file without saving?" />
 	<translation name="caption.new" type="str" value="Ya really want 2 deleté?" />
-	<translation name="prompt.open" type="str" value="All your unsaved changes will be deleted, do you really want to load another file without saving?" />
-	<translation name="caption.open" type="str" value="Ya really want 2 open othr filé?" />
+	<translation name="prompt.open" type="str" value="Do you want to save your unsaved changes?" />
+	<translation name="caption.open" type="str" value="Ya really want 2 open othr filé w/o save?" />
 	<translation name="prompt.stackoverflow" type="str" value="Your stack-size is really close to the limit, please be sure that you always save your wishlist to not lose any of your contents." />
 	<translation name="caption.stackoverflow" type="str" value="Ya really want 2 hav that hi stakk sizé?" />
 	<translation name="caption.pluginloadfailed" type="str" value="Loading plugins from {0} failed." />

@@ -6,19 +6,24 @@ namespace CWishlist_win
     {
         public static void quicksort(int left, int right, ref Item[] data)
         {
-            dbg("[QuickSort]QuickSorting...");
+            dbg("[QuickSort]Sorting...");
+            qs(left, right, ref data);
+            dbg("[QuickSort]Done sorting.");
+        }
+
+        static void qs(int left, int right, ref Item[] data)
+        {
             if (left < right)
             {
                 int i = pivot(left, right, ref data);
                 quicksort(left, i - 1, ref data);
                 quicksort(i + 1, right, ref data);
             }
-            dbg("[QuickSort]Sorting done.");
         }
 
         static int pivot(int left, int right, ref Item[] data)
         {
-            dbg("[QuickSort]Calculating pivot...");
+            dbg("[QuickSort]Pivoting...");
             int i = left;
             int j = right - 1;
             int pivot = data[right];
@@ -39,7 +44,7 @@ namespace CWishlist_win
                 data[i] = data[right];
                 data[right] = z;
             }
-            dbg("[QuickSort]Calculated pivot.");
+            dbg("[QuickSort]Pivoted.");
             return i;
         }
     }
