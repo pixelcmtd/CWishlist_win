@@ -529,8 +529,19 @@ namespace CWishlist_win
                 case Keys.Control | Keys.Shift | Keys.S: save_as_click(null, null); break;
                 case Keys.Control | Keys.O: open_click(null, null); break;
                 case Keys.Control | Keys.N: new_click(null, null); break;
+                case Keys.Control | Keys.F: search_click(null, null); break;
                 case Keys.Up: if (listBox1.SelectedIndex != -1) listBox1.SelectedIndex--; break;
-                case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1) listBox1.SelectedIndex++; break;
+                case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
+                                    listBox1.SelectedIndex++;
+                                break;
+                case Keys.J:    if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
+                                    listBox1.SelectedIndex++;
+                                break;
+                case Keys.K: if (listBox1.SelectedIndex > -1) listBox1.SelectedIndex--; break;
+                case Keys.O: btn6_click(null, null); break;
+                case Keys.A: add_item(null, null); break;
+                case Keys.R: remove_click(null, null); break;
+                case Keys.S: sort_click(null, null); break;
                 default: return base.ProcessCmdKey(ref msg, keyData);
             }
             update_ui();

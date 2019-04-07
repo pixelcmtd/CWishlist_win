@@ -11,3 +11,6 @@ mostly replaced by the Blazor idea.
 * Browser Support: importing bookmarks from Chrome (and Firefox, once
 we can decode SQLite)
 * Plugins
+## Features we aren't working on yet
+* Hotkey system
+* Priority sort

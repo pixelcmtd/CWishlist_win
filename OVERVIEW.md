@@ -20,6 +20,7 @@ be `using static`ed and their naming scheme is also similar to the
 C/C++ std library.
 ## 7ZipLib
 A customized version of the SevenZip "API" by Igor Pavlov for LZMA.
+(removed because we don't use LZMA anymore)
 ## BetterWindows
 The new window system for the frontend, it's not done nor working...
 ## BetterWindows.Test
