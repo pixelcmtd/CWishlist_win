@@ -71,7 +71,7 @@ Version 2.3.1:\
 -Fixed deadly bug in the recents-file" />
 	<translation name="prompt.restore_backup" type="str" value="The program was exited unexpectedly the last time, do you want to restore the backup?" />
 	<translation name="caption.restore_backup" type="str" value="Ya really want 2 losé?" />
-	<translation name="prompt.close" type="str" value="Do you want to save your unsafed changes?" />
+	<translation name="prompt.close" type="str" value="Do you want to save your unsaved changes?" />
 	<translation name="caption.close" type="str" value="Ya wanna savé?" />
 	<translation name="prompt.new" type="str" value="All your unsaved changes will be deleted, do you really want to create a new file without saving?" />
 	<translation name="caption.new" type="str" value="Ya really want 2 deleté?" />

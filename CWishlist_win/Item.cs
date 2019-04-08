@@ -35,17 +35,25 @@ namespace CWishlist_win
             return unchecked(name.GetHashCode() * url.GetHashCode());
         }
 
-        public static bool operator ==(Item first, Item second) => first.name == second.name && first.url == second.url;
+        public static bool operator ==(Item first, Item second) =>
+            first.name == second.name && first.url == second.url;
 
-        public static bool operator !=(Item first, Item second) => first.name != second.name || first.url != second.url;
+        public static bool operator !=(Item first, Item second) =>
+            first.name != second.name || first.url != second.url;
 
-        public static bool operator <(Item first, Item second) => first.name.CompareTo(second.name) == 1;
+        public static bool operator <(Item first, Item second) =>
+            first.name.ToLower().CompareTo(second.name.ToLower()) == 1;
 
-        public static bool operator >(Item first, Item second) => first.name.CompareTo(second.name) == 0;
+        public static bool operator >(Item first, Item second) =>
+            first.name.ToLower().CompareTo(second.name.ToLower()) == 0;
 
-        public static bool operator <=(Item first, Item second) => first.name.CompareTo(second.name) == 1 || first.name == second.name;
+        public static bool operator <=(Item first, Item second) =>
+            first.name.ToLower().CompareTo(second.name.ToLower()) == 1 ||
+            first.name.ToLower() == second.name.ToLower();
 
-        public static bool operator >=(Item first, Item second) => first.name.CompareTo(second.name) == 0 || first.name == second.name;
+        public static bool operator >=(Item first, Item second) =>
+            first.name.ToLower().CompareTo(second.name.ToLower()) == 0 ||
+            first.name.ToLower() == second.name.ToLower();
 
         public static implicit operator string(Item i) => i.ToString();
 
@@ -104,7 +112,7 @@ namespace CWishlist_win
                 else
                 {
                     s.write(L1_NOTU);
-                    s.write(utf8(url.StartsWith(http) ? url.Substring(7) : url));
+                    s.write(utf8(url.StartsWith(https) ? url.Substring(https.Length) : url));
                     s.write(L1_ENDSTR);
                 }
             }

@@ -203,6 +203,8 @@ namespace CWishlist_win
                     {
                         while ((j = d.ReadByte()) != 11) bfr.Add((byte)j);
                         url = utf8(bfr.ToArray());
+                        if (!(url.StartsWith(http) || url.StartsWith(https) || url.StartsWith(lbry)))
+                            url = https + url;
                     }
                     else throw new Exception("CWLDv3 reading seems to be broken.");
                     Item itm = new Item(name, url);

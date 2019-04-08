@@ -582,7 +582,7 @@ namespace CWishlist_win
         {
             foreach(Item i in wl)
                 Start(i.url.StartsWith(https) || i.url.StartsWith(http) || i.url.StartsWith(ftp)
-                    ? i.url : http + i.url);
+                    ? i.url : https + i.url);
         }
 
         void chnglg_click(object _, EventArgs e)
@@ -603,7 +603,6 @@ namespace CWishlist_win
         void sort_click(object _, EventArgs e)
         {
             asynctinyflush_f();
-            //some multi-threading might be possible here
             lock (blist_mutex) quicksort(0, wl.Length - 1, ref wl.items);
             update_ui();
         }
@@ -622,11 +621,14 @@ namespace CWishlist_win
         void search_change(object _, EventArgs e)
         {
             string[] s = textBox3.Text.ToLower().Split(' ', '_', '-');
-            int[] i = wl.GetIndices((it) => containsany(it.name.ToLower(), s));
-            if (i.Length > 0)
+            lock(blist_mutex)
             {
-                listBox1.SelectedIndex = i[0];
-                foreach (int j in i) listBox1.Items[j] = "* " + listBox1.Items[j];
+                int[] i = wl.GetIndices((it) => containsany(it.name.ToLower(), s));
+                if (i.Length > 0)
+                {
+                    listBox1.SelectedIndex = i[0];
+                    foreach (int j in i) listBox1.Items[j] = "* " + listBox1.Items[j];
+                }
             }
         }
 
