@@ -25,3 +25,4 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\Newtonsoft.Json.xml
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\binutils.dll
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\binutils.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.TaskManager.resources
+D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.CLSettings.resources

@@ -31,6 +31,8 @@ namespace CWishlist_win
         public readonly ThreadManager thread_manager = new ThreadManager();
         public WL wl;
         public string current_file = "";
+        public string cl_exe  = "$URL";
+        public string cl_args = "";
         public Item[] loaded_wl = EMPTY;
         public List<string> recents = new List<string>();
         public readonly string appdir = appdata + "\\CWishlist";
@@ -49,6 +51,8 @@ namespace CWishlist_win
         public readonly string restore_backup = appdata + "\\CWishlist\\RESTORE_BACKUP";
         public readonly string color_file = appdata + "\\CWishlist\\C";
         public readonly string legacy_color_file = appdata + "\\CWishlist\\COLOR";
+        public readonly string cl_exe_file = appdata + "\\CWishlist\\CLE";
+        public readonly string cl_args_file = appdata + "\\CWishlist\\CLA";
         public readonly object recents_mutex = new object();
         public readonly object backup_mutex = new object();
         public readonly object rbackup_mutex = new object(); //restore backup mutex
@@ -147,14 +151,16 @@ namespace CWishlist_win
                 if (!File.Exists(restore_backup))
                     File.WriteAllBytes(restore_backup, new byte[] { 0 });
                 else if (File.ReadAllBytes(restore_backup)[0] != 0 &&
-                GetProcessesByName("CWishlist_win").Length < 2 &&
-                MessageBox.Show(get_translated("prompt.restore_backup"),
-                get_translated("caption.restore_backup"), YesNo) == Yes)
+                    GetProcessesByName("CWishlist_win").Length < 2 &&
+                    MessageBox.Show(get_translated("prompt.restore_backup"),
+                                    get_translated("caption.restore_backup"),
+                                    YesNo) == Yes)
                     lock (backup_mutex) { wl = backup_load(backup_file); }
             });
 
             start(load_width);
             start(load_height);
+            start(load_cl);
             load_color();
 
 #if false
@@ -209,6 +215,15 @@ namespace CWishlist_win
                 set_color(int32(File.ReadAllBytes(legacy_color_file)));
                 File.Delete(legacy_color_file);
             }
+        }
+
+        void load_cl()
+        {
+            if(File.Exists(cl_exe_file))
+                cl_exe = File.ReadAllText(cl_exe_file);
+            if (File.Exists(cl_args_file))
+                cl_args = File.ReadAllText(cl_args_file);
+            dbg("[Form1.load_cl()]Read cl_exe \"{0}\" and cl_args \"{1}\".", cl_exe, cl_args);
         }
         
         public void update_ui()
@@ -279,6 +294,7 @@ namespace CWishlist_win
 				textBox1.Text = wl.items[listBox1.SelectedIndex].name;
                 textBox2.Text = wl.items[listBox1.SelectedIndex].url;
 			}
+            textBox1.Focus();
         }
 
         void add_item(object sender, EventArgs e)
@@ -347,8 +363,10 @@ namespace CWishlist_win
         void btn6_click(object _, EventArgs e)
         {
             if (listBox1.SelectedIndex == -1) return;
-            string url = wl.items[listBox1.SelectedIndex].url;
-            Start(valid_url(url) ? url : http + url);
+            string url  = wl.items[listBox1.SelectedIndex].url;
+            string name = wl.items[listBox1.SelectedIndex].name;
+            Start(cl_exe.Replace("$URL", url).Replace("$NAME", name),
+                 cl_args.Replace("$URL", url).Replace("$NAME", name));
         }
 
         void remove_click(object _, EventArgs e)
@@ -368,14 +386,14 @@ namespace CWishlist_win
             int h2 = h / 2;
             button1.Location = new Point(w - 271, h2 - 49);
             button2.Location = new Point(w - 271, h2 - 10);
+            button3.Location = new Point(w - 232, h2 - 49);
+            button7.Location = new Point(w - 232, h2 - 10);
             listBox1.Size = new Size(w - 289, h - 93);
-            button3.Location = new Point(w - 271, h - 103);
             button4.Location = new Point(w - 72, 26);
             button5.Location = new Point(w - 72, 46);
             button6.Location = new Point(w - 267, 67);
-            button7.Location = new Point(w - 271, h - 74);
-            button8.Location = new Point(w - 82, h - 74);
-            button9.Location = new Point(w - 271, h - 132);
+            button8.Location = new Point(w - 92, h - 71);
+            button9.Location = new Point(w - 271, h - 71);
             textBox1.Location = new Point(w - 219, 26);
             textBox2.Location = new Point(w - 219, 46);
             textBox3.Location = new Point(12, h - 71);
@@ -388,10 +406,11 @@ namespace CWishlist_win
         {
             if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl)))
             {
-                if(MessageBox.Show(get_translated("prompt.close"),
-                                   get_translated("caption.close"),
-                                   YesNoCancel) == No)
-                    save_click(_, e);
+                DialogResult dr = MessageBox.Show(get_translated("prompt.close"),
+                                                  get_translated("caption.close"),
+                                                  YesNoCancel);
+                if (dr == Yes   ) save_click(_, e);
+           else if (dr == Cancel) return;
             }
             Hide();
             if (current_file != "")
@@ -407,9 +426,11 @@ namespace CWishlist_win
             start(write_wid_file_close);
             start(write_hei_file_close);
             start(write_color_file_close);
+            start(write_cl_exe_file_close);
+            start(write_cl_args_file_close);
             thread_manager.shutdown();
         }
-
+        
         void write_color_file_close()
         {
             Color c = BackColor;
@@ -419,6 +440,9 @@ namespace CWishlist_win
         void write_hei_file_close() => File.WriteAllBytes(height_file, bytes(Height));
         void write_wid_file_close() => File.WriteAllBytes(width_file, bytes(Width));
         void write_lang_file_close() => File.WriteAllBytes(lang_file, ascii(selected.code));
+
+        void write_cl_exe_file_close() => File.WriteAllText(cl_exe_file, cl_exe);
+        void write_cl_args_file_close() => File.WriteAllText(cl_args_file, cl_args);
 
         void disable_restore_backup_close()
         { lock (rbackup_mutex) writesbf(restore_backup, 0); }
@@ -534,18 +558,23 @@ namespace CWishlist_win
                 case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
                                     listBox1.SelectedIndex++;
                                 break;
-                case Keys.J:    if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
-                                    listBox1.SelectedIndex++;
-                                break;
-                case Keys.K: if (listBox1.SelectedIndex > -1) listBox1.SelectedIndex--; break;
-                case Keys.O: btn6_click(null, null); break;
-                case Keys.A: add_item(null, null); break;
-                case Keys.R: remove_click(null, null); break;
-                case Keys.S: sort_click(null, null); break;
-                default: return base.ProcessCmdKey(ref msg, keyData);
+            }
+            if(!text_mode())
+            {
+                switch (keyData)
+                {
+                    case Keys.J:    if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
+                                        listBox1.SelectedIndex++;
+                                    break;
+                    case Keys.K: if (listBox1.SelectedIndex > -1) listBox1.SelectedIndex--; break;
+                    case Keys.O: btn6_click(null, null); break;
+                    case Keys.A: add_item(null, null); break;
+                    case Keys.R: remove_click(null, null); break;
+                    case Keys.S: sort_click(null, null); break;
+                }
             }
             update_ui();
-            return true;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         void move_up_click(object _, EventArgs e)
@@ -727,18 +756,18 @@ namespace CWishlist_win
             new DebugTools(this).ShowDialog();
         }
 
-        void _3rd_party_software(object sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "This software uses the LZMA SDK by Igor Pavlov.\n" +
-                "While it is Public Domain I still wanted to give credit.\n" +
-                "So go to 7-zip.org!\n\n" +
-                "It will also use PAQ8PCWL, which is a custom version of PAQ8P.",
-                "A little bit of credits...");
-        }
-
         void taskmanager(object sender, EventArgs e) => new TaskManager(this).Show();
 
         void listBox1_DoubleClick(object _, EventArgs e) => btn6_click(_, e);
+
+        public bool text_mode()
+        {
+            return textBox1.Focused || textBox2.Focused || textBox3.Focused;
+        }
+
+        private void OpenCommandLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new CLSettings(this).Show();
+        }
     }
 }

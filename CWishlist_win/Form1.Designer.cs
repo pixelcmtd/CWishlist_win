@@ -40,10 +40,10 @@ namespace CWishlist_win
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.styleBackgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCommandLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bTW3rdPartySoftwareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -95,11 +95,12 @@ namespace CWishlist_win
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(156, 405);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(195, 205);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(77, 23);
+            this.button3.Size = new System.Drawing.Size(33, 33);
             this.button3.TabIndex = 7;
-            this.button3.Text = "Add item";
+            this.button3.Text = "+";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.add_item);
             // 
@@ -135,11 +136,12 @@ namespace CWishlist_win
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(156, 434);
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(195, 244);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(77, 23);
+            this.button7.Size = new System.Drawing.Size(33, 33);
             this.button7.TabIndex = 11;
-            this.button7.Text = "Remove item";
+            this.button7.Text = "-";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.remove_click);
             // 
@@ -224,7 +226,7 @@ namespace CWishlist_win
             // 
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
             this.versionToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.versionToolStripMenuItem.Text = "Version: 7.0.0b4";
+            this.versionToolStripMenuItem.Text = "Version: 7.0.0b6";
             this.versionToolStripMenuItem.Click += new System.EventHandler(this.version_click);
             // 
             // changelogToolStripMenuItem
@@ -238,31 +240,38 @@ namespace CWishlist_win
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.languageToolStripMenuItem,
-            this.styleBackgroundColorToolStripMenuItem});
+            this.styleBackgroundColorToolStripMenuItem,
+            this.openCommandLineToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Text = "Settings";
             // 
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.lang_click);
             // 
             // styleBackgroundColorToolStripMenuItem
             // 
             this.styleBackgroundColorToolStripMenuItem.Name = "styleBackgroundColorToolStripMenuItem";
-            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.styleBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.styleBackgroundColorToolStripMenuItem.Text = "Background-Color";
             this.styleBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.style_click);
+            // 
+            // openCommandLineToolStripMenuItem
+            // 
+            this.openCommandLineToolStripMenuItem.Name = "openCommandLineToolStripMenuItem";
+            this.openCommandLineToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.openCommandLineToolStripMenuItem.Text = "Open Command Line";
+            this.openCommandLineToolStripMenuItem.Click += new System.EventHandler(this.OpenCommandLineToolStripMenuItem_Click);
             // 
             // extraToolStripMenuItem
             // 
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openPluginDirToolStripMenuItem,
             this.debugToolsToolStripMenuItem,
-            this.bTW3rdPartySoftwareToolStripMenuItem,
             this.taskManagerToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -281,13 +290,6 @@ namespace CWishlist_win
             this.debugToolsToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.debugToolsToolStripMenuItem.Text = "Debug Tools";
             this.debugToolsToolStripMenuItem.Click += new System.EventHandler(this.debugToolsToolStripMenuItem_Click);
-            // 
-            // bTW3rdPartySoftwareToolStripMenuItem
-            // 
-            this.bTW3rdPartySoftwareToolStripMenuItem.Name = "bTW3rdPartySoftwareToolStripMenuItem";
-            this.bTW3rdPartySoftwareToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
-            this.bTW3rdPartySoftwareToolStripMenuItem.Text = "BTW: 3rd Party Software";
-            this.bTW3rdPartySoftwareToolStripMenuItem.Click += new System.EventHandler(this._3rd_party_software);
             // 
             // taskManagerToolStripMenuItem
             // 
@@ -328,9 +330,9 @@ namespace CWishlist_win
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(345, 434);
+            this.button8.Location = new System.Drawing.Point(345, 437);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(54, 23);
+            this.button8.Size = new System.Drawing.Size(54, 20);
             this.button8.TabIndex = 15;
             this.button8.Text = "Open all";
             this.button8.UseVisualStyleBackColor = true;
@@ -338,9 +340,9 @@ namespace CWishlist_win
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(156, 376);
+            this.button9.Location = new System.Drawing.Point(156, 437);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(77, 23);
+            this.button9.Size = new System.Drawing.Size(54, 20);
             this.button9.TabIndex = 16;
             this.button9.Text = "Sort";
             this.button9.UseVisualStyleBackColor = true;
@@ -360,7 +362,7 @@ namespace CWishlist_win
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(122, 447);
+            this.label3.Location = new System.Drawing.Point(98, 421);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(277, 13);
             this.label3.TabIndex = 18;
@@ -432,9 +434,9 @@ namespace CWishlist_win
         private ToolStripMenuItem styleBackgroundColorToolStripMenuItem;
         private ToolStripMenuItem openPluginDirToolStripMenuItem;
         private ToolStripMenuItem debugToolsToolStripMenuItem;
-        private ToolStripMenuItem bTW3rdPartySoftwareToolStripMenuItem;
         private Label label3;
         private ToolStripMenuItem taskManagerToolStripMenuItem;
+        private ToolStripMenuItem openCommandLineToolStripMenuItem;
     }
 }
 

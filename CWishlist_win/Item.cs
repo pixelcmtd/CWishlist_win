@@ -26,7 +26,7 @@ namespace CWishlist_win
 
         public override string ToString() => name != "" ? name : @"[/unnamed item\]";
 
-        public override bool Equals(object obj) => (obj is Item) ? ((Item)obj).name == name && ((Item)obj).url == url : false;
+        public override bool Equals(object obj) => obj is Item ? ((Item)obj).name == name && ((Item)obj).url == url : false;
 
         public bool Equals(Item i) => i.name == name && i.url == url;
 
