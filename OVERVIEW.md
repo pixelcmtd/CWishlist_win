@@ -5,8 +5,8 @@ non-standard version of libcwlcs, the thread manager and the browser
 backends.
 ## LegacyFormats
 This C# DLL contains all the really old CWL formats, because currently
-only CWLU, CWLD and CWLL are supported, it has CWL and CWLB, CWLS 1-3
-is also in there.
+only CWLU and CWLD are supported, it has CWL and CWLB, CWLS 1-3 is
+also in there.
 ## file_replace
 The file executed by the plugin updater to replace the plugin DLL.
 ## test_plugin
