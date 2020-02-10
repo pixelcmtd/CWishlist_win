@@ -274,27 +274,27 @@ namespace CWishlist_win
             this.debugToolsToolStripMenuItem,
             this.taskManagerToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
-            this.extraToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.extraToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.extraToolStripMenuItem.Text = "Extra";
             // 
             // openPluginDirToolStripMenuItem
             // 
             this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
-            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
             this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.plugindir_click);
             // 
             // debugToolsToolStripMenuItem
             // 
             this.debugToolsToolStripMenuItem.Name = "debugToolsToolStripMenuItem";
-            this.debugToolsToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.debugToolsToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.debugToolsToolStripMenuItem.Text = "Debug Tools";
             this.debugToolsToolStripMenuItem.Click += new System.EventHandler(this.debugToolsToolStripMenuItem_Click);
             // 
             // taskManagerToolStripMenuItem
             // 
             this.taskManagerToolStripMenuItem.Name = "taskManagerToolStripMenuItem";
-            this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
+            this.taskManagerToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.taskManagerToolStripMenuItem.Text = "Task Manager";
             this.taskManagerToolStripMenuItem.Click += new System.EventHandler(this.taskmanager);
             // 
@@ -362,7 +362,7 @@ namespace CWishlist_win
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(98, 421);
+            this.label3.Location = new System.Drawing.Point(122, 418);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(277, 13);
             this.label3.TabIndex = 18;

@@ -34,8 +34,7 @@ namespace CWishlist_win
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
-            return s.StartsWith(http) || s.StartsWith(https) ||
-                s.StartsWith(ftp) || s.StartsWith(lbry) && fccontains(s, '.');
+            return s.StartsWith(http) || s.StartsWith(https) && fccontains(s, '.');
         }
 
         /// <summary>
@@ -103,20 +102,21 @@ namespace CWishlist_win
             {
                 raw.Close();
                 throw new Exception(
-                    $"This CWLD file is invalid. (v is {(v == -2 ? "ignored" : v.ToString())})");
+                    $"This CWLD file is invalid.{(v != -2 ? " (v is " + v + ")" : "")})");
             }
 
             DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
             List<Item> itms = new List<Item>();
             StringBuilder s = new StringBuilder();
 
+            dbg($"[CWLD]Initialized, checked header, continuing with v{v}.");
+
             if (v == 1)
             {
-                dbg("[CWLD]Initialized, checked header, continuing with v1...");
                 bool nus = false; //Name Url Switch
                 Item i = new Item();
                 char c;
-                int j = -1;
+                int j;
 
                 while ((j = d.ReadByte()) != -1)
                     if ((c = utf16(j, d.ReadByte())) == '\u0d0a')
@@ -134,17 +134,14 @@ namespace CWishlist_win
                     }
                     else s.Append(c);
                 d.Close();
-                dbg("[CWLD]Read file.");
-                return new WL(itms);
             }
             else if (v == 2)
             {
-                dbg("[CWLD]Initialized, checked header, continuing with v2...");
                 bool cs = false; //char switch
                 bool nus = false; //name url switch
                 bool tu = false; //tinyurl
                 Item i = new Item();
-                int j = -1;
+                int j;
                 byte b = 0;
 
                 while((j = d.ReadByte()) != -1)
@@ -175,11 +172,9 @@ namespace CWishlist_win
                         else b = (byte)j;
                         cs = !cs;
                     }
-                return new WL(itms);
             }
             else
             {
-                dbg("[CWLD]Initialized, checked header, continuing with v3...");
                 int j;
                 List<byte> bfr = new List<byte>();
 
@@ -203,7 +198,7 @@ namespace CWishlist_win
                     {
                         while ((j = d.ReadByte()) != 11) bfr.Add((byte)j);
                         url = utf8(bfr.ToArray());
-                        if (!(url.StartsWith(http) || url.StartsWith(https) || url.StartsWith(lbry)))
+                        if (!(url.StartsWith(http) || url.StartsWith(https)))
                             url = https + url;
                     }
                     else throw new Exception("CWLDv3 reading seems to be broken.");
@@ -211,9 +206,9 @@ namespace CWishlist_win
                     dbg("[CWLD]Read {0}...", itm.dbgfmt());
                     itms.Add(itm);
                 }
-                dbg("[CWLD]Read file.");
-                return new WL(itms);
             }
+            dbg("[CWLD]Read file.");
+            return new WL(itms);
         }
 
         /// <summary>
@@ -229,7 +224,7 @@ namespace CWishlist_win
             if (zip.read_entry_byte("F") != 3 || zip.read_entry_byte("V") != 1)
                 throw new Exception("Invalid CWLU file.");
             XmlReader xml = XmlReader.Create(new StreamReader(zip.GetEntry("W").Open(), Unicode));
-            dbg("[CWLU]Initialized ZIP, XML.");
+            dbg("[CWLU]Initialized ZIP and XML.");
             List<Item> items = new List<Item>();
             while (xml.Read())
                 if (xml.Name == "i")
@@ -281,8 +276,8 @@ namespace CWishlist_win
             if (s.ReadByte() == 80 && s.ReadByte() == 75)
             {
                 s.Close();
-                using (ZipArchive z = ZipFile.Open(file, ZipArchiveMode.Read, ASCII))
-                    v = z.read_entry_byte("V");
+                using ZipArchive z = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
+                v = z.read_entry_byte("V");
             }
             else
             {
@@ -301,12 +296,11 @@ namespace CWishlist_win
             }
             dbg($"[CWLS]Got version {v}.");
             if (v > 5) throw new TooNewRecentsFileException();
-            if (v < 4)
-                throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
-            else if (v == 4)
+            if (v < 4) throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
+            dbg($"[CWLS]Starting reading with version {v}.");
+            List<string> r = new List<string>();
+            if (v == 4)
             {
-                dbg("[CWLS]Starting reading with version 4.");
-                List<string> r = new List<string>();
                 Stream rawfs = File.Open(file, Open, FileAccess.Read);
                 rawfs.Seek(10, SeekOrigin.Begin);
                 s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
@@ -319,12 +313,9 @@ namespace CWishlist_win
                     r.Add(utf16(bfr, len));
                 }
                 s.Close();
-                return r;
             }
             else
             {
-                dbg("[CWLS]Starting reading with version 5.");
-                List<string> r = new List<string>();
                 FileStream fs = File.Open(file, Open, FileAccess.Read);
                 fs.Position = 5;
                 DeflateStream d = new DeflateStream(fs, CompressionMode.Decompress, false);
@@ -340,8 +331,8 @@ namespace CWishlist_win
                         bfr.Clear();
                     }
                 d.Close();
-                return r;
             }
+            return r;
         }
 
         static bool readequals(Stream stream, int len, byte[] arr)

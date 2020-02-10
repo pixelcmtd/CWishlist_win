@@ -26,3 +26,13 @@ D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\binutils.dll
 D:\workspace_VS\CWishlist_win\CWishlist_win\bin\x64\Debug\binutils.pdb
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.TaskManager.resources
 D:\workspace_VS\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.CLSettings.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.CLSettings.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.DebugTools.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.Form1.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.LanguageSelectionDialog.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.Properties.Resources.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.TaskManager.resources
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.csproj.GenerateResource.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\CWishlist_win\obj\x64\Debug\CWishlist_win.pdb

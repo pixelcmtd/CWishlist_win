@@ -17,7 +17,6 @@ using static CWishlist_win.IO;
 using static CWishlist_win.WL;
 using static CWishlist_win.Item;
 using static System.Windows.Forms.Clipboard;
-using static System.ConsoleColor;
 using static CWishlist_win.Sorting;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
@@ -266,7 +265,7 @@ namespace CWishlist_win
         { try { lock (backup_mutex) backup_save(wl, backup_file); } catch { } }
 
         void update_ui_write_restore_backup()
-        { try { lock (rbackup_mutex) { writesbf(restore_backup, 1); } } catch { } }
+        { try { lock (rbackup_mutex) { File.WriteAllBytes(restore_backup, new byte[] { 1 }); } } catch { } }
 
         public void asynctinyflush()
         {
@@ -326,7 +325,6 @@ namespace CWishlist_win
                 start(() =>
                 {
                     //sometimes pasting fails randomly so we're repeating until it pastes
-                    //(but we also try not to crash the program, but lag at most a few seconds)
                     for (int i = 0; i < int.MaxValue; i++)
                         try
                         {
@@ -346,7 +344,6 @@ namespace CWishlist_win
                 start(() =>
                 {
                     //sometimes pasting fails randomly so we're repeating until it pastes
-                    //(but we also try not to crash the program, but lag at most a few seconds)
                     for (int i = 0; i < int.MaxValue; i++)
                         try
                         {
@@ -444,10 +441,8 @@ namespace CWishlist_win
         void write_cl_exe_file_close() => File.WriteAllText(cl_exe_file, cl_exe);
         void write_cl_args_file_close() => File.WriteAllText(cl_args_file, cl_args);
 
-        void disable_restore_backup_close()
-        { lock (rbackup_mutex) writesbf(restore_backup, 0); }
-        void write_recents_mutexed_close()
-        { lock (recents_mutex) write_recents(recents_file, recents); }
+        void disable_restore_backup_close() { lock (rbackup_mutex) File.WriteAllBytes(restore_backup, new byte[] { 0 }); }
+        void write_recents_mutexed_close() { lock (recents_mutex) write_recents(recents_file, recents); }
 
         public void add_current_file_to_recent_items()
         {
@@ -610,8 +605,7 @@ namespace CWishlist_win
         void btn8_click(object _, EventArgs e)
         {
             foreach(Item i in wl)
-                Start(i.url.StartsWith(https) || i.url.StartsWith(http) || i.url.StartsWith(ftp)
-                    ? i.url : https + i.url);
+                Start(i.url.StartsWith(https) || i.url.StartsWith(http) ? i.url : https + i.url);
         }
 
         void chnglg_click(object _, EventArgs e)

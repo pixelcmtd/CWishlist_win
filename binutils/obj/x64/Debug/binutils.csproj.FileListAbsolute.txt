@@ -4,3 +4,8 @@ D:\workspace_VS\CWishlist_win\binutils\obj\x64\Debug\binutils.csprojAssemblyRefe
 D:\workspace_VS\CWishlist_win\binutils\obj\x64\Debug\binutils.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\binutils\obj\x64\Debug\binutils.dll
 D:\workspace_VS\CWishlist_win\binutils\obj\x64\Debug\binutils.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\binutils\bin\x64\Debug\binutils.dll
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\binutils\bin\x64\Debug\binutils.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\binutils\obj\x64\Debug\binutils.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\binutils\obj\x64\Debug\binutils.dll
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\binutils\obj\x64\Debug\binutils.pdb

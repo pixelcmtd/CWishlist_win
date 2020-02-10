@@ -125,9 +125,11 @@
   <ItemGroup>
     <Compile Include="BrowserAPIs\bookmark.cs" />
     <Compile Include="BrowserAPIs\bookmarks.cs" />
+    <Compile Include="BrowserAPIs\Brave.cs" />
     <Compile Include="BrowserAPIs\checksum.cs" />
     <Compile Include="BrowserAPIs\checksum_type.cs" />
     <Compile Include="BrowserAPIs\Chrome.cs" />
+    <Compile Include="BrowserAPIs\Chromium.cs" />
     <Compile Include="CLinq.cs" />
     <Compile Include="CLSettings.cs">
       <SubType>Form</SubType>

@@ -16,10 +16,8 @@ namespace binutils
             if (stream1.Length - stream1.Position != stream2.Length - stream2.Position)
                 return false;
             int i;
-            while ((i = stream1.ReadByte()) != -1)
-                if (i != stream2.ReadByte())
-                    return false;
-            return true;
+            while ((i = stream1.ReadByte()) != -1 && i == stream2.ReadByte()) ;
+            return i == -1;
         }
 
         //file compare
@@ -31,14 +29,6 @@ namespace binutils
             s1.Close();
             s2.Close();
             return b;
-        }
-
-        //writesinglebytefile
-        public static void writesbf(string file, byte b)
-        {
-            FileStream fs = File.Open(file, FileMode.Create, FileAccess.Write);
-            fs.WriteByte(b);
-            fs.Close();
         }
 
         //fastcharactercontains

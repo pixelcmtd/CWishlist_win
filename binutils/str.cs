@@ -9,19 +9,9 @@ namespace binutils
             return Encoding.ASCII.GetChars(new byte[] { (byte)i })[0];
         }
 
-        public static char ascii(byte b)
-        {
-            return Encoding.ASCII.GetChars(new byte[] { b })[0];
-        }
-
         public static char utf8(int i)
         {
             return Encoding.UTF8.GetChars(new byte[] { (byte)i })[0];
-        }
-
-        public static char utf8(byte b)
-        {
-            return Encoding.UTF8.GetChars(new byte[] { b })[0];
         }
 
         public static char utf16(int i, int j)
@@ -29,19 +19,9 @@ namespace binutils
             return Encoding.Unicode.GetChars(new byte[] { (byte)i, (byte)j })[0];
         }
 
-        public static char utf16(byte b, byte c)
-        {
-            return Encoding.Unicode.GetChars(new byte[] { b, c })[0];
-        }
-
         public static char utf32(int i, int j, int k, int l)
         {
             return Encoding.UTF32.GetChars(new byte[] { (byte)i, (byte)j, (byte)k, (byte)l })[0];
-        }
-
-        public static char utf32(byte b, byte c, byte d, byte e)
-        {
-            return Encoding.UTF32.GetChars(new byte[] { b, c, d, e })[0];
         }
 
         public static string ascii(byte[] b)
