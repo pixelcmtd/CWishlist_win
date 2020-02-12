@@ -18,10 +18,8 @@ namespace CWishlist_win
 {
     static class IO
     {
-        public static string tinyurl_create(string url)
-        {
-            return new WebClient().DownloadString(tinyurl_api + Uri.EscapeDataString(url));
-        }
+        public static string tinyurl_create(string url) =>
+            new WebClient().DownloadString(tinyurl_api + Uri.EscapeDataString(url));
 
         public static string tinyurl_resolve(string tinyurl)
         {
@@ -34,7 +32,7 @@ namespace CWishlist_win
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
-            return s.StartsWith(http) || s.StartsWith(https) && fccontains(s, '.');
+            return (s.StartsWith(http) || s.StartsWith(https)) && fccontains(url, '.');
         }
 
         /// <summary>
@@ -43,8 +41,10 @@ namespace CWishlist_win
         public static WL load(string f)
         {
             char c = f[f.Length - 1];
-            return f == "" ? WL.NEW : c == 'd' ? cwld_load(f) : c == 'u' ? cwlu_load(f) : throw new
-                Exception("Only CWLL, CWLD and CWLU files are supported by this version of CWL.");
+            if (f == "") return WL.NEW;
+            if (c == 'd') return cwld_load(f);
+            if (c == 'u') return cwlu_load(f);
+            throw new Exception("Only CWLD and CWLU files are supported by this version of CWL.");
         }
 
         public static WL backup_load(string f)
@@ -71,7 +71,7 @@ namespace CWishlist_win
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
             foreach (Item i in wl)
             {
-                i.write_bytes(d, L1);
+                i.write_bytes(d, D3);
                 dbg("[CWLD]Wrote {0}...", i.dbgfmt());
             }
             d.Close();
@@ -89,14 +89,14 @@ namespace CWishlist_win
             dbg("[CWLD]Reading file...");
             Stream raw = File.Open(file, Open, FileAccess.Read);
 
-            byte[] h = new byte[8]; //header
-            raw.Read(h, 0, 8);
+            byte[] header = new byte[8];
+            raw.Read(header, 0, 8);
             int v = -2;
 
-            if (!arrequ(h, cwld_header))
+            if (!arrequ(header, cwld_header))
             {
                 raw.Close();
-                throw new InvalidHeaderException("CWLD", cwld_header, h);
+                throw new InvalidHeaderException("CWLD", cwld_header, header);
             }
             if (raw.ReadByte() != 4 || (v = raw.ReadByte()) > 3 || v < 1)
             {
@@ -163,7 +163,7 @@ namespace CWishlist_win
                             nus = false;
                         }
                         s.Clear();
-                        if (tu) s.Append("http://tinyurl.com/");
+                        if (tu) s.Append(tinyurl);
                     }
                     else if (tu) s.Append(ascii(j));
                     else
@@ -339,8 +339,7 @@ namespace CWishlist_win
 
     class InvalidHeaderException : Exception
     {
-        public InvalidHeaderException(string format, byte[] expected, byte[] invalid) :
-            this(format, hex(expected), hex(invalid)) { }
+        public InvalidHeaderException(string format, byte[] expected, byte[] invalid) : this(format, hex(expected), hex(invalid)) { }
 
         public InvalidHeaderException(string format, string expected, string invalid) :
             base($"This {format}-File's header is not correct, it's expected to be {expected} by the standard, but it's {invalid}.") { }

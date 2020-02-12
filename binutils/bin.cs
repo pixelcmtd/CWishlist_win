@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static binutils.str;
 
 namespace binutils
 {
@@ -136,15 +137,9 @@ namespace binutils
             (byte)(i >> 24), (byte)(i >> 16), (byte)(i >> 8), (byte)i};
         }
 
-        public static byte[] b64(string s)
-        {
-            return Convert.FromBase64String(s);
-        }
-
-        public static string b64(byte[] b)
-        {
-            return Convert.ToBase64String(b);
-        }
+        public static byte[] b64(string s) => Convert.FromBase64String(s);
+        public static string b64(byte[] b) => Convert.ToBase64String(b);
+        public static string b64(Exception e) => b64(utf8(e.ToString()));
 
         public static string b64(Stream s, int bytelen)
         {

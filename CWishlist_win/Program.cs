@@ -1,13 +1,13 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CWishlist_win
 {
     static class Program
     {
-        [STAThread]
         static void Main(string[] ca)
         {
             try
@@ -17,6 +17,7 @@ namespace CWishlist_win
                 Application.SetCompatibleTextRenderingDefault(false);
 #if DEBUG
                 AllocConsole();
+                SetConsoleTitle("CWishlist_win - Debug Output");
                 SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 #endif
                 form = new Form1();
@@ -31,15 +32,17 @@ namespace CWishlist_win
         }
 
         public static string[] args { get; private set; } = null;
-        public static Form1 form = null;
+        public static Form1 form { get; private set; } = null;
 
         public static readonly string appdata = Registry.
             CurrentUser.OpenSubKey("Volatile Environment", false).GetValue("APPDATA").ToString();
 
 #if DEBUG
-        [DllImport("kernel32")]
+        [DllImport("kernel32.dll")]
         static extern bool AllocConsole();
-        [DllImport("Kernel32")]
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleTitle(string lpConsoleTitle);
+        [DllImport("kernel32.dll")]
         static extern bool SetConsoleCtrlHandler(HandlerRoutine Handler, bool Add);
         delegate bool HandlerRoutine(CtrlType CtrlType);
 

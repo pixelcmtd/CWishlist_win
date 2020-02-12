@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using binutils;
 using static CWishlist_win.Consts;
+using static binutils.io;
 
 namespace CWishlist_win
 {
@@ -13,9 +15,16 @@ namespace CWishlist_win
 
         public static dynamic get_translated(string name) => langs[selected][name];
 
-        public static void select_lang(string code)
+        public static void select_lang(string code) => selected = get_lang(code);
+
+        public static lang get_lang(string code) => langs.Keys.where((l) => l.code == code);
+
+        public static void clear_langs() => langs.Clear();
+
+        public static void load_langs(string lang_dir)
         {
-            selected = langs.Keys.where((l) => l.code == code);
+            foreach (string f in Directory.GetFiles(lang_dir))
+                load_lang_xml(f);
         }
 
         public static void load_lang_xml(string file)
@@ -26,12 +35,12 @@ namespace CWishlist_win
             while (xml.Read())
                 if (xml.NodeType == XmlNodeType.Element)
                     if (xml.Name == "lang")
-                        l = new lang(xml.GetAttribute("code"), xml.GetAttribute("name"), uint.Parse(xml.GetAttribute("version")));
+                        l = new lang(xml.GetAttribute("code"), xml.GetAttribute("name"), xml.GetAttribute("version"));
                     else if (xml.Name == "translation")
                     {
                         string name = xml.GetAttribute("name");
                         string type = xml.GetAttribute("type");
-                        string val  = xml.GetAttribute("value");
+                        string val = xml.GetAttribute("value");
                         dynamic v = "$ERROR%WHAT&THE/HELL§";
                         switch (type)
                         {
@@ -59,11 +68,12 @@ namespace CWishlist_win
                             case "bool": v = bool.Parse(val); break;
                             case "char_arr": v = val.Split('\\').parse_chars(); break;
                             case "char": v = char.Parse(val); break;
-                            default: v = $"Bad language translation. " +
-                                    $"(lang: {l.code}/{l.name}, " +
-                                    $"name: {name}, " +
-                                    $"type: {type}, " +
-                                    $"raw value: {val})"; break;
+                            default:
+                                v = $"Bad language translation. " +
+                               $"(lang: {l.code}/{l.name}, " +
+                               $"name: {name}, " +
+                               $"type: {type}, " +
+                               $"raw value: {val})"; break;
                         }
                         translations.Add(name, v);
                     }
@@ -73,6 +83,14 @@ namespace CWishlist_win
 
     public struct lang
     {
+        public lang(string code, string name, string version)
+        {
+            this.code = code;
+            this.name = name;
+            if (!uint.TryParse(version, out this.version))
+                this.version = 0;
+        }
+
         public lang(string code, string name, uint version)
         {
             this.code = code;

@@ -58,18 +58,10 @@ namespace CWishlist_win
         public static implicit operator string(Item i) => i.ToString();
 
         public static implicit operator long(Item i) => i.LongLength;
-
         public static implicit operator int(Item i) => i.Length;
 
-        public int Length
-        {
-            get => name.Length + url.Length;
-        }
-
-        public long LongLength
-        {
-            get => (long)url.Length + (long)name.Length;
-        }
+        public int Length => name.Length + url.Length;
+        public long LongLength => url.Length + (long)name.Length;
 
         public string dbgfmt()
         {
@@ -80,40 +72,40 @@ namespace CWishlist_win
         {
             if (format == D1)
             {
-                s.write(utf16(name));
+                s.write(name, utf16);
                 s.write(10, 13);
-                s.write(utf16(url));
+                s.write(url, utf16);
                 s.write(10, 13);
             }
             else if (format == D2)
             {
-                s.write(utf16(name));
+                s.write(name, utf16);
                 s.write(11);
-                if (url.StartsWith("http://tinyurl.com/"))
+                if (url.StartsWith(tinyurl))
                 {
                     s.write(1);
-                    s.write(ascii(url.Substring(19)));
+                    s.write(url.Substring(tinyurl_length), ascii);
                 }
                 else
                 {
                     s.write(0);
-                    s.write(utf16(url));
+                    s.write(url, utf16);
                 }
                 s.write(11);
             }
-            else if (format == L1)
+            else if (format == D3)
             {
-                s.write(utf8(name));
+                s.write(name, utf8);
                 if (url.StartsWith(tinyurl))
                 {
-                    s.write(L1_TU);
-                    s.write(b64(url.Substring(tinyurl_length)));
+                    s.write(D3_TU);
+                    s.write(url.Substring(tinyurl_length), b64);
                 }
                 else
                 {
-                    s.write(L1_NOTU);
-                    s.write(utf8(url.StartsWith(https) ? url.Substring(https.Length) : url));
-                    s.write(L1_ENDSTR);
+                    s.write(D3_NOTU);
+                    s.write(url.StartsWith(https) ? url.Substring(https.Length) : url, utf8);
+                    s.write(D3_ENDSTR);
                 }
             }
         }

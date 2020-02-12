@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using static binutils.str;
 
 namespace binutils
 {
+    public delegate byte[] encoding_s2b(string s);
+
     public static class io
     {
         public static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
@@ -36,25 +37,15 @@ namespace binutils
             s.Write(b, 0, b.Length);
         }
 
-        public static void write_ascii(this Stream s, string t)
+        public static void write(this Stream s, string t, encoding_s2b encoding)
         {
-            s.write(ascii(t));
-        }
-
-        public static void write_utf8(this Stream s, string t)
-        {
-            s.write(utf8(t));
-        }
-
-        public static void write_utf16(this Stream s, string t)
-        {
-            s.write(utf16(t));
+            s.write(encoding(t));
         }
 
         public static void dbg(string fmt, params object[] arg)
         {
 #if DEBUG
-            Console.WriteLine(fmt, arg);
+            Console.WriteLine(fmt == null ? "[dbg()]fmt is null" : fmt, arg);
 #endif
         }
 

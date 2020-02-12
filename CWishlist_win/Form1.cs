@@ -21,6 +21,7 @@ using static CWishlist_win.Sorting;
 using static System.Windows.Forms.DialogResult;
 using static System.Windows.Forms.MessageBoxButtons;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CWishlist_win
 {
@@ -78,32 +79,27 @@ namespace CWishlist_win
             if (args.Length > 0) load_wl(args[0]);
             else lock (blist_mutex) wl = NEW;
 
-            int i = start(() =>
+            int appdir_create_pid = start(() =>
             { if (!Directory.Exists(appdir)) Directory.CreateDirectory(appdir); });
 
-            int j = start(() =>
+            int langdir_create_pid = start(() =>
             { if (!Directory.Exists(lang_dir)) Directory.CreateDirectory(lang_dir); });
 
             start(() =>
             { if (!Directory.Exists(plugin_dir)) Directory.CreateDirectory(plugin_dir); });
 
-            int k = start(() =>
+            int save_langs_if_not_exist_pid = start(() =>
             {
-                join(j);
-                if (!File.Exists(lang_de) || !arrequ(utf8(de_lang_xml), File.ReadAllBytes(lang_de)))
+                join(langdir_create_pid);
+                if (!File.Exists(lang_de))
                     File.WriteAllText(lang_de, de_lang_xml);
-            });
-
-            int l = start(() =>
-            {
-                join(j);
-                if (!File.Exists(lang_en) || !arrequ(utf8(en_lang_xml), File.ReadAllBytes(lang_en)))
+                if (!File.Exists(lang_en))
                     File.WriteAllText(lang_en, en_lang_xml);
             });
 
             start(() =>
             {
-                join(i);
+                join(appdir_create_pid);
                 lock (recents_mutex)
                     if (File.Exists(recents_file))
                         try
@@ -134,12 +130,31 @@ namespace CWishlist_win
 
             start(() =>
             {
-                join(k);
-                join(l);
+                join(save_langs_if_not_exist_pid);
 
-                foreach (string f in Directory.GetFiles(lang_dir)) load_lang_xml(f);
+                load_langs(lang_dir);
 
-                if (File.Exists(lang_file)) select_lang(ascii(File.ReadAllBytes(lang_file)));
+                bool reload_langs = false;
+
+                if (get_lang("de").version < ver_int)
+                {
+                    File.WriteAllText(lang_de, de_lang_xml);
+                    reload_langs = true;
+                }
+
+                if (get_lang("en").version < ver_int)
+                {
+                    File.WriteAllText(lang_en, en_lang_xml);
+                    reload_langs = true;
+                }
+
+                if (reload_langs)
+                {
+                    clear_langs();
+                    load_langs(lang_dir);
+                }
+
+                if (File.Exists(lang_file)) select_lang(File.ReadAllText(lang_file, Encoding.ASCII));
                 else if (File.Exists(legacy_lang_file))
                 {
                     byte[] c = File.ReadAllBytes(legacy_lang_file);
@@ -154,11 +169,11 @@ namespace CWishlist_win
                     MessageBox.Show(get_translated("prompt.restore_backup"),
                                     get_translated("caption.restore_backup"),
                                     YesNo) == Yes)
-                    lock (backup_mutex) { wl = backup_load(backup_file); }
+                    lock (backup_mutex) wl = backup_load(backup_file);
             });
 
-            start(load_width);
-            start(load_height);
+            load_width();
+            load_height();
             start(load_cl);
             load_color();
 
@@ -207,11 +222,15 @@ namespace CWishlist_win
             if (File.Exists(color_file))
             {
                 byte[] b = File.ReadAllBytes(color_file);
-                set_color(b[0], b[1], b[2]);
+                Color c = Color.FromArgb(b[0], b[1], b[2]);
+                dbg("[Form1().load_color()]Read color {0} from new color file.", c);
+                set_color(c);
             }
             else if (File.Exists(legacy_color_file))
             {
-                set_color(int32(File.ReadAllBytes(legacy_color_file)));
+                Color c = Color.FromArgb(int32(File.ReadAllBytes(legacy_color_file)));
+                dbg("[Form1().load_color()]Read color {0} from old color file.", c);
+                set_color(c);
                 File.Delete(legacy_color_file);
             }
         }
@@ -229,10 +248,10 @@ namespace CWishlist_win
         {
             try
             {
-                //no GC for [up to] 15MiB of small object heap and 127MiB of big object heap
-                GC.TryStartNoGCRegion(148897792, 133169152, true);
+                //no GC for [up to] 15MiB of small object heap and 127MiB of large object heap
+                GC.TryStartNoGCRegion((15 + 127) * 1024 * 1024, 127 * 1024 * 1024, true);
             }
-            catch (Exception e) { dbg("Can't start no GC area: " + b64(utf8(e.ToString()))); }
+            catch (Exception e) { dbg("[Form1.update_ui()]Can't start no GC area: {0}", b64(e)); }
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Count > 0)
                 foreach (string r in recents)
@@ -250,11 +269,14 @@ namespace CWishlist_win
             asynctinyflush();
             int index = listBox1.SelectedIndex;
             thread_manager.finishall();
+            start(update_ui_save_backup);
+            start(update_ui_write_restore_backup);
             listBox1.Items.Clear();
             foreach (Item i in wl.items) listBox1.Items.Add(i.ToString());
             textBox1.Visible = textBox2.Visible = label1.Visible = label2.Visible
                 = button4.Visible = button5.Visible = button6.Visible = false;
             listBox1.SelectedIndex = index;
+            thread_manager.finishall();
             Invalidate();
             Update();
             GC.EndNoGCRegion();
@@ -437,10 +459,8 @@ namespace CWishlist_win
         void write_hei_file_close() => File.WriteAllBytes(height_file, bytes(Height));
         void write_wid_file_close() => File.WriteAllBytes(width_file, bytes(Width));
         void write_lang_file_close() => File.WriteAllBytes(lang_file, ascii(selected.code));
-
         void write_cl_exe_file_close() => File.WriteAllText(cl_exe_file, cl_exe);
         void write_cl_args_file_close() => File.WriteAllText(cl_args_file, cl_args);
-
         void disable_restore_backup_close() { lock (rbackup_mutex) File.WriteAllBytes(restore_backup, new byte[] { 0 }); }
         void write_recents_mutexed_close() { lock (recents_mutex) write_recents(recents_file, recents); }
 
@@ -479,6 +499,8 @@ namespace CWishlist_win
         void open_click(object _, EventArgs e)
         {
             DialogResult dr = No;
+            //((file not saved && wl not empty) || (file saved && wl changed))
+            //&& (ask user) == cancel
             if (((current_file == "" && wl.Length > 0) || (current_file != "" &&
                 !arrequ(wl.items, loaded_wl))) && (dr = MessageBox.Show(get_translated("prompt.open"),
                                                                   get_translated("caption.open"),
@@ -490,9 +512,8 @@ namespace CWishlist_win
             {
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Filter = "CWishlists|*.cwll;*.cwld;*.cwlu",
+                Filter = "CWishlists|*.cwld;*.cwlu",
                 Title = "Load CWishlist",
-                ValidateNames = true,
                 Multiselect = false
             };
             DialogResult res = ofd.ShowDialog();
@@ -503,9 +524,9 @@ namespace CWishlist_win
             }
         }
 
-        void save_click(object sender, EventArgs e)
+        void save_click(object _, EventArgs e)
         {
-            if (current_file == "") save_as_click(sender, e);
+            if (current_file == "") save_as_click(_, e);
             else
             {
                 int lm1 = current_file.Length - 1;
@@ -527,7 +548,6 @@ namespace CWishlist_win
             {
                 AddExtension = true,
                 ValidateNames = true,
-                CheckPathExists = true,
                 Filter = "CWishlistDeflate|*.cwld",
                 Title = "Save CWishlist"
             };
@@ -550,23 +570,24 @@ namespace CWishlist_win
                 case Keys.Control | Keys.N: new_click(null, null); break;
                 case Keys.Control | Keys.F: search_click(null, null); break;
                 case Keys.Up: if (listBox1.SelectedIndex != -1) listBox1.SelectedIndex--; break;
-                case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
-                                    listBox1.SelectedIndex++;
-                                break;
+                case Keys.Down: if (listBox1.SelectedIndex < listBox1.Items.Count - 1) listBox1.SelectedIndex++; break;
             }
-            if(!text_mode())
+            if (!text_mode())
             {
                 switch (keyData)
                 {
-                    case Keys.J:    if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
-                                        listBox1.SelectedIndex++;
-                                    break;
+                    case Keys.J: if (listBox1.SelectedIndex < listBox1.Items.Count - 1) listBox1.SelectedIndex++; break;
                     case Keys.K: if (listBox1.SelectedIndex > -1) listBox1.SelectedIndex--; break;
                     case Keys.O: btn6_click(null, null); break;
                     case Keys.A: add_item(null, null); break;
-                    case Keys.R: remove_click(null, null); break;
+                    case Keys.D: remove_click(null, null); break;
                     case Keys.S: sort_click(null, null); break;
+                    case Keys.I: textBox1.Focus(); break;
                 }
+            }
+            if (text_mode() && keyData == Keys.Escape)
+            {
+                listBox1.Focus();
             }
             update_ui();
             return base.ProcessCmdKey(ref msg, keyData);
@@ -588,8 +609,7 @@ namespace CWishlist_win
 
         void move_down_click(object _, EventArgs e)
         {
-            if (listBox1.SelectedIndex == -1 || listBox1.SelectedIndex == listBox1.Items.Count - 1)
-                return;
+            if (listBox1.SelectedIndex == -1 || listBox1.SelectedIndex == listBox1.Items.Count - 1) return;
             Item[] old = wl.items;
             Item[] nw = new Item[old.Length];
             int index = listBox1.SelectedIndex;
@@ -620,7 +640,9 @@ namespace CWishlist_win
         /// </summary>
         void version_click(object _, EventArgs e)
         {
-            Start("https://github.com/chrissxYT/CWishlist_win");
+            string url = "https://github.com/chrissxYT/CWishlist_win";
+            Start(cl_exe.Replace("$URL", url).Replace("$NAME", ""),
+                 cl_args.Replace("$URL", url).Replace("$NAME", ""));
         }
 
         void sort_click(object _, EventArgs e)
@@ -716,15 +738,9 @@ namespace CWishlist_win
         /// <summary>
         /// Starts the windows explorer in the plugin dir.
         /// </summary>
-        void plugindir_click(object sender, EventArgs e)
-        {
-            Start("explorer", plugin_dir);
-        }
+        void plugindir_click(object sender, EventArgs e) => Start("explorer", plugin_dir);
 
-        void paint(object sender, PaintEventArgs e)
-        {
-            plugin_manager.call_paint_listeners(e);
-        }
+        void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
 
         /// <summary>
         /// Loads the WL from the given file to loaded_wl, wl and current_file.
@@ -754,12 +770,9 @@ namespace CWishlist_win
 
         void listBox1_DoubleClick(object _, EventArgs e) => btn6_click(_, e);
 
-        public bool text_mode()
-        {
-            return textBox1.Focused || textBox2.Focused || textBox3.Focused;
-        }
+        public bool text_mode() =>  textBox1.Focused || textBox2.Focused || textBox3.Focused;
 
-        private void OpenCommandLineToolStripMenuItem_Click(object sender, EventArgs e)
+        void OpenCommandLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new CLSettings(this).Show();
         }

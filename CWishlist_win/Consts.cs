@@ -2,8 +2,8 @@
 {
     public static class Consts
     {
-        public const string ver_str = "7.0.0b6"; //7.0.0 beta 6
-        public const uint ver_int = 0x00700b06;
+        public static readonly string ver_str = "7.0.0b6"; //7.0.0 beta 6
+        public static readonly uint ver_int = 0x00700b06;
         public static readonly byte[] version = new byte[] { 7, 0, 0, 255, 6 };
 
         public static readonly byte[] cwld_header = new byte[8] { 67, 87, 76, 68, 13, 10, 26, 10 }; //C W L D CR LF EOF LF
@@ -24,10 +24,15 @@
 
         public const int D1 = 0;
         public const int D2 = 1;
-        public const int L1 = 2;
+        public const int D3 = 2;
 
         public const string nullstr = "";
 
         public static readonly lang nulllang = new lang(null, null, 0);
+
+        //CWLDv3 contants
+        public const byte D3_TU = 11; //is a tinyurl
+        public const byte D3_NOTU = 8; //is not a tinyurl
+        public const byte D3_ENDSTR = 11; //string terminator
     }
 }
