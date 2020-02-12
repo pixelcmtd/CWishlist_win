@@ -8,3 +8,12 @@ D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Te
 D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.csproj.CopyComplete
 D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.exe
 D:\workspace_VS\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\bin\x64\Debug\BetterWindows.Tests.exe.config
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\bin\x64\Debug\BetterWindows.Tests.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\bin\x64\Debug\BetterWindows.Tests.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\bin\x64\Debug\BetterWindows.dll
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\bin\x64\Debug\BetterWindows.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.csproj.CopyComplete
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\BetterWindows.Tests\obj\x64\Debug\BetterWindows.Tests.pdb

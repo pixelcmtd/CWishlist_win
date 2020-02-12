@@ -5,7 +5,7 @@ using static CWishlist_win.Consts;
 
 namespace CWishlist_win
 {
-    public static class LanguageProvider
+    public static class Languages
     {
         public static lang selected = nulllang;
 
@@ -26,13 +26,13 @@ namespace CWishlist_win
             while (xml.Read())
                 if (xml.NodeType == XmlNodeType.Element)
                     if (xml.Name == "lang")
-                        l = new lang(xml.GetAttribute("code"), xml.GetAttribute("name"));
+                        l = new lang(xml.GetAttribute("code"), xml.GetAttribute("name"), uint.Parse(xml.GetAttribute("version")));
                     else if (xml.Name == "translation")
                     {
                         string name = xml.GetAttribute("name");
                         string type = xml.GetAttribute("type");
                         string val  = xml.GetAttribute("value");
-                        dynamic v = "NOPE...NO TRANSLATION HERE";
+                        dynamic v = "$ERROR%WHAT&THE/HELL§";
                         switch (type)
                         {
                             case "str_arr": v = val.Split('\\'); break;
@@ -73,14 +73,16 @@ namespace CWishlist_win
 
     public struct lang
     {
-        public lang(string code, string name)
+        public lang(string code, string name, uint version)
         {
             this.code = code;
             this.name = name;
+            this.version = version;
         }
 
         public string code;
         public string name;
+        public uint version;
 
         public override bool Equals(object obj)
         {

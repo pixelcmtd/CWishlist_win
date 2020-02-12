@@ -5,3 +5,9 @@ D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Debug\file_replace.csprojAsse
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Debug\file_replace.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Debug\file_replace.exe
 D:\workspace_VS\CWishlist_win\file_replace\obj\x64\Debug\file_replace.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\bin\x64\Debug\file_replace.exe.config
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\bin\x64\Debug\file_replace.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\bin\x64\Debug\file_replace.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\obj\x64\Debug\file_replace.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\obj\x64\Debug\file_replace.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\file_replace\obj\x64\Debug\file_replace.pdb

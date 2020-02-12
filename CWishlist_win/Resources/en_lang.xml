@@ -1,12 +1,12 @@
 <cwl_lang>
-	<lang code="en" name="english" />
+	<lang code="en" name="english" version="0x00700b06" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist Windows by chrissx (chrissx Media Inc.) Changelog:\
 \
 Version 7.0.0:\
 -Introduced CWishlistDeflate v3 which is another nice optimization (we measured 12.7% and 35.2%)\
 -Added heavy multi-threading which speeds up startup, refreshes and especially tinyurl creation\
 -Restructured a lot of the code\
--CWLS v5
+-CWLS v5\
 -Optimized the AppData setting storage\
 -Changed the sorting algorithm from mergesort to quicksort, which is usually faster and uses less memory\
 \

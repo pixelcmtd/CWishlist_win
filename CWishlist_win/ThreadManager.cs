@@ -20,7 +20,7 @@ namespace CWishlist_win
 
         public ThreadManager()
         {
-            lock(task_mutex)
+            lock (task_mutex)
             {
                 lock (wtask_mutex)
                 {
@@ -45,11 +45,8 @@ namespace CWishlist_win
                     }
                     catch (Exception e)
                     {
-                        if (e is ThreadAbortException)
-                            throw e;
-                        else
-                            dbg("[ThreadManager-UpdateThread]Loop Exception: {0}",
-                                b64(utf8(e.ToString())));
+                        if (e is ThreadAbortException) throw e;
+                        else dbg("[ThreadManager-UpdateThread]Loop Exception: {0}", b64(utf8(e.ToString())));
                     }
                 }
             }
@@ -76,11 +73,8 @@ namespace CWishlist_win
                         }
                         catch (Exception e)
                         {
-                            if (e is ThreadAbortException)
-                                throw e;
-                            else
-                                dbg("[ThreadManager-WorkerThread]t.func Exception: {0}",
-                                    b64(utf8(e.ToString())));
+                            if (e is ThreadAbortException) throw e;
+                            else dbg("[ThreadManager-WorkerThread]t.func Exception: {0}", b64(utf8(e.ToString())));
                         }
                         //in this order because otherwise the other threads could think:
                         //executed = false, running = false, ill execute this
@@ -120,7 +114,7 @@ namespace CWishlist_win
         {
             lock (task_mutex)
             {
-                lock(wtask_mutex)
+                lock (wtask_mutex)
                 {
                     int i = tasks.Count;
                     tasks.Add(new task(f));
@@ -131,7 +125,7 @@ namespace CWishlist_win
 
         public void shutdown()
         {
-            lock(wtask_mutex)
+            lock (wtask_mutex)
             {
                 dbg("[ThreadManager]Shutting down.");
                 foreach (task t in tasks)
@@ -147,10 +141,7 @@ namespace CWishlist_win
             }
         }
 
-        public void join(int taskid)
-        {
-            tasks[taskid].join();
-        }
+        public void join(int taskid) => tasks[taskid].join();
 
         public void finishall()
         {
@@ -203,28 +194,24 @@ namespace CWishlist_win
 
         public override int GetHashCode()
         {
-            return (int)func_ptr();
+            return (int)func_ptr;
         }
 
-        long func_ptr()
-        {
-            return func.Method.MethodHandle.GetFunctionPointer().ToInt64();
-        }
+        long func_ptr { get => func.Method.MethodHandle.GetFunctionPointer().ToInt64(); }
 
         public override string ToString()
         {
-            return $"{func.Method.Name} @ {func_ptr().ToString("x16")}";
+            return $"{func.Method.Name} @ {func_ptr.ToString("x16")}";
         }
 
         public string task_mgr_fmt()
         {
-            return $"{this} ({(running ? "Running" : "Not running")}, " +
-                (executed ? "done executing" : "not executed yet");
+            return $"{this} ({(running ? "Running" : "Not running")}, {(executed ? "done executing" : "not executed yet")}";
         }
 
         public void join()
         {
-            dbg("[ThreadManager]Joining func {0}", this);
+            dbg($"[ThreadManager]Joining func {this}");
             while (!executed) ;
         }
     }

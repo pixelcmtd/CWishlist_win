@@ -102,7 +102,7 @@ namespace CWishlist_win
             {
                 raw.Close();
                 throw new Exception(
-                    $"This CWLD file is invalid.{(v != -2 ? " (v is " + v + ")" : "")})");
+                    $"This CWLD file is invalid or has been created with a newer version of CWishlist.{(v != -2 ? " (version: " + v + ")" : "")})");
             }
 
             DeflateStream d = new DeflateStream(raw, CompressionMode.Decompress, false);
@@ -201,7 +201,7 @@ namespace CWishlist_win
                         if (!(url.StartsWith(http) || url.StartsWith(https)))
                             url = https + url;
                     }
-                    else throw new Exception("CWLDv3 reading seems to be broken.");
+                    else throw new Exception("This CWLD file is invalid.");
                     Item itm = new Item(name, url);
                     dbg("[CWLD]Read {0}...", itm.dbgfmt());
                     itms.Add(itm);
@@ -273,7 +273,7 @@ namespace CWishlist_win
             dbg("[CWLS]Reading file...");
             int v;
             Stream s = File.Open(file, Open, FileAccess.Read);
-            if (s.ReadByte() == 80 && s.ReadByte() == 75)
+            if (readequals(s, zip_header)) //is file a zip file?
             {
                 s.Close();
                 using ZipArchive z = ZipFile.Open(file, ZipArchiveMode.Read, ASCII);
@@ -282,44 +282,38 @@ namespace CWishlist_win
             else
             {
                 s.Seek(0, SeekOrigin.Begin);
-                if (readequals(s, 8, cwls4_header))
+                if (readequals(s, cwls4_header))
                 {
-                    s.Close();
                     v = 4;
                 }
                 else
                 {
                     s.Seek(4, SeekOrigin.Begin);
                     v = s.ReadByte();
-                    s.Close();
                 }
+                s.Close();
             }
             dbg($"[CWLS]Got version {v}.");
             if (v > 5) throw new TooNewRecentsFileException();
             if (v < 4) throw new Exception($"CWLSv{v} is deprecated, it's no longer supported by CWL.");
             dbg($"[CWLS]Starting reading with version {v}.");
             List<string> r = new List<string>();
+            s = File.Open(file, Open, FileAccess.Read);
+            s.Position = v == 4 ? 10 : 5;
+            DeflateStream d = new DeflateStream(s, CompressionMode.Decompress, false);
+            int i;
             if (v == 4)
             {
-                Stream rawfs = File.Open(file, Open, FileAccess.Read);
-                rawfs.Seek(10, SeekOrigin.Begin);
-                s = new DeflateStream(rawfs, CompressionMode.Decompress, false);
-                int i;
                 byte[] bfr = new byte[131070]; //ushort.MaxValue * 2 (128KiB)
-                while ((i = s.ReadByte()) != -1)
+                while ((i = d.ReadByte()) != -1)
                 {
-                    int len = (i << 8) | s.ReadByte();
-                    s.Read(bfr, 0, len * 2);
+                    int len = (i << 8) | d.ReadByte();
+                    d.Read(bfr, 0, len * 2);
                     r.Add(utf16(bfr, len));
                 }
-                s.Close();
             }
             else
             {
-                FileStream fs = File.Open(file, Open, FileAccess.Read);
-                fs.Position = 5;
-                DeflateStream d = new DeflateStream(fs, CompressionMode.Decompress, false);
-                int i;
                 List<byte> bfr = new List<byte>();
                 while ((i = d.ReadByte()) != -1)
                     if (i != 11) bfr.Add((byte)i);
@@ -330,17 +324,15 @@ namespace CWishlist_win
                         r.Add(t);
                         bfr.Clear();
                     }
-                d.Close();
             }
+            d.Close();
             return r;
         }
 
-        static bool readequals(Stream stream, int len, byte[] arr)
+        static bool readequals(Stream stream, byte[] arr)
         {
-            if (len != arr.Length)
-                return false;
-            byte[] bfr = new byte[len];
-            stream.Read(bfr, 0, len);
+            byte[] bfr = new byte[arr.Length];
+            stream.Read(bfr, 0, arr.Length);
             return arrequ(bfr, arr);
         }
     }

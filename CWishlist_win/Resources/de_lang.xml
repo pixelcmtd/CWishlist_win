@@ -1,5 +1,5 @@
 <cwl_lang>
-	<lang code="de" name="deutsch" />
+	<lang code="de" name="deutsch" version="0x00700b06" />
 	<translation name="misc.changelog" type="str_arr" value=" CWishlist Windows von chrissx (chrissx Media Inc.) Changelog:\
 \
 Version 7.0.0:\

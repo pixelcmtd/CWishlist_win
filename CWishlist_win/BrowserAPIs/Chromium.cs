@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using static CWishlist_win.CLinq;
+using static binutils.io;
 
 namespace CWishlist_win
 {
@@ -25,7 +25,7 @@ namespace CWishlist_win
                     while (r.Read() && r.TokenType != JsonToken.EndObject)
                     {
                         val_name = r.Value as string;
-                        Console.WriteLine(val_name);
+                        dbg(val_name);
                         if (r.TokenType == JsonToken.PropertyName)
                         {
                             if (val_name == "date_added") time = long.Parse(r.ReadAsString());

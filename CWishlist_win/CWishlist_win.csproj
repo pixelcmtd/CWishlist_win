@@ -153,7 +153,7 @@
     </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="LanguageProvider.cs" />
+    <Compile Include="Languages.cs" />
     <Compile Include="LanguageSelectionDialog.cs">
       <SubType>Form</SubType>
     </Compile>

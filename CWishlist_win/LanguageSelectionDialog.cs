@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using static CWishlist_win.LanguageProvider;
+using static CWishlist_win.Languages;
 
 namespace CWishlist_win
 {
@@ -15,7 +15,7 @@ namespace CWishlist_win
                 listBox1.Items.Add(l.name);
         }
 
-        void button1_Click(object sender, EventArgs e)
+        void button1_Click(object _, EventArgs e)
         {
             if (listBox1.SelectedIndex != -1)
                 selected = langs.Keys.ElementAt(listBox1.SelectedIndex);

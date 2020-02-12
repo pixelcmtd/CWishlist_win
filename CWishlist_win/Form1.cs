@@ -8,7 +8,7 @@ using static binutils.bin;
 using static binutils.c;
 using static binutils.str;
 using static binutils.io;
-using static CWishlist_win.LanguageProvider;
+using static CWishlist_win.Languages;
 using static CWishlist_win.Properties.Resources;
 using static CWishlist_win.Program;
 using static CWishlist_win.Consts;
@@ -58,12 +58,12 @@ namespace CWishlist_win
         public readonly object slist_mutex = new object(); //screen list mutex
         public readonly object blist_mutex = new object(); //backend list[s] mutex
 
-        int start(function f) => thread_manager.start(f);
-        void join(int id) => thread_manager.join(id);
+        public int start(function f) => thread_manager.start(f);
+        public void join(int id) => thread_manager.join(id);
 
         public Form1()
         {
-            dbg("[Form1()]Form1 constructor is called...");
+            dbg("[Form1()]Constructing Form1...");
 
             plugin_manager = new PluginManager(this);
             InitializeComponent();

@@ -5,3 +5,9 @@ D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.cspr
 D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.exe
 D:\workspace_VS\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\bin\x64\Debug\cwla_benchmarks.exe.config
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\bin\x64\Debug\cwla_benchmarks.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\bin\x64\Debug\cwla_benchmarks.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.exe
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\cwla_benchmarks\obj\x64\Debug\cwla_benchmarks.pdb

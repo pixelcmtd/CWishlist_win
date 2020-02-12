@@ -11,6 +11,8 @@
         public static readonly byte[] cwls_header = new byte[4] { 67, 87, 76, 83 }; //CWLS > 4 header
         public static readonly byte[] cwll_header = new byte[4] { 67, 87, 76, 76 }; //CWLL
 
+        public static readonly byte[] zip_header = new byte[2] { 80, 75 }; //PK
+
         public const string tinyurl_api = "http://tinyurl.com/api-create.php?url=";
         public const string tinyurl = "http://tinyurl.com/";
         public const int tinyurl_length = 19;
@@ -26,17 +28,6 @@
 
         public const string nullstr = "";
 
-        public static readonly lang nulllang = new lang(null, null);
-
-        //-----------------
-        //-CWLLv1 contants-
-        //-----------------
-
-        //is a tinyurl
-        public const byte L1_TU = 11;
-        //is no tinyurl
-        public const byte L1_NOTU = 8;
-        //end string
-        public const byte L1_ENDSTR = 11;
+        public static readonly lang nulllang = new lang(null, null, 0);
     }
 }

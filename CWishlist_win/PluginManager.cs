@@ -1,4 +1,4 @@
-﻿using CWishlist_win.Properties;
+﻿using static CWishlist_win.Properties.Resources;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +32,6 @@ namespace CWishlist_win
         }
 
         public void register_form_construct_listener(form_construct_listener listener) => form_construct_listeners.Add(listener);
-
         public void register_paint_listener(paint_listener listener) => paint_listeners.Add(listener);
 
         public void call_form_construct_listeners()
@@ -59,24 +58,22 @@ namespace CWishlist_win
 		{
 			try
 			{
-				byte[] dl = new WebClient().DownloadData(plugin.update_url);
-				uint c_ver = plugin.ver_int;
+                XmlReader xml = XmlReader.Create(new WebClient().OpenRead(plugin.update_url));
                 uint s_ver = 0;
-                string dll_dl_url = "";
-				XmlReader xml = XmlReader.Create(new MemoryStream(dl));
+                string url = "";
 				while(xml.Read())
 					if(xml.Name == "update_info")
                     {
                         s_ver = uint.Parse(xml.GetAttribute("version"));
-                        dll_dl_url = xml.GetAttribute("url");
+                        url = xml.GetAttribute("url");
                     }
-                if(s_ver > c_ver)
+                if(s_ver > plugin.ver_int)
                 {
                     string tmp = Path.ChangeExtension(Path.GetTempFileName(), "exe");
-                    File.WriteAllBytes(tmp, Resources.file_replace);
+                    File.WriteAllBytes(tmp, file_replace);
                     Process.Start(tmp,
-                        $"{dll_dl_url} \"{plugins[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
-                    form.thread_manager.start(() => File.Delete(tmp));
+                        $"{url} \"{plugins[plugin]}\" \"{Process.GetCurrentProcess().MainModule.FileName}\"");
+                    form.start(() => File.Delete(tmp));
                     form.Close();
                     Environment.Exit(0);
                 }

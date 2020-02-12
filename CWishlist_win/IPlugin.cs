@@ -29,7 +29,7 @@
         void construct(PluginManager plugin_manager);
 
         /// <summary>
-        /// Checks if this plugin-version is compatible with this version of CWishlist_win
+        /// Checks wheather this plugin-version is compatible with this version of CWishlist_win
         /// </summary>
         /// <returns>true if this plugin-version is compatible with this version of CWishlist_win, false if not</returns>
         bool is_compatible(string vs, byte[] vb, uint vi);

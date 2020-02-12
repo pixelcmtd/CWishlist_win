@@ -4,3 +4,8 @@ D:\workspace_VS\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyCode.csprojAssem
 D:\workspace_VS\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyCode.csproj.CoreCompileInputs.cache
 D:\workspace_VS\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyFormats.dll
 D:\workspace_VS\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyFormats.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\LegacyFormats\bin\x64\Debug\LegacyFormats.dll
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\LegacyFormats\bin\x64\Debug\LegacyFormats.pdb
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyCode.csprojAssemblyReference.cache
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyFormats.dll
+C:\Users\Christian\Source\Repos\chrissxYT\CWishlist_win\LegacyFormats\obj\x64\Debug\LegacyFormats.pdb

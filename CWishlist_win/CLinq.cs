@@ -8,14 +8,22 @@ namespace CWishlist_win
     {
         public static T where<T>(this IEnumerable<T> ie, Predicate<T> p)
         {
-            foreach (T t in ie) if (p(t)) return t;
+            foreach (T t in ie)
+                if (p(t))
+                    return t;
+
             return default;
         }
 
         public static bool arrequ<T>(T[] left, T[] right)
         {
-            if (left.Length != right.Length) return false;
-            for (int i = 0; i < left.Length; i++) if (!left[i].Equals(right[i])) return false;
+            if (left.Length != right.Length)
+                return false;
+
+            for (int i = 0; i < left.Length; i++)
+                if (!left[i].Equals(right[i]))
+                    return false;
+
             return true;
         }
 
@@ -41,7 +49,8 @@ namespace CWishlist_win
         //fast [unsafe] [and full] array copy for item arrays
         public static void farrcpyitm(Item[] src, Item[] dest)
         {
-            for (long i = 0; i < src.LongLength; i++) dest[i] = new Item(src[i].name, src[i].url);
+            for (long i = 0; i < src.LongLength; i++)
+                dest[i] = new Item(src[i].name, src[i].url);
         }
     }
 }

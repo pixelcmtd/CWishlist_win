@@ -12,10 +12,7 @@ namespace CWishlist_win
             this.items = items;
         }
 
-        public WL(List<Item> items)
-        {
-            this.items = items.ToArray();
-        }
+        public WL(List<Item> items) : this(items.ToArray()) { }
 
         public Item[] items;
 
@@ -44,19 +41,12 @@ namespace CWishlist_win
         }
 
         public Item this[ulong index] => items[index];
-
         public Item this[uint index] => items[index];
-
         public Item this[int index] => items[index];
-
         public Item this[long index] => items[index];
-
         public Item this[short index] => items[index];
-
         public Item this[ushort index] => items[index];
-
         public Item this[byte index] => items[index];
-
         public Item this[sbyte index] => items[index];
 
         public static WL operator &(WL first, WL second)
@@ -70,16 +60,8 @@ namespace CWishlist_win
         }
 
         public static implicit operator int(WL wl) => wl.items.Length;
-
-        public static implicit operator long(WL wl)
-        {
-            return wl.items.LongLength;
-        }
-
-        public static implicit operator Item[](WL wl)
-        {
-            return wl.items;
-        }
+        public static implicit operator long(WL wl) => wl.items.LongLength;
+        public static implicit operator Item[](WL wl) => wl.items;
 
         public override bool Equals(object obj) => (obj is WL) ? ((WL)obj) == this : false;
 		
@@ -98,11 +80,9 @@ namespace CWishlist_win
         public IEnumerator GetEnumerator() => items.GetEnumerator();
 
         public int Length => items.Length;
-
         public long LongLength => items.LongLength;
 
         public Item[] SearchItems(Predicate<Item> predicate) => FindAll(items, predicate);
-
         public int GetFirstIndex(Predicate<Item> predicate) => FindIndex(items, predicate);
 
         public int[] GetIndices(Predicate<Item> predicate)
