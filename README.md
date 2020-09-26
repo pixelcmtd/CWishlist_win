@@ -8,6 +8,6 @@ CWL ecosystem as a whole in [ROADMAP.md](ROADMAP.md).
 ## Building
 For a full release-build of CWL_win run CWishlist_win/_BUILD/build.bat
 ## Installing
-Installing this kind of software instead of just running it as exactly
+Installing this kind of software instead of just running it has exactly
 zero advantages, so you can't at the moment. (we will create an
 installer in the future)
