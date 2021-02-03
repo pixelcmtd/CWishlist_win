@@ -385,7 +385,6 @@ namespace CWishlist_win
             this.Text = "CWishlist";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.closing);
             this.SizeChanged += new System.EventHandler(this.size_change);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

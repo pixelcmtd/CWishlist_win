@@ -6,6 +6,8 @@ namespace binutils
 {
     public static class io
     {
+        public delegate byte[] encoding_s2b(string s);
+
         public static void add_entry(this ZipArchive zip, string entry_name, byte[] contents, CompressionLevel comp_lvl = CompressionLevel.Optimal)
         {
             Stream s = zip.CreateEntry(entry_name, comp_lvl).Open();
@@ -35,11 +37,16 @@ namespace binutils
             s.Write(b, 0, b.Length);
         }
 
+        public static void write(this Stream s, string t, encoding_s2b encoding)
+        {
+            s.write(encoding(t));
+        }
+
         public static void dbg(string fmt, params object[] args)
         {
 #if DEBUG
             if(fmt == null) dbg("[dbg()]fmt is null");
-            else Console.WriteLine(DateTime.Now() + fmt, args);
+            else Console.WriteLine(DateTime.Now + fmt, args);
 #endif
         }
 

@@ -164,7 +164,6 @@ namespace CWishlist_win
 
             load_width();
             load_height();
-            start(load_cl);
             load_color();
 
             thread_manager.finishall();
