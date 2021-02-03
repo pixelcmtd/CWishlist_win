@@ -7,17 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CWishlist_win", "CWishlist_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "file_replace", "file_replace\file_replace.csproj", "{8597DD54-2A2F-4781-8AD3-8DC0C6DA635D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_plugin", "test_plugin\test_plugin.csproj", "{0CF1F6CD-3F03-44C9-A26A-7D64C9FF0028}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyCode", "LegacyFormats\LegacyCode.csproj", "{4F00DBAE-27B1-4BF6-B5F9-5F1CB07DEB05}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cwla_benchmarks", "cwla_benchmarks\cwla_benchmarks.csproj", "{74986553-05C8-4BBC-880A-F2491FBC0242}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "binutils", "binutils\binutils.csproj", "{69CAA4F5-D364-4CBB-BB0B-77913B900D0E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterWindows", "BetterWindows\BetterWindows.csproj", "{640A9C90-874A-466B-B8D9-6CC99E49547A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterWindows.Tests", "BetterWindows.Tests\BetterWindows.Tests.csproj", "{C0E4B0CF-CC17-4572-AC40-F342E34598CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

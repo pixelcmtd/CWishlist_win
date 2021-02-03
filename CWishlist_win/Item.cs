@@ -70,14 +70,14 @@ namespace CWishlist_win
 
         public void write_bytes(Stream s, int format)
         {
-            if (format == D1)
+            if (format == 1)
             {
                 s.write(name, utf16);
                 s.write(10, 13);
                 s.write(url, utf16);
                 s.write(10, 13);
             }
-            else if (format == D2)
+            else if (format == 2)
             {
                 s.write(name, utf16);
                 s.write(11);
@@ -93,7 +93,7 @@ namespace CWishlist_win
                 }
                 s.write(11);
             }
-            else if (format == D3)
+            else if (format == 3)
             {
                 s.write(name, utf8);
                 if (url.StartsWith(tinyurl))

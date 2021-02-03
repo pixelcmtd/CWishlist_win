@@ -32,7 +32,7 @@ namespace CWishlist_win
         public static bool valid_url(string url)
         {
             string s = url.ToLower();
-            return (s.StartsWith(http) || s.StartsWith(https)) && fccontains(url, '.');
+            return (s.StartsWith(http) || s.StartsWith(https)) && url.Contains(".");
         }
 
         /// <summary>
@@ -45,16 +45,6 @@ namespace CWishlist_win
             if (c == 'd') return cwld_load(f);
             if (c == 'u') return cwlu_load(f);
             throw new Exception("Only CWLD and CWLU files are supported by this version of CWL.");
-        }
-
-        public static WL backup_load(string f)
-        {
-            return cwld_load(f);
-        }
-
-        public static void backup_save(WL wl, string f)
-        {
-            cwld_save(wl, f);
         }
 
         /// <summary>
@@ -71,7 +61,7 @@ namespace CWishlist_win
             DeflateStream d = new DeflateStream(s, CompressionLevel.Optimal, false);
             foreach (Item i in wl)
             {
-                i.write_bytes(d, D3);
+                i.write_bytes(d, 3);
                 dbg("[CWLD]Wrote {0}...", i.dbgfmt());
             }
             d.Close();

@@ -22,10 +22,6 @@
         public const string http = "http://";
         public const string https = "https://";
 
-        public const int D1 = 0;
-        public const int D2 = 1;
-        public const int D3 = 2;
-
         public const string nullstr = "";
 
         public static readonly lang nulllang = new lang(null, null, 0);

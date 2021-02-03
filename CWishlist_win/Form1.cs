@@ -27,16 +27,12 @@ namespace CWishlist_win
 {
     public partial class Form1 : Form
     {
-        public readonly PluginManager plugin_manager;
         public readonly ThreadManager thread_manager = new ThreadManager();
         public WL wl;
         public string current_file = "";
-        public string cl_exe  = "$URL";
-        public string cl_args = "";
         public Item[] loaded_wl = EMPTY;
         public List<string> recents = new List<string>();
         public readonly string appdir = appdata + "\\CWishlist";
-        public readonly string plugin_dir = appdata + "\\CWishlist\\plugins";
 		public readonly string lang_dir = appdata + "\\CWishlist\\langs";
         public readonly string lang_de = appdata + "\\CWishlist\\langs\\de.xml";
         public readonly string lang_en = appdata + "\\CWishlist\\langs\\en.xml";
@@ -51,8 +47,6 @@ namespace CWishlist_win
         public readonly string restore_backup = appdata + "\\CWishlist\\RESTORE_BACKUP";
         public readonly string color_file = appdata + "\\CWishlist\\C";
         public readonly string legacy_color_file = appdata + "\\CWishlist\\COLOR";
-        public readonly string cl_exe_file = appdata + "\\CWishlist\\CLE";
-        public readonly string cl_args_file = appdata + "\\CWishlist\\CLA";
         public readonly object recents_mutex = new object();
         public readonly object backup_mutex = new object();
         public readonly object rbackup_mutex = new object(); //restore backup mutex
@@ -66,7 +60,6 @@ namespace CWishlist_win
         {
             dbg("[Form1()]Constructing Form1...");
 
-            plugin_manager = new PluginManager(this);
             InitializeComponent();
 
             dbg("[Form1()]Constructed Form1.");
@@ -84,9 +77,6 @@ namespace CWishlist_win
 
             int langdir_create_pid = start(() =>
             { if (!Directory.Exists(lang_dir)) Directory.CreateDirectory(lang_dir); });
-
-            start(() =>
-            { if (!Directory.Exists(plugin_dir)) Directory.CreateDirectory(plugin_dir); });
 
             int save_langs_if_not_exist_pid = start(() =>
             {
@@ -166,10 +156,10 @@ namespace CWishlist_win
                     File.WriteAllBytes(restore_backup, new byte[] { 0 });
                 else if (File.ReadAllBytes(restore_backup)[0] != 0 &&
                     GetProcessesByName("CWishlist_win").Length < 2 &&
-                    MessageBox.Show(get_translated("prompt.restore_backup"),
-                                    get_translated("caption.restore_backup"),
+                    MessageBox.Show(get_translated("restore_backup"),
+                                    "",
                                     YesNo) == Yes)
-                    lock (backup_mutex) wl = backup_load(backup_file);
+                    lock (backup_mutex) wl = cwld_load(backup_file);
             });
 
             load_width();
@@ -177,19 +167,6 @@ namespace CWishlist_win
             start(load_cl);
             load_color();
 
-#if false
-            foreach (string file in Directory.GetFiles(plugin_dir, "*.cwlwnplg"))
-                    try
-                    {
-                        plugin_manager.load_plugins(file);
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.ToString(), string.Format(get_translated("caption.pluginloadfailed"), file));
-                    }
-
-                plugin_manager.call_form_construct_listeners();
-#endif
             thread_manager.finishall();
             update_ui();
             label3.Visible = false;
@@ -235,23 +212,8 @@ namespace CWishlist_win
             }
         }
 
-        void load_cl()
-        {
-            if(File.Exists(cl_exe_file))
-                cl_exe = File.ReadAllText(cl_exe_file);
-            if (File.Exists(cl_args_file))
-                cl_args = File.ReadAllText(cl_args_file);
-            dbg("[Form1.load_cl()]Read cl_exe \"{0}\" and cl_args \"{1}\".", cl_exe, cl_args);
-        }
-        
         public void update_ui()
         {
-            try
-            {
-                //no GC for [up to] 15MiB of small object heap and 127MiB of large object heap
-                GC.TryStartNoGCRegion((15 + 127) * 1024 * 1024, 127 * 1024 * 1024, true);
-            }
-            catch (Exception e) { dbg("[Form1.update_ui()]Can't start no GC area: {0}", b64(e)); }
             recentToolStripMenuItem.DropDownItems.Clear();
             if (recents.Count > 0)
                 foreach (string r in recents)
@@ -279,12 +241,10 @@ namespace CWishlist_win
             thread_manager.finishall();
             Invalidate();
             Update();
-            GC.EndNoGCRegion();
-            GC.Collect(2, GCCollectionMode.Forced, false, true);
         }
 
         void update_ui_save_backup()
-        { try { lock (backup_mutex) backup_save(wl, backup_file); } catch { } }
+        { try { lock (backup_mutex) cwld_save(wl, backup_file); } catch { } }
 
         void update_ui_write_restore_backup()
         { try { lock (rbackup_mutex) { File.WriteAllBytes(restore_backup, new byte[] { 1 }); } } catch { } }
@@ -381,11 +341,8 @@ namespace CWishlist_win
 
         void btn6_click(object _, EventArgs e)
         {
-            if (listBox1.SelectedIndex == -1) return;
-            string url  = wl.items[listBox1.SelectedIndex].url;
-            string name = wl.items[listBox1.SelectedIndex].name;
-            Start(cl_exe.Replace("$URL", url).Replace("$NAME", name),
-                 cl_args.Replace("$URL", url).Replace("$NAME", name));
+            if (listBox1.SelectedIndex != -1)
+                Start(wl.items[listBox1.SelectedIndex].url);
         }
 
         void remove_click(object _, EventArgs e)
@@ -425,8 +382,8 @@ namespace CWishlist_win
         {
             if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl)))
             {
-                DialogResult dr = MessageBox.Show(get_translated("prompt.close"),
-                                                  get_translated("caption.close"),
+                DialogResult dr = MessageBox.Show(get_translated("close"),
+                                                  "",
                                                   YesNoCancel);
                 if (dr == Yes   ) save_click(_, e);
            else if (dr == Cancel) return;
@@ -439,28 +396,21 @@ namespace CWishlist_win
                         recents.RemoveAll((t) => t == current_file);
                         recents.Insert(0, current_file);
                     }
-            start(write_recents_mutexed_close);
-            start(disable_restore_backup_close);
-            start(write_lang_file_close);
-            start(write_wid_file_close);
-            start(write_hei_file_close);
-            start(write_color_file_close);
-            start(write_cl_exe_file_close);
-            start(write_cl_args_file_close);
+            write_recents_mutexed_close();
+            disable_restore_backup_close();
+            File.WriteAllBytes(lang_file, ascii(selected.code));
+            File.WriteAllBytes(width_file, bytes(Width));
+            File.WriteAllBytes(height_file, bytes(Height));
+            write_color_file_close();
             thread_manager.shutdown();
         }
-        
+
         void write_color_file_close()
         {
             Color c = BackColor;
             File.WriteAllBytes(color_file, new byte[] { c.R, c.G, c.B });
         }
 
-        void write_hei_file_close() => File.WriteAllBytes(height_file, bytes(Height));
-        void write_wid_file_close() => File.WriteAllBytes(width_file, bytes(Width));
-        void write_lang_file_close() => File.WriteAllBytes(lang_file, ascii(selected.code));
-        void write_cl_exe_file_close() => File.WriteAllText(cl_exe_file, cl_exe);
-        void write_cl_args_file_close() => File.WriteAllText(cl_args_file, cl_args);
         void disable_restore_backup_close() { lock (rbackup_mutex) File.WriteAllBytes(restore_backup, new byte[] { 0 }); }
         void write_recents_mutexed_close() { lock (recents_mutex) write_recents(recents_file, recents); }
 
@@ -481,7 +431,7 @@ namespace CWishlist_win
         void new_click(object _, EventArgs e)
         {
             if ((wl > 0 && current_file == "") || (current_file != "" && !arrequ(wl.items, loaded_wl))
-                && MessageBox.Show(get_translated("prompt.new"), get_translated("caption.new"), YesNo) == No)
+                && MessageBox.Show(get_translated("new"), "", YesNo) == No)
                     return;
             lock (blist_mutex)
             {
@@ -502,8 +452,8 @@ namespace CWishlist_win
             //((file not saved && wl not empty) || (file saved && wl changed))
             //&& (ask user) == cancel
             if (((current_file == "" && wl.Length > 0) || (current_file != "" &&
-                !arrequ(wl.items, loaded_wl))) && (dr = MessageBox.Show(get_translated("prompt.open"),
-                                                                  get_translated("caption.open"),
+                !arrequ(wl.items, loaded_wl))) && (dr = MessageBox.Show(get_translated("open"),
+                                                                  "",
                                                                   YesNoCancel)) == Cancel)
                 return;
             else if (dr == Yes)
@@ -631,7 +581,7 @@ namespace CWishlist_win
         void chnglg_click(object _, EventArgs e)
         {
             string tmp = Path.GetTempFileName();
-            File.WriteAllLines(tmp, get_translated("misc.changelog"));
+            File.WriteAllLines(tmp, get_translated("changelog"));
             Start("notepad", $"\"{tmp}\"");
         }
 
@@ -640,9 +590,7 @@ namespace CWishlist_win
         /// </summary>
         void version_click(object _, EventArgs e)
         {
-            string url = "https://github.com/chrissxYT/CWishlist_win";
-            Start(cl_exe.Replace("$URL", url).Replace("$NAME", ""),
-                 cl_args.Replace("$URL", url).Replace("$NAME", ""));
+            Start("https://github.com/chrissxYT/CWishlist_win");
         }
 
         void sort_click(object _, EventArgs e)
@@ -654,7 +602,7 @@ namespace CWishlist_win
 
         void lang_click(object _, EventArgs e)
         {
-            new LanguageSelectionDialog(get_translated("title.switch_lang")).ShowDialog();
+            new LanguageSelectionDialog(get_translated("switch_lang")).ShowDialog();
         }
 
         bool containsany(string s, string[] t)
@@ -734,13 +682,6 @@ namespace CWishlist_win
                 MessageBox.Show(e1.ToString());
             }
         }
-        
-        /// <summary>
-        /// Starts the windows explorer in the plugin dir.
-        /// </summary>
-        void plugindir_click(object sender, EventArgs e) => Start("explorer", plugin_dir);
-
-        void paint(object sender, PaintEventArgs e) => plugin_manager.call_paint_listeners(e);
 
         /// <summary>
         /// Loads the WL from the given file to loaded_wl, wl and current_file.
@@ -774,7 +715,6 @@ namespace CWishlist_win
 
         void OpenCommandLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new CLSettings(this).Show();
         }
     }
 }

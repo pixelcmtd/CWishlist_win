@@ -123,20 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrowserAPIs\bookmark.cs" />
-    <Compile Include="BrowserAPIs\bookmarks.cs" />
-    <Compile Include="BrowserAPIs\Brave.cs" />
-    <Compile Include="BrowserAPIs\checksum.cs" />
-    <Compile Include="BrowserAPIs\checksum_type.cs" />
-    <Compile Include="BrowserAPIs\Chrome.cs" />
-    <Compile Include="BrowserAPIs\Chromium.cs" />
     <Compile Include="CLinq.cs" />
-    <Compile Include="CLSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CLSettings.Designer.cs">
-      <DependentUpon>CLSettings.cs</DependentUpon>
-    </Compile>
     <Compile Include="Consts.cs" />
     <Compile Include="DebugTools.cs">
       <SubType>Form</SubType>
@@ -151,7 +138,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="IPlugin.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Languages.cs" />
     <Compile Include="LanguageSelectionDialog.cs">
@@ -160,7 +146,6 @@
     <Compile Include="LanguageSelectionDialog.Designer.cs">
       <DependentUpon>LanguageSelectionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -177,9 +162,6 @@
     </Compile>
     <Compile Include="ThreadManager.cs" />
     <Compile Include="WL.cs" />
-    <EmbeddedResource Include="CLSettings.resx">
-      <DependentUpon>CLSettings.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="DebugTools.resx">
       <DependentUpon>DebugTools.cs</DependentUpon>
     </EmbeddedResource>
@@ -210,9 +192,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="example_plugin_update.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\en_lang.xml" />

@@ -1,8 +1,0 @@
-D:\workspace_VS\CWishlist_win\test_plugin\bin\Release\test_plugin.dll
-D:\workspace_VS\CWishlist_win\test_plugin\bin\Release\test_plugin.pdb
-D:\workspace_VS\CWishlist_win\test_plugin\obj\Release\test_plugin.csprojAssemblyReference.cache
-D:\workspace_VS\CWishlist_win\test_plugin\obj\Release\test_plugin.csproj.CoreCompileInputs.cache
-D:\workspace_VS\CWishlist_win\test_plugin\obj\Release\test_plugin.dll
-D:\workspace_VS\CWishlist_win\test_plugin\obj\Release\test_plugin.pdb
-D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\test_plugin.dll
-D:\workspace_VS\CWishlist_win\CWishlist_win\_BUILD\AnyCpu\test_plugin.pdb

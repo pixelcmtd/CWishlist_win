@@ -1,6 +1,0 @@
-D:\workspace_VS\CWishlist_win\BetterWindows\bin\Release\BetterWindows.dll
-D:\workspace_VS\CWishlist_win\BetterWindows\bin\Release\BetterWindows.pdb
-D:\workspace_VS\CWishlist_win\BetterWindows\obj\Release\BetterWindows.csprojAssemblyReference.cache
-D:\workspace_VS\CWishlist_win\BetterWindows\obj\Release\BetterWindows.csproj.CoreCompileInputs.cache
-D:\workspace_VS\CWishlist_win\BetterWindows\obj\Release\BetterWindows.dll
-D:\workspace_VS\CWishlist_win\BetterWindows\obj\Release\BetterWindows.pdb

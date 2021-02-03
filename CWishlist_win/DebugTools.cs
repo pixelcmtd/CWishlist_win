@@ -27,7 +27,7 @@ namespace CWishlist_win
         {
             FileStream fs = File.Open("test.uncompressed_cwll", FileMode.Create, FileAccess.Write);
             foreach (Item i in src_form.wl)
-                i.write_bytes(fs, D3);
+                i.write_bytes(fs, 3);
             fs.Close();
         }
 
@@ -38,7 +38,7 @@ namespace CWishlist_win
             fs.write(255);
             DeflateStream ds = new DeflateStream(fs, CompressionLevel.Optimal, false);
             foreach (Item i in src_form.wl)
-                i.write_bytes(ds, D3);
+                i.write_bytes(ds, 3);
             ds.Close();
         }
 
@@ -46,13 +46,12 @@ namespace CWishlist_win
         {
             FileStream fs = File.Open("test.uncompressed_cwld", FileMode.Create, FileAccess.Write);
             foreach (Item i in src_form.wl)
-                i.write_bytes(fs, D2);
+                i.write_bytes(fs, 2);
             fs.Close();
         }
 
         void button6_Click(object sender, EventArgs e)
         {
-            dbg(Chrome.parse(Chrome.bookmark_path_from_appdata_local(@"C:\Users\Christian\AppData\Local")).dbgstr(true, "", "    "));
         }
         
         void button1_Click(object sender, EventArgs e)
@@ -62,7 +61,6 @@ namespace CWishlist_win
 
         void button2_Click(object sender, EventArgs e)
         {
-            dbg(Brave.parse(Brave.bookmark_path_from_appdata_local(@"C:\Users\Christian\AppData\Local")).dbgstr(true, "", "    "));
         }
     }
 }

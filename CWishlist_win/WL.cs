@@ -5,6 +5,7 @@ using static System.Array;
 
 namespace CWishlist_win
 {
+    //TODO: get rid of this completely
     public class WL : IEnumerable
     {
         public WL(params Item[] items)
@@ -66,14 +67,6 @@ namespace CWishlist_win
         public override bool Equals(object obj) => (obj is WL) ? ((WL)obj) == this : false;
 		
 		public bool Equals(WL wl) => wl == this;
-
-        public override int GetHashCode()
-		{
-		    int hc = 0;
-            foreach (Item i in items)
-                hc = unchecked(hc * i.GetHashCode());
-		    return hc;
-		}
 
         public override string ToString() => items.ToString();
 

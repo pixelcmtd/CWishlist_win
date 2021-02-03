@@ -46,27 +46,16 @@ namespace CWishlist_win
                         {
                             case "str_arr": v = val.Split('\\'); break;
                             case "str": v = val; break;
-                            case "int_arr": v = val.Split('\\').parse_ints(); break;
                             case "int": v = int.Parse(val); break;
-                            case "uint_arr": v = val.Split('\\').parse_uints(); break;
                             case "uint": v = uint.Parse(val); break;
-                            case "short_arr": v = val.Split('\\').parse_shorts(); break;
                             case "short": v = short.Parse(val); break;
-                            case "ushort_arr": v = val.Split('\\').parse_ushorts(); break;
                             case "ushort": v = ushort.Parse(val); break;
-                            case "long_arr": v = val.Split('\\').parse_longs(); break;
                             case "long": v = long.Parse(val); break;
-                            case "ulong_arr": v = val.Split('\\').parse_ulongs(); break;
                             case "ulong": v = ulong.Parse(val); break;
-                            case "byte_arr": v = val.Split('\\').parse_bytes(); break;
                             case "byte": v = byte.Parse(val); break;
-                            case "sbyte_arr": v = val.Split('\\').parse_sbytes(); break;
                             case "sbyte": v = sbyte.Parse(val); break;
-                            case "decimal_arr": v = val.Split('\\').parse_decimals(); break;
                             case "decimal": v = decimal.Parse(val); break;
-                            case "bool_arr": v = val.Split('\\').parse_bools(); break;
                             case "bool": v = bool.Parse(val); break;
-                            case "char_arr": v = val.Split('\\').parse_chars(); break;
                             case "char": v = char.Parse(val); break;
                             default:
                                 v = $"Bad language translation. " +

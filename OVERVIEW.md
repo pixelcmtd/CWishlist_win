@@ -7,10 +7,6 @@ backends.
 This C# DLL contains all the really old CWL formats, because currently
 only CWLU and CWLD are supported, it has CWL and CWLB, CWLS 1-3 is
 also in there.
-## file_replace
-The file executed by the plugin updater to replace the plugin DLL.
-## test_plugin
-A plugin to test the beta plugin functionalities of CWL.
 ## cwla_benchmarks
 This is a little tool to compress wishlists into many different PAQ
 versions to test which one is the best.
@@ -21,7 +17,3 @@ C/C++ std library.
 ## 7ZipLib
 A customized version of the SevenZip "API" by Igor Pavlov for LZMA.
 (removed because we don't use LZMA anymore)
-## BetterWindows
-The new window system for the frontend, it's not done nor working...
-## BetterWindows.Test
-A few tests for BetterWindows that show that it's broken.

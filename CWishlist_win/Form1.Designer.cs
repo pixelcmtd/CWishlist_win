@@ -42,7 +42,6 @@ namespace CWishlist_win
             this.styleBackgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openCommandLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openPluginDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
@@ -270,19 +269,11 @@ namespace CWishlist_win
             // extraToolStripMenuItem
             // 
             this.extraToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openPluginDirToolStripMenuItem,
             this.debugToolsToolStripMenuItem,
             this.taskManagerToolStripMenuItem});
             this.extraToolStripMenuItem.Name = "extraToolStripMenuItem";
             this.extraToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.extraToolStripMenuItem.Text = "Extra";
-            // 
-            // openPluginDirToolStripMenuItem
-            // 
-            this.openPluginDirToolStripMenuItem.Name = "openPluginDirToolStripMenuItem";
-            this.openPluginDirToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
-            this.openPluginDirToolStripMenuItem.Text = "Open Plugin Dir(DOESNT WORK YET)";
-            this.openPluginDirToolStripMenuItem.Click += new System.EventHandler(this.plugindir_click);
             // 
             // debugToolsToolStripMenuItem
             // 
@@ -432,7 +423,6 @@ namespace CWishlist_win
         private ToolStripMenuItem extraToolStripMenuItem;
         private TextBox textBox3;
         private ToolStripMenuItem styleBackgroundColorToolStripMenuItem;
-        private ToolStripMenuItem openPluginDirToolStripMenuItem;
         private ToolStripMenuItem debugToolsToolStripMenuItem;
         private Label label3;
         private ToolStripMenuItem taskManagerToolStripMenuItem;
